@@ -1,6 +1,9 @@
 {
     "autoMemoryEnabled": false,
     "permissions": {
+        "allow": [
+            "Bash(git *)"
+        ],
         "deny": [
             "Bash(git commit --amend*)",
             "Bash(git push --force*)",
