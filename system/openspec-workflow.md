@@ -4,4 +4,7 @@
 
 This applies to every step of the OpenSpec lifecycle: `openspec new change`, editing artifacts (`proposal.md`, `design.md`, `tasks.md`, delta specs), implementing tasks, and archiving.
 
-Enforcement: the `openspec-branch-gate` job in CI (`.github/workflows/ci.yml`) runs on every push to `main` and fails loudly if `openspec/changes/**` was touched by that push. It cannot block the push itself — GitHub branch protection lets repo admins push directly to `main` (see [`.github/CODEOWNERS`](../.github/CODEOWNERS) and the repo's branch protection settings). This rule is the actual gate: an agent working in this repo must treat it as non-negotiable and always branch before touching `openspec/changes/**`.
+Enforcement, two layers:
+
+- **`guard_openspec_branch.py`** (`.claude/hooks/`, wired as a `PreToolUse` hook in `.claude/settings.json`) denies any Write/Edit under `openspec/changes/**` while `HEAD` is `main`, before the edit happens. This is the real gate for agents: it lives in the repo, needs no local setup, and applies from a fresh clone.
+- **`openspec-branch-gate`** (`.github/workflows/ci.yml`) runs on every push to `main` and fails loudly if `openspec/changes/**` was touched by that push — a backstop for anything that bypasses the hook (a human editing outside an agent, for instance). It cannot block the push itself: GitHub branch protection lets repo admins push directly to `main`.
