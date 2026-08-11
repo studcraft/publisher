@@ -18,3 +18,7 @@ context: |
 #       - Always include a "Non-goals" section
 #     tasks:
 #       - Break tasks into chunks of max 2 hours
+
+rules:
+  proposal:
+    - Every proposal must live on its own dedicated git branch. No exceptions.
