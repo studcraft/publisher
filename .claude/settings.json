@@ -1,3 +1,42 @@
 {
-    "autoMemoryEnabled": false
+    "autoMemoryEnabled": false,
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_orientation.py\"",
+                        "timeout": 15,
+                        "statusMessage": "Reading branch, tree and open changes"
+                    }
+                ]
+            }
+        ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "printf %s '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Reply in the user'\\''s prompt language. Code, comments, and documentation stay in English regardless — see system/response-language.md and system/code-language.md.\"}}'",
+                        "timeout": 10,
+                        "statusMessage": "Applying language rule"
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Write|Edit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_openspec_branch.py\"",
+                        "timeout": 10,
+                        "statusMessage": "Checking OpenSpec branch policy"
+                    }
+                ]
+            }
+        ]
+    }
 }
