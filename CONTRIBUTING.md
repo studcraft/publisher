@@ -10,7 +10,7 @@ pip install -r requirements-dev.txt -e .
 
 ## Workflow
 
-1. Create a branch off `main`.
+1. Update local `main` (`git fetch origin`, then branch off `origin/main`) and create a branch — see [Git Strategy](system/git-strategy.md).
 2. Make your changes. Run `ruff check .`, `ruff format .`, and `pytest` before pushing.
 3. Push and open a pull request.
 
