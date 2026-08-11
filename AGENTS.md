@@ -3,6 +3,7 @@
 @system/code-style.md
 @system/openspec-workflow.md
 @system/git-strategy.md
+@system/agent-workflow.md
 
 <!--
 This file is the entry point agents load for repository-wide instructions.
