@@ -18,3 +18,18 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: pytest
+
+  openspec-branch-gate:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fail if openspec/changes/ was pushed directly to main
+        run: |
+          changed=$(git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}")
+          if echo "$changed" | grep -q '^openspec/changes/'; then
+            echo "::error::openspec/changes/ was pushed directly to main. OpenSpec proposals must go through a branch + pull request."
+            exit 1
+          fi

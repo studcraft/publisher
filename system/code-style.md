@@ -9,4 +9,4 @@ Python code follows [PEP 8](https://peps.python.org/pep-0008/), enforced automat
 - **Docstrings**: required on public modules, classes, and functions. One-line summary; expand only when the behavior isn't obvious from the signature.
 - **Language**: English only — see [Code Language](code-language.md).
 
-Both checks (`ruff check .` and `ruff format --check .`) run in CI and in the local pre-commit hook. Neither is optional; a PR that fails either does not merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)).
+Both checks (`ruff check .` and `ruff format --check .`) run in CI. Neither is optional; a PR that fails either does not merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)).

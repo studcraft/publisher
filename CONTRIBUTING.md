@@ -6,17 +6,13 @@
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt -e .
-pre-commit install
 ```
-
-`pre-commit install` is required on every machine — it is not carried over by `git clone`. Without it, lint/format issues still get caught by CI, but later, on your open PR.
 
 ## Workflow
 
 1. Create a branch off `main`.
-2. Make your changes.
-3. Commit — the pre-commit hook runs Ruff (lint + format) automatically.
-4. Push and open a pull request.
+2. Make your changes. Run `ruff check .`, `ruff format .`, and `pytest` before pushing.
+3. Push and open a pull request.
 
 `main` is protected:
 
