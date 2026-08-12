@@ -1,100 +1,146 @@
 #!/usr/bin/env python3
-"""PreToolUse guard for Bash: refuse the git-history operations banned by
-system/git-strategy.md, no matter how the command is dressed up.
+"""PreToolUse guard for Bash: gate the git operations named in system/git-strategy.md.
 
-Why this exists: permissions.deny in .claude/settings.json matches by
-prefix against the whole command string — "Bash(git commit --amend*)" only
-fires if the command literally starts with "git commit --amend". Anything
-that changes what the command starts with (git -C <dir> ..., cd x && git
-..., git --git-dir=... ..., env FOO=bar git ...) never matches the prefix,
-and falls through to the broad "Bash(git *)" allow rule — silently
-permitted, no prompt, no block. This hook inspects the command text as a
-whole instead of anchoring at position 0, so it catches the operation
-wherever it appears in the string.
+Two categories:
 
-Not a sandbox: a determined agent can still obfuscate a command past a
-regex (command substitution, base64, etc). It closes the specific gap
-above — an innocuous-looking prefix silently defeating a documented hard
-rule — not every conceivable evasion. Combined with the "no compound Bash,
-no substitution" guidance in system/agent-workflow.md, the obfuscations
-that would defeat this are already against the rules on their own.
+- DENY — the history-rewriting operations banned outright. Blocked however the
+  command is dressed up (git -C <dir> ..., cd x && git ..., env FOO=bar git ...).
+- ASK — destructive but legitimate operations (reset --hard, clean -f,
+  checkout -- <path>). They discard uncommitted work, so they need a human
+  decision rather than the blanket "Bash(git *)" allow rule.
 
-Input is the PreToolUse JSON payload on stdin. Output is either nothing
-(allow) or a deny decision whose reason is what the agent reads instead of
-running the command.
+Matching parses the command instead of grepping it: the text is tokenized with
+shell quoting rules, then every `git` token is read as an invocation (global
+options skipped, subcommand and its arguments identified). A quoted argument is
+a single token, so `git commit -m "never rebase"` is a commit, not a rebase —
+grepping the raw string got that wrong. Heredoc bodies are stripped first,
+since their words are not quoted into one token.
 
-Fails open: a missing/unreadable command allows the call through. A guard
-that blocks what it does not understand gets switched off, and then
-nothing is enforced at all.
-
-Heredoc bodies are stripped before matching: the sanctioned
-`git commit -m "$(cat <<'EOF' ... EOF)"` pattern (system/agent-workflow.md)
-routinely needs to describe these very operations in prose inside the
-message body — matching there would block the commit for talking about
-the rule, not for breaking it.
+Input is the PreToolUse JSON payload on stdin; output is a decision, or nothing
+to allow. Fails open on anything unexpected: a guard that blocks what it does
+not understand gets switched off, and then nothing is enforced at all.
 """
+
+from __future__ import annotations
 
 import json
 import re
+import shlex
 import sys
 
 _HEREDOC = re.compile(r"<<-?\s*(['\"]?)(\w+)\1.*?\n\2(?=\n|$)", re.DOTALL)
 
+# Shell operators that end one command and start the next.
+_OPERATORS = {"&&", "||", ";", "|", "&", "(", ")", "{", "}", "<", ">", ">>", "<<", "|&"}
+
+# git global options that consume the following token as their value.
+_GLOBAL_OPTS_WITH_VALUE = {
+    "-C",
+    "-c",
+    "--git-dir",
+    "--work-tree",
+    "--namespace",
+    "--exec-path",
+    "--super-prefix",
+}
+
 
 def strip_heredocs(command: str) -> str:
+    """Replace heredoc bodies with their delimiter, leaving the redirect intact."""
     return _HEREDOC.sub(lambda m: f"<<{m.group(2)}", command)
 
-RULES = [
+
+def tokenize(command: str) -> list[str]:
+    """Split a shell command into tokens, keeping operators separate."""
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    tokens: list[str] = []
+    try:
+        for token in lexer:
+            tokens.append(token)
+    except ValueError:
+        pass  # Unterminated quote: keep what parsed, the subcommand comes early.
+    return tokens
+
+
+def is_git(token: str) -> bool:
+    return token == "git" or token.endswith("/git")
+
+
+def invocations(tokens: list[str]):
+    """Yield (subcommand, arguments) for every git invocation in the token list."""
+    for index, token in enumerate(tokens):
+        if not is_git(token):
+            continue
+        rest: list[str] = []
+        for following in tokens[index + 1 :]:
+            if following in _OPERATORS or is_git(following):
+                break
+            rest.append(following)
+        subcommand, arguments = split_subcommand(rest)
+        if subcommand:
+            yield subcommand, arguments
+
+
+def split_subcommand(tokens: list[str]) -> tuple[str | None, list[str]]:
+    """Skip git's global options and return the subcommand and its arguments."""
+    index = 0
+    while index < len(tokens):
+        token = tokens[index]
+        if not token.startswith("-"):
+            return token, tokens[index + 1 :]
+        index += 2 if token in _GLOBAL_OPTS_WITH_VALUE else 1
+    return None, []
+
+
+def has_long(arguments: list[str], prefix: str) -> bool:
+    """True if some argument is `--flag` or `--flag=value`."""
+    return any(arg == prefix or arg.startswith(prefix + "=") for arg in arguments)
+
+
+def has_short(arguments: list[str], letter: str) -> bool:
+    """True if some argument is a short-option cluster containing `letter`."""
+    return any(re.fullmatch(r"-[A-Za-z]+", arg) and letter in arg[1:] for arg in arguments)
+
+
+def is_force_push(arguments: list[str]) -> bool:
+    return has_short(arguments, "f") or any(arg.startswith("--force") for arg in arguments)
+
+
+DENY_RULES = [
+    ("commit", lambda args: has_long(args, "--amend"), "git commit --amend"),
+    ("push", is_force_push, "git push --force / --force-with-lease / -f"),
+    ("rebase", lambda _args: True, "git rebase"),
+    ("filter-branch", lambda _args: True, "git filter-branch"),
+    ("reflog", lambda args: bool(args) and args[0] == "expire", "git reflog expire"),
+    ("update-ref", lambda args: has_short(args, "d"), "git update-ref -d"),
     (
-        re.compile(r"\bgit\b.*\bcommit\b.*--amend\b", re.DOTALL),
-        "git commit --amend",
-    ),
-    (
-        re.compile(r"\bgit\b.*\bpush\b.*(?:--force\b|--force-with-lease\b)", re.DOTALL),
-        "git push --force / --force-with-lease",
-    ),
-    (
-        re.compile(r"\bgit\b.*\bpush\b.*(?:^|\s)-f(?:\s|$)", re.DOTALL),
-        "git push -f",
-    ),
-    (
-        re.compile(r"\bgit\b.*\brebase\b", re.DOTALL),
-        "git rebase",
-    ),
-    (
-        re.compile(r"\bgit\b.*\bfilter-branch\b", re.DOTALL),
-        "git filter-branch",
-    ),
-    (
-        re.compile(r"\bgit\b.*\breflog\b.*\bexpire\b", re.DOTALL),
-        "git reflog expire",
-    ),
-    (
-        re.compile(r"\bgit\b.*\bupdate-ref\b.*(?:^|\s)-d(?:\s|$)", re.DOTALL),
-        "git update-ref -d",
-    ),
-    (
-        re.compile(r"\bgit\b.*\badd\b.*(?:(?:^|\s)-A(?:\s|$)|--all\b)", re.DOTALL),
+        "add",
+        lambda args: has_short(args, "A") or has_long(args, "--all"),
         "git add -A / --all",
     ),
-    (
-        re.compile(r"\bgit\b.*\badd\b\s+\.(?:\s|$)", re.DOTALL),
-        "git add .",
-    ),
+    ("add", lambda args: "." in args, "git add ."),
+]
+
+ASK_RULES = [
+    ("reset", lambda args: has_long(args, "--hard"), "git reset --hard"),
+    ("clean", lambda args: has_short(args, "f") or has_long(args, "--force"), "git clean -f"),
+    ("checkout", lambda args: "--" in args, "git checkout -- <path>"),
+    ("restore", lambda _args: True, "git restore"),
 ]
 
 
-def allow():
+def allow() -> None:
     sys.exit(0)
 
 
-def deny(reason):
+def decide(decision: str, reason: str) -> None:
     print(
         json.dumps(
             {
                 "hookSpecificOutput": {
                     "hookEventName": "PreToolUse",
-                    "permissionDecision": "deny",
+                    "permissionDecision": decision,
                     "permissionDecisionReason": reason,
                 }
             }
@@ -103,22 +149,34 @@ def deny(reason):
     sys.exit(0)
 
 
-def main():
+def main() -> None:
     payload = json.load(sys.stdin)
     tool_input = payload.get("tool_input") or {}
     command = tool_input.get("command")
     if not isinstance(command, str) or not command:
         allow()
 
-    scanned = strip_heredocs(command)
+    parsed = list(invocations(tokenize(strip_heredocs(command))))
 
-    for pattern, label in RULES:
-        if pattern.search(scanned):
-            deny(
-                f"Blocked by system/git-strategy.md: `{label}` is a banned git-history "
-                "operation, regardless of flags or wrapping used to phrase the command "
-                f"(matched: {command!r}). History only grows in this repo — no exceptions."
-            )
+    for subcommand, arguments in parsed:
+        for name, matches, label in DENY_RULES:
+            if subcommand == name and matches(arguments):
+                decide(
+                    "deny",
+                    f"Blocked by system/git-strategy.md: `{label}` is a banned "
+                    "git-history operation, regardless of flags or wrapping used to "
+                    "phrase the command. History only grows in this repo — no exceptions.",
+                )
+
+    for subcommand, arguments in parsed:
+        for name, matches, label in ASK_RULES:
+            if subcommand == name and matches(arguments):
+                decide(
+                    "ask",
+                    f"`{label}` discards uncommitted work in the tree, which cannot be "
+                    "recovered from git. Confirm this is intended (see "
+                    "system/git-strategy.md).",
+                )
 
     allow()
 

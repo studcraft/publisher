@@ -1,4 +1,19 @@
 {
   "version": "0.2",
-  "words": ["minifig", "minifigure", "minifigures", "armour", "openspec", "greebling", "github", "pytest"]
+  "words": [
+    "minifig",
+    "minifigure",
+    "minifigures",
+    "armour",
+    "openspec",
+    "greebling",
+    "github",
+    "pytest",
+    "heredoc",
+    "heredocs",
+    "reflog",
+    "shlex",
+    "claude",
+    "docstrings"
+  ]
 }

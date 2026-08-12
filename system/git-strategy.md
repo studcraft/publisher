@@ -8,16 +8,23 @@ BLOCKER rules. No exceptions — not for "my own branch," not to fix an out-of-d
 - Never rewrite existing commit history: no `git commit --amend` on a pushed commit, no `git rebase`, no interactive rebase, no `git filter-branch`, no `git reflog expire`, no `git update-ref -d`.
 - New commits append; they never replace, reorder, or drop existing ones.
 
-Enforcement, two layers:
-
-- **`guard_git_history.py`** (`.claude/hooks/`, wired as a `PreToolUse` hook on `Bash` in `.claude/settings.json`) scans the full command text for these operations regardless of how they're phrased — `git -C <dir> commit --amend`, `cd x && git rebase`, `git --git-dir=... push -f`, and similar all get caught. This is the real gate: it doesn't anchor on how the command starts.
-- **`permissions.deny`** in [`.claude/settings.json`](../.claude/settings.json) denies the plain forms (`git commit --amend...`) by prefix match. Cheap defense in depth, but a prefix match alone is not sufficient — anything that changes what the command starts with slips past it and would otherwise fall through to the broad `Bash(git *)` allow rule silently. The hook is what actually closes that gap.
-
 **If a branch falls behind `main`:** merge, don't rebase — `git merge origin/main` (or GitHub's "Update branch" button). This adds a merge commit and is always safe: nothing is rewritten, no force-push required, no PR review comments or CI runs get orphaned.
 
 ## Staging — never `git add -A` or `git add .`
 
-Stage only the specific paths you edited, by name. Blanket-staging risks committing stray or uncommitted work that happened to be sitting in the tree. Blocked in `.claude/settings.json` alongside the history rules.
+Stage only the specific paths you edited, by name. Blanket-staging risks committing stray or uncommitted work that happened to be sitting in the tree.
+
+## Discarding uncommitted work
+
+`git reset --hard`, `git clean -f`, `git checkout -- <path>`, and `git restore` are not banned — but they throw away work that was never committed, which git cannot recover. They need a human decision each time, not a blanket yes.
+
+## Enforcement
+
+One hook does all of it: **`guard_git_history.py`** (`.claude/hooks/`, wired as a `PreToolUse` hook on `Bash` in `.claude/settings.json`). It denies the history-rewriting and blanket-staging operations, and marks the work-discarding ones `ask` so they run only once a human confirms — otherwise the broad `Bash(git *)` allow rule would wave them straight through.
+
+The hook parses the command with shell quoting rules and inspects every `git` invocation it finds, so wrapping does not help: `git -C <dir> commit --amend`, `cd x && git rebase`, and `git --git-dir=... push -f` all get caught, while `git commit -m "why we never rebase"` is correctly read as a commit. `tests/test_guard_git_history.py` pins both directions.
+
+Do not add a `permissions.deny` list for these commands. One existed and was removed: prefix matching covers a strict subset of what the hook already catches, and it was a third copy of the same rule to keep in sync.
 
 ## Branching
 
