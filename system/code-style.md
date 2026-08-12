@@ -7,6 +7,6 @@ Python code follows [PEP 8](https://peps.python.org/pep-0008/), enforced automat
 - **Naming**: `snake_case` for functions/variables/modules, `PascalCase` for classes, `UPPER_CASE` for constants — standard PEP 8.
 - **Type hints**: required on public function signatures (parameters and return type).
 - **Docstrings**: required on public modules, classes, and functions. One-line summary; expand only when the behavior isn't obvious from the signature.
-- **Language**: English only — see [Code Language](code-language.md).
+- **Language**: English only — see [Language](language.md).
 
 Both checks (`ruff check .` and `ruff format --check .`) run in CI. Neither is optional; a PR that fails either does not merge (see [CONTRIBUTING.md](../CONTRIBUTING.md)).

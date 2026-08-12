@@ -4,18 +4,9 @@ Guidance for working with minimal permission interruptions while staying safe. T
 
 ## Prefer dedicated tools over Bash
 
-A `Bash` call prompts for permission; `Read`, `Edit`, `Write`, `Grep`, `Glob` normally don't. Before writing a shell command, check whether a dedicated tool does the same thing:
+A `Bash` call prompts for permission; `Read`, `Edit`, `Write`, `Grep`, `Glob` normally don't — so reach for those first.
 
-| Instead of | Use |
-|---|---|
-| `cat file` | `Read` |
-| `head -n`, `sed -n '$p'` | `Read` with `offset`/`limit` |
-| `sed -i`, `awk`, `perl -pi` | `Edit` |
-| `echo > file`, `cat <<EOF > file` | `Write` |
-| `grep -rn` | `Grep` |
-| `find . -name` | `Glob` |
-
-`sed -i`/`awk`/`tee`/shell redirection over project files edit blind — no read-before-write, and a pattern that matches twice silently changes the wrong thing. `Edit` fails loudly when its anchor isn't unique; that's a feature.
+In particular, never edit project files through the shell. `sed -i`, `awk`, `perl -pi`, `tee`, and output redirection all write blind: no read-before-write, and a pattern that matches twice silently changes the wrong thing. `Edit` fails loudly when its anchor isn't unique; that's a feature.
 
 ## When the shell is unavoidable
 

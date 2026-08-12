@@ -1,9 +1,9 @@
-@system/response-language.md
-@system/code-language.md
+@system/language.md
 @system/code-style.md
 @system/openspec-workflow.md
 @system/git-strategy.md
 @system/agent-workflow.md
+@system/documentation-standards.md
 
 <!--
 This file is the entry point agents load for repository-wide instructions.

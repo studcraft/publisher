@@ -22,14 +22,37 @@ jobs:
   openspec-branch-gate:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Fail if openspec/changes/ was pushed directly to main
+      - name: Fail if openspec/changes/ reached main outside a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
         run: |
-          changed=$(git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}")
-          if echo "$changed" | grep -q '^openspec/changes/'; then
-            echo "::error::openspec/changes/ was pushed directly to main. OpenSpec proposals must go through a branch + pull request."
-            exit 1
+          # An all-zero or unreachable BEFORE means there is no range to inspect
+          # (branch creation, or history the runner cannot see). Nothing to judge.
+          if [ -z "${BEFORE//0/}" ] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "No usable previous SHA for this push. Skipping."
+            exit 0
           fi
+          status=0
+          # Merge commits carry no changes of their own; judge the commits they bring in.
+          for sha in $(git rev-list --no-merges "${BEFORE}..${AFTER}"); do
+            if ! git diff-tree --no-commit-id --name-only -r "$sha" | grep -q '^openspec/changes/'; then
+              continue
+            fi
+            # A commit that arrived through a pull request is associated with it,
+            # whether the PR was merged, squashed, or rebased.
+            if [ -n "$(gh api "repos/${GITHUB_REPOSITORY}/commits/$sha/pulls" --jq '.[].number')" ]; then
+              continue
+            fi
+            echo "::error::commit $sha touches openspec/changes/ but did not come from a pull request. OpenSpec proposals must go through a branch + PR."
+            status=1
+          done
+          exit $status

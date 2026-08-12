@@ -30,7 +30,7 @@ See [`system/code-style.md`](system/code-style.md).
 
 ## Language
 
-Code, comments, and documentation must be in English — see [`system/code-language.md`](system/code-language.md). This applies regardless of what language you use to discuss the work.
+See [`system/language.md`](system/language.md).
 
 ## Tests
 
