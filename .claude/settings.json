@@ -54,6 +54,17 @@
                         "statusMessage": "Checking OpenSpec branch policy"
                     }
                 ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_git_history.py\"",
+                        "timeout": 10,
+                        "statusMessage": "Checking git history policy"
+                    }
+                ]
             }
         ]
     }

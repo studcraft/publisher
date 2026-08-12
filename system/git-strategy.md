@@ -8,7 +8,10 @@ BLOCKER rules. No exceptions — not for "my own branch," not to fix an out-of-d
 - Never rewrite existing commit history: no `git commit --amend` on a pushed commit, no `git rebase`, no interactive rebase, no `git filter-branch`, no `git reflog expire`, no `git update-ref -d`.
 - New commits append; they never replace, reorder, or drop existing ones.
 
-These are blocked at the tool level in [`.claude/settings.json`](../.claude/settings.json) (`permissions.deny`) — not just documented, refused.
+Enforcement, two layers:
+
+- **`guard_git_history.py`** (`.claude/hooks/`, wired as a `PreToolUse` hook on `Bash` in `.claude/settings.json`) scans the full command text for these operations regardless of how they're phrased — `git -C <dir> commit --amend`, `cd x && git rebase`, `git --git-dir=... push -f`, and similar all get caught. This is the real gate: it doesn't anchor on how the command starts.
+- **`permissions.deny`** in [`.claude/settings.json`](../.claude/settings.json) denies the plain forms (`git commit --amend...`) by prefix match. Cheap defense in depth, but a prefix match alone is not sufficient — anything that changes what the command starts with slips past it and would otherwise fall through to the broad `Bash(git *)` allow rule silently. The hook is what actually closes that gap.
 
 **If a branch falls behind `main`:** merge, don't rebase — `git merge origin/main` (or GitHub's "Update branch" button). This adds a merge commit and is always safe: nothing is rewritten, no force-push required, no PR review comments or CI runs get orphaned.
 
