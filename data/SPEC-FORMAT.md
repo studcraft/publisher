@@ -55,43 +55,111 @@ A section with a heading and no lines is a mistake, not an empty column — it f
 
 ## `[[section.line]]`
 
-One printed line. Exactly two kinds, and a line must be one or the other.
+One entry. Two independent choices: **where it comes from**, and **what shape it takes**.
 
 | Key | Required | Meaning |
 |---|---|---|
-| `text` | **yes** | What the sheet prints. Written by you, condensed for a narrow column. |
-| `rule` | one of the two | The rule ID this line condenses. |
-| `authored` | one of the two | `true` for a line that comes from no rule. |
+| `rule` | one of the two | The rule ID this entry condenses. |
+| `authored` | one of the two | `true` for an entry that comes from no rule. |
+| `label` | no | The word the eye searches for. Set in bold, apart from the value. |
+| `text` | one shape | A statement to read. |
+| `outcome` | one shape | A lookup to scan — dice results, thresholds. |
+| `steps` | one shape | A sequence to follow. |
 
-### Rule-anchored — almost every line
+### Where it comes from
 
 ```toml
 [[section.line]]
 rule = "INF-002"
-text = "Forward: up to 4 UB (12 studs). 1 AP."
+text = "4 UB (12 studs) — 1 AP"
 ```
 
 `extract` resolves `rule` against the pinned ruleset and **fails the build if the ID is
 gone**. It then attaches that rule's source document and line number to the document, so any
-printed line can be checked against what it claims to say. The rule ID is printed on the
+printed entry can be checked against what it claims to say. The rule ID is printed on the
 page in parentheses.
 
 The generator never writes the text. Its only jobs here are: does the ID resolve, where does
 it live, and fail if it does not.
 
-### Authored — the scenario, and nothing else
-
 ```toml
 [[section.line]]
 authored = true
-text = "Three minifigures per warband. Two or more players."
+text = "3 minifigures each. 2 or more players."
 ```
 
-For content the ruleset deliberately leaves open — scenario definition (`FLOW-013`). These
-print in italic and without a rule ID, and the page footer says what italic means.
+`authored` is for content the ruleset deliberately leaves open — scenario definition
+(`FLOW-013`). These print in italic and without a rule ID, and the page footer says what
+italic means.
 
-Setting both `authored = true` and `rule` fails: the `rule` would be silently ignored, and a
-line that looks anchored but is not is the worst outcome available.
+Setting both `authored = true` and `rule` fails: the `rule` would be silently ignored, and an
+entry that looks anchored but is not is the worst outcome available.
+
+### What shape it takes
+
+Exactly one of `text`, `outcome` or `steps`. Two at once is not a richer entry, it is an
+unanswered question about how to draw it, and it fails.
+
+The shape is chosen by **how the entry is read at a table**, not by how much content it has.
+A player looking up a dice result should find it by scanning a column, not by reading a
+sentence and extracting the numbers from it.
+
+**`text` — a statement to read.**
+
+```toml
+[[section.line]]
+rule = "MOVE-007"
+text = "No diagonals. Combine legs; each leg is its own action and its own 1 AP."
+```
+
+**`outcome` — a lookup to scan.** Each row is a condition and what it produces. The results
+are aligned into a column across every row of the entry, which is what makes them scan.
+
+```toml
+[[section.line]]
+rule = "CBT-005"
+label = "Attack Roll"
+outcome = [
+    { when = "4-6", then = "1 Impact" },
+    { when = "1-3", then = "no Impact" },
+]
+```
+
+A row may cite its **own** `rule` when it comes from a different one than the entry. The
+rows of one lookup often do — three obstacle thresholds are three rules — and without this
+the entry would print a table whose other rows are anchored to nothing:
+
+```toml
+[[section.line]]
+rule = "INF-006"
+label = "Obstacles"
+outcome = [
+    { when = "1-3 layers", then = "cross freely, no extra cost" },
+    { when = "4-6 layers", then = "climb, +1 AP per obstacle", rule = "INF-007" },
+    { when = "7+ layers", then = "impassable without a slope, stair or ramp", rule = "INF-008" },
+]
+```
+
+Every rule an entry cites — its own and its rows' — is printed once, together, on the entry.
+An ID per row would put the citation inside the column the shape exists to keep scannable.
+
+**`steps` — a sequence to follow.** Drawn as a flow, in order.
+
+```toml
+[[section.line]]
+rule = "DMG-008"
+label = "Per Impact"
+steps = ["Choose component", "Geometry Check", "Damage Roll", "State change"]
+```
+
+### `label`
+
+Optional on any shape. It is the word a player's eye searches for — `Forward`, `Range`,
+`Damage Roll` — set in bold and apart from the value, so finding it does not mean reading
+the entry. On an `outcome` or `steps` entry the label sits on its own line with the rows
+indented under it.
+
+A label with no shape under it fails: that is a heading without an answer beneath it.
 
 ---
 
@@ -145,12 +213,15 @@ Content never spills onto a second page. It either fits or the build fails.
 Each of these is a test, not a promise:
 
 - A cited rule ID absent from the pinned ruleset — named, with the section citing it.
-- A line with no `text`, or with neither `rule` nor `authored`.
-- A line with both `authored = true` and `rule`.
+- An entry with none of `text`, `outcome` or `steps` — it would print nothing.
+- An entry with more than one of them.
+- An entry with neither `rule` nor `authored`.
+- An entry with both `authored = true` and `rule`.
+- An `outcome` row missing `when` or `then`, or an empty `steps` entry.
 - A section with no `id`, no `heading`, or no lines.
 - No sections at all.
 - No `language`.
-- An unknown key at any level — top, `[page]`, `[[section]]`, `[[section.line]]`.
+- An unknown key at any level — top, `[page]`, `[[section]]`, `[[section.line]]`, or an `outcome` row.
 - Content that does not fit on one page at the smallest `body_pt`.
 - A character no PDF core font can print, unless it is in the renderer's substitution table.
 
