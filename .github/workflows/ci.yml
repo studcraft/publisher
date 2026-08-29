@@ -17,7 +17,11 @@ jobs:
       - run: pip install -r requirements-dev.txt -e .
       - run: ruff check .
       - run: ruff format --check .
-      - run: pytest
+      # The coverage floor lives in pyproject.toml, so a local `pytest --cov` and this
+      # gate cannot disagree. This job is the required check on main, which is why the
+      # constraint lives here rather than in a workflow of its own that nothing marks
+      # required — see system/testing.md.
+      - run: pytest --cov
 
   quicksheet:
     runs-on: ubuntu-latest
