@@ -1,10 +1,10 @@
 ## 1. The local harness
 
-- [ ] 1.1 Commit `tools/wordpress-local/` — `docker-compose.yml`, `bootstrap.sh`, `README.md` — already built and verified on this branch
-- [ ] 1.2 Confirm `.env` is git-ignored and that no credential is tracked
-- [ ] 1.3 Verify a cold start from empty volumes: `docker compose down -v`, `up -d`, `./bootstrap.sh`, site reachable
-- [ ] 1.4 Verify `bootstrap.sh` is repeatable — a second run creates no second user and no second install
-- [ ] 1.5 Verify an overridden `WP_PORT` moves both the published port and the site's stored URL
+- [x] 1.1 Commit `tools/wordpress-local/` — `docker-compose.yml`, `bootstrap.sh`, `README.md` — already built and verified on this branch
+- [x] 1.2 Confirm `.env` is git-ignored and that no credential is tracked
+- [x] 1.3 Verify a cold start from empty volumes: `docker compose down -v`, `up -d`, `./bootstrap.sh`, site reachable
+- [x] 1.4 Verify `bootstrap.sh` is repeatable — a second run creates no second user and no second install
+- [x] 1.5 Verify an overridden `WP_PORT` moves both the published port and the site's stored URL
 
 ## 2. The `rules_web` product
 
