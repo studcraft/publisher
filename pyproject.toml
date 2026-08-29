@@ -7,7 +7,15 @@ name = "publisher"
 version = "0.1.0"
 description = "Studcraft publisher"
 requires-python = ">=3.9"
-dependencies = []
+# The single source of truth for runtime pins. Do not add a requirements.txt beside it:
+# one existed and was removed, because two copies of the same pins drift silently.
+dependencies = [
+    # Pinned exactly: a patch release that changes stream compression or object
+    # ordering changes the output bytes, which the reproducibility test asserts on.
+    "fpdf2==2.8.4",
+    # tomllib is stdlib from 3.11; below that we need the backport.
+    "tomli==2.2.1; python_version < '3.11'",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

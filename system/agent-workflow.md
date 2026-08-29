@@ -8,6 +8,8 @@ A `Bash` call prompts for permission; `Read`, `Edit`, `Write`, `Grep`, `Glob` no
 
 In particular, never edit project files through the shell. `sed -i`, `awk`, `perl -pi`, `tee`, and output redirection all write blind: no read-before-write, and a pattern that matches twice silently changes the wrong thing. `Edit` fails loudly when its anchor isn't unique; that's a feature.
 
+This covers an inline interpreter script too — `python - <<'EOF' … read_text/write_text … EOF` is the same blind write with more syntax. The rule is about the absent read-before-write and the silent multi-match, not about which binary does it. Legitimate exception: a mechanical change across many files at once, where `Edit` per site is not practical. Then say so, and check the result rather than assuming it.
+
 ## When the shell is unavoidable
 
 Prefer one bare command per `Bash` call — no `&&`/`;`/`||` chaining, no pipes, no `$(...)`/backtick substitution, no loops. A permission is granted by pattern; anything that makes the command dynamic can't be pre-authorized, however harmless it is. Split compound commands into separate calls instead of working around this.
@@ -16,7 +18,9 @@ This is a preference, not an absolute: the heredoc form for multi-line `git comm
 
 ## `fewer-permission-prompts` skill
 
-For a long or repetitive task, invoke it early, not at the end — it writes a prioritized allowlist into `.claude/settings.json` from the read-only calls you've been making. It only ever covers read-only commands; never let it authorize anything destructive. Read the existing `permissions` block first — its `deny` list is deliberate, and widening `allow` without understanding it is a policy change disguised as configuration.
+For a long or repetitive task, invoke it early, not at the end — it writes a prioritized allowlist into `.claude/settings.json` from the read-only calls you've been making. It only ever covers read-only commands; never let it authorize anything destructive.
+
+Read the existing `permissions` block first. It holds one broad `allow` (`Bash(git *)`) and **no `deny` list**, deliberately: the dangerous git operations are caught by a hook instead, which sees more than prefix matching can — see [Git Strategy](git-strategy.md). Widening `allow` without understanding that is a policy change disguised as configuration, and adding a `deny` list back is a change to a decision already made.
 
 ## On denial
 
