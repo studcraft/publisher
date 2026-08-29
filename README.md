@@ -92,6 +92,7 @@ alone.
 | The sheet never spills to a second page | The renderer shrinks to fit, then fails |
 | Two builds give identical bytes | Fixed dates and a PDF core font; CI builds twice and compares |
 | Committed data and artefacts are current | CI regenerates and fails on any diff |
+| Code the suite does not reach cannot land | A coverage floor inside the required check |
 
 ## Writing or changing a sheet
 
@@ -117,8 +118,12 @@ format* is a new renderer in `src/publisher/quicksheet/render/`.
 Python 3.9+. [Ruff](https://docs.astral.sh/ruff/) for lint and formatting, pytest for tests.
 
 ```bash
-ruff check . && ruff format --check . && pytest
+ruff check . && ruff format --check . && pytest --cov
 ```
+
+Tests are a hard constraint, not a habit: a pull request that fails the suite does not
+merge, and neither does one that drops coverage below its floor. Both run inside the
+required check. See [Testing](system/testing.md).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, and [`system/`](system/) for the
 project rules — [git strategy](system/git-strategy.md) (history only grows; never
