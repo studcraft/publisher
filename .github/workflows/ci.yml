@@ -19,6 +19,56 @@ jobs:
       - run: ruff format --check .
       - run: pytest
 
+  quicksheet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      # `-e .` installs the pinned runtime dependencies from pyproject.toml.
+      # There is no requirements.txt: a second copy of those pins would drift.
+      - run: pip install -e .
+      # --pinned checks out exactly the commit source/studcraft.lock.json records.
+      # Cloning a branch instead would drift the moment upstream moves, and the build
+      # would then refuse to run against an unpinned tree.
+      - name: Restore the ruleset to the pinned commit
+        run: python -m publisher.sync --pinned
+      # Stage 1: ruleset + spec.toml -> document.json, regenerated in place.
+      - run: python -m publisher.quicksheet extract
+      # The tracked document is the review surface: a ruleset bump or a spec edit must
+      # arrive as a readable diff in the PR, not appear at render time. Regenerating must
+      # therefore be a no-op against a correctly committed tree.
+      - name: The committed document matches the ruleset it claims to come from
+        run: |
+          if ! git diff --exit-code -- data/quicksheet_3x3/document.json; then
+            echo "::error::data/quicksheet_3x3/document.json is stale. Run 'python -m publisher.quicksheet extract' and commit the result."
+            exit 1
+          fi
+      # Stage 2: document.json -> publish/<name>/v<version>/<name>_<lang>.pdf.
+      # Reads nothing but the document.
+      - run: python -m publisher.quicksheet render --format pdf
+      # The published artefact is committed too, so the same gate applies: regenerating it
+      # must be a no-op. This is what keeps "which PDF did we publish for this ruleset
+      # version" answerable from the repository alone.
+      - name: The committed publication matches the document it comes from
+        run: |
+          if ! git diff --exit-code -- publish/; then
+            echo "::error::publish/ is stale. Run 'python -m publisher.quicksheet render' and commit the result."
+            exit 1
+          fi
+      # Render a second time elsewhere and compare. A determinism regression must fail the
+      # pipeline, not be discovered when two people diff outputs that should be identical.
+      - run: python -m publisher.quicksheet render --out second/ --format pdf
+      - name: Rendering twice gives identical bytes
+        run: |
+          published=$(find publish -name '*.pdf' | head -1)
+          cmp "$published" "second/${published#publish/}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quicksheet
+          path: publish/
+
   openspec-branch-gate:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest

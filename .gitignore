@@ -11,6 +11,10 @@ dist/
 *.egg-info/
 .eggs/
 
+# publish/ is deliberately NOT ignored. Rendered artefacts are versioned by ruleset
+# version and language so the tree can be pushed to a single source of truth; committing
+# them is what makes "which PDF did we publish for 0.2.0 Draft" answerable later.
+
 # Virtual environments
 .venv/
 venv/
