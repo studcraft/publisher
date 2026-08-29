@@ -22,6 +22,7 @@ from publisher.quicksheet.model import (
     Document,
     DocumentError,
     Line,
+    Outcome,
     Page,
     Section,
     Source,
@@ -42,7 +43,8 @@ class SpecError(Exception):
 # print intros, and that is a much more expensive thing to debug.
 _TOP_KEYS = frozenset({"language", "title", "name", "page", "section"})
 _SECTION_KEYS = frozenset({"id", "heading", "intro", "line"})
-_LINE_KEYS = frozenset({"rule", "text", "authored"})
+_LINE_KEYS = frozenset({"rule", "text", "authored", "label", "outcome", "steps"})
+_OUTCOME_KEYS = frozenset({"when", "then", "rule"})
 
 
 def _reject_unknown(table: dict, known: frozenset, where: str) -> None:
@@ -73,9 +75,7 @@ def _section_lines(raw: dict, section_id: str, index: dict[str, Rule]) -> tuple[
         if not isinstance(entry, dict):
             raise SpecError(f"{where} is not a table.")
         _reject_unknown(entry, _LINE_KEYS, where)
-        text = entry.get("text")
-        if not text:
-            raise SpecError(f"{where} is missing 'text'.")
+        shape = _shape(entry, where, index)
 
         if entry.get("authored"):
             if entry.get("rule"):
@@ -84,20 +84,81 @@ def _section_lines(raw: dict, section_id: str, index: dict[str, Rule]) -> tuple[
                     "A line is either the publisher's scenario choice or a rule from the "
                     "ruleset; it cannot be both."
                 )
-            lines.append(Line(rule=None, text=text, doc=None, source_line=None))
+            lines.append(Line(rule=None, doc=None, source_line=None, **shape))
             continue
 
         rule_id = entry.get("rule")
         if not rule_id:
             raise SpecError(f"{where} is missing 'rule'. Set authored = true if intentional.")
-        try:
-            resolved = rule(index, rule_id)
-        except UnknownRuleError as exc:
-            raise SpecError(f"{where} cites {rule_id}, which is not in the ruleset: {exc}") from exc
-        lines.append(Line(rule=rule_id, text=text, doc=resolved.doc, source_line=resolved.line))
+        resolved = _resolve(rule_id, index, where)
+        lines.append(Line(rule=rule_id, doc=resolved.doc, source_line=resolved.line, **shape))
     if not lines:
         raise SpecError(f"section {section_id!r} has no lines.")
     return tuple(lines)
+
+
+def _resolve(rule_id: str, index: dict[str, Rule], where: str) -> Rule:
+    """Return the cited rule, failing with where the citation was made."""
+    try:
+        return rule(index, rule_id)
+    except UnknownRuleError as exc:
+        raise SpecError(f"{where} cites {rule_id}, which is not in the ruleset: {exc}") from exc
+
+
+def _shape(entry: dict, where: str, index: dict[str, Rule]) -> dict:
+    """Return the entry's content fields, failing when it is not exactly one shape.
+
+    An entry is a statement to read, a lookup to scan, or a sequence to follow. Two at once
+    is not a richer entry, it is an unanswered question about how to draw it.
+    """
+    outcomes = []
+    for position, raw in enumerate(entry.get("outcome", [])):
+        at = f"{where} outcome {position}"
+        if not isinstance(raw, dict):
+            raise SpecError(f"{at} is not a table.")
+        _reject_unknown(raw, _OUTCOME_KEYS, at)
+        for required in ("when", "then"):
+            if not raw.get(required):
+                raise SpecError(f"{at} is missing {required!r}.")
+        row_rule = raw.get("rule")
+        resolved = _resolve(row_rule, index, at) if row_rule else None
+        outcomes.append(
+            Outcome(
+                when=raw["when"],
+                then=raw["then"],
+                rule=row_rule,
+                doc=resolved.doc if resolved else None,
+                source_line=resolved.line if resolved else None,
+            )
+        )
+
+    steps = tuple(entry.get("steps") or ())
+    for position, step in enumerate(steps):
+        if not isinstance(step, str) or not step.strip():
+            raise SpecError(f"{where} step {position} is empty.")
+
+    present = [
+        name
+        for name, used in (("text", entry.get("text")), ("outcome", outcomes), ("steps", steps))
+        if used
+    ]
+    if not present:
+        raise SpecError(
+            f"{where} has no 'text', 'outcome' or 'steps'; it would print nothing. "
+            "A label alone is a heading without an answer under it."
+        )
+    if len(present) > 1:
+        raise SpecError(
+            f"{where} has {' and '.join(present)}. An entry takes one shape: a statement to "
+            "read, a lookup to scan, or a sequence to follow."
+        )
+
+    return {
+        "text": entry.get("text", ""),
+        "label": entry.get("label", ""),
+        "outcomes": tuple(outcomes),
+        "steps": steps,
+    }
 
 
 def build_document(

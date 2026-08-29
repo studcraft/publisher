@@ -26,27 +26,75 @@ class DocumentError(Exception):
 
 
 @dataclass(frozen=True)
+class Outcome:
+    """One row of a lookup: a condition and what it produces.
+
+    A row may cite its own rule. The rows of one lookup often come from different rules —
+    the three obstacle thresholds are three rules — and an entry that could cite only one
+    would print a table whose other rows are anchored to nothing.
+    """
+
+    when: str
+    then: str
+    rule: str | None = None
+    doc: str | None = None
+    source_line: int | None = None
+
+
+@dataclass(frozen=True)
 class Line:
-    """One printed line, and the rule it condenses.
+    """One entry on the sheet, and the rule it condenses.
 
-    ``text`` is authored by a human. ``doc`` and ``source_line`` are attached from the
-    ruleset so any line can be checked against the rule it claims to state.
+    An entry takes one of three shapes, because at a table the three are read differently:
 
-    ``rule`` is ``None`` only for a line the publisher authored rather than took from the
-    ruleset — the scenario definition the ruleset deliberately leaves open. Such a line must
-    say so explicitly, and the renderer marks it on the page, so nobody reads a scenario
+    - **prose** — ``text`` alone. A statement to read.
+    - **lookup** — ``outcomes``. A dice result or threshold answered by scanning a column,
+      not by reading a sentence and extracting the numbers from it.
+    - **sequence** — ``steps``. A procedure followed in order.
+
+    Any shape may carry a ``label``: the word a player's eye searches for, set apart from
+    the value so finding it does not mean reading the line.
+
+    ``doc`` and ``source_line`` are attached from the ruleset so any entry can be checked
+    against the rule it claims to state.
+
+    ``rule`` is ``None`` only for an entry the publisher authored rather than took from the
+    ruleset — the scenario definition the ruleset deliberately leaves open. Such an entry
+    must say so explicitly, and the renderer sets it apart, so nobody reads a scenario
     choice as a core rule.
     """
 
     rule: str | None
-    text: str
+    text: str = ""
+    label: str = ""
+    outcomes: tuple[Outcome, ...] = ()
+    steps: tuple[str, ...] = ()
     doc: str | None = None
     source_line: int | None = None
 
     @property
     def authored(self) -> bool:
-        """True when this line is a scenario choice, not a rule from the ruleset."""
+        """True when this entry is a scenario choice, not a rule from the ruleset."""
         return self.rule is None
+
+    @property
+    def cited(self) -> tuple[str, ...]:
+        """Return every rule this entry cites, the entry's own first, without repeats."""
+        ids = [self.rule] + [o.rule for o in self.outcomes]
+        seen: dict[str, None] = {}
+        for rule_id in ids:
+            if rule_id:
+                seen.setdefault(rule_id, None)
+        return tuple(seen)
+
+    @property
+    def kind(self) -> str:
+        """Return which of the three shapes this entry takes."""
+        if self.outcomes:
+            return "lookup"
+        if self.steps:
+            return "sequence"
+        return "prose"
 
 
 @dataclass(frozen=True)
@@ -147,15 +195,7 @@ class Document:
                     "id": section.id,
                     "heading": section.heading,
                     "intro": section.intro,
-                    "lines": [
-                        {
-                            "rule": line.rule,
-                            "text": line.text,
-                            "doc": line.doc,
-                            "source_line": line.source_line,
-                        }
-                        for line in section.lines
-                    ],
+                    "lines": [_line_dict(line) for line in section.lines],
                 }
                 for section in self.sections
             ],
@@ -186,19 +226,7 @@ class Document:
                     raise DocumentError(f"sections[{position}] is missing {required!r}.")
             lines = []
             for index, entry in enumerate(raw.get("lines") or []):
-                where = f"section {raw['id']!r} line {index}"
-                if not isinstance(entry, dict):
-                    raise DocumentError(f"{where} is not an object.")
-                if not entry.get("text"):
-                    raise DocumentError(f"{where} is missing 'text'.")
-                lines.append(
-                    Line(
-                        rule=entry.get("rule"),
-                        text=entry["text"],
-                        doc=entry.get("doc"),
-                        source_line=entry.get("source_line"),
-                    )
-                )
+                lines.append(_read_line(entry, f"section {raw['id']!r} line {index}"))
             if not lines:
                 raise DocumentError(f"section {raw['id']!r} has no lines.")
             sections.append(
@@ -220,6 +248,82 @@ class Document:
             glossary=tuple(payload.get("glossary") or ()),
             schema=schema,
         )
+
+
+def _line_dict(line: Line) -> dict[str, Any]:
+    """Return one entry as a mapping, omitting the shapes it does not use.
+
+    Absent keys rather than empty ones: a prose entry carrying ``"outcomes": []`` invites
+    the reader to wonder which shape it really is.
+    """
+    out: dict[str, Any] = {"rule": line.rule}
+    if line.label:
+        out["label"] = line.label
+    if line.text:
+        out["text"] = line.text
+    if line.outcomes:
+        out["outcomes"] = [
+            {
+                "when": o.when,
+                "then": o.then,
+                "rule": o.rule,
+                "doc": o.doc,
+                "source_line": o.source_line,
+            }
+            for o in line.outcomes
+        ]
+    if line.steps:
+        out["steps"] = list(line.steps)
+    out["doc"] = line.doc
+    out["source_line"] = line.source_line
+    return out
+
+
+def _read_line(entry: Any, where: str) -> Line:
+    """Return the entry ``entry`` describes, failing by name on any problem."""
+    if not isinstance(entry, dict):
+        raise DocumentError(f"{where} is not an object.")
+
+    outcomes = []
+    for position, raw in enumerate(entry.get("outcomes") or []):
+        if not isinstance(raw, dict):
+            raise DocumentError(f"{where} outcome {position} is not an object.")
+        for required in ("when", "then"):
+            if not raw.get(required):
+                raise DocumentError(f"{where} outcome {position} is missing {required!r}.")
+        outcomes.append(
+            Outcome(
+                when=raw["when"],
+                then=raw["then"],
+                rule=raw.get("rule"),
+                doc=raw.get("doc"),
+                source_line=raw.get("source_line"),
+            )
+        )
+
+    steps = tuple(entry.get("steps") or ())
+    shapes = [
+        name
+        for name, used in (("text", entry.get("text")), ("outcomes", outcomes), ("steps", steps))
+        if used
+    ]
+    if not shapes:
+        raise DocumentError(f"{where} has no 'text', 'outcomes' or 'steps'; it prints nothing.")
+    if len(shapes) > 1:
+        raise DocumentError(
+            f"{where} has {' and '.join(shapes)}. An entry takes one shape: a statement to "
+            "read, a lookup to scan, or a sequence to follow."
+        )
+
+    return Line(
+        rule=entry.get("rule"),
+        text=entry.get("text", ""),
+        label=entry.get("label", ""),
+        outcomes=tuple(outcomes),
+        steps=steps,
+        doc=entry.get("doc"),
+        source_line=entry.get("source_line"),
+    )
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
