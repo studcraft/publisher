@@ -12,7 +12,10 @@ pip install -r requirements-dev.txt -e .
 
 1. Update local `main` (`git fetch origin`, then branch off `origin/main`) and create a branch — see [Git Strategy](system/git-strategy.md).
 2. Make your changes. Run `ruff check .`, `ruff format .`, and `pytest` before pushing.
-3. Push and open a pull request.
+3. If you changed anything under `data/`, run `python -m publisher.quicksheet build` and
+   commit the regenerated `data/` and `publish/` files with it — CI fails if they are stale.
+   See [Publishing Pipeline](system/publishing-pipeline.md).
+4. Push and open a pull request.
 
 `main` is protected:
 
