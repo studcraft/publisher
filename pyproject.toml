@@ -30,3 +30,18 @@ select = ["E", "F", "I", "UP"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Reject an unknown marker or config key rather than ignoring it, for the same reason the
+# spec loader rejects unknown keys: a typo that is silently ignored looks exactly like a
+# feature that does not work.
+addopts = "--strict-markers --strict-config"
+
+[tool.coverage.run]
+source_pkgs = ["publisher"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+# The floor is what the suite actually covered when the gate was added — 92.7% with branch
+# coverage on — rounded down, not a number someone liked. It can only be raised. Lowering it
+# is a decision to argue for in review, which is the point: see system/testing.md.
+fail_under = 92

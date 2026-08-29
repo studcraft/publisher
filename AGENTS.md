@@ -1,5 +1,6 @@
 @system/language.md
 @system/code-style.md
+@system/testing.md
 @system/openspec-workflow.md
 @system/git-strategy.md
 @system/agent-workflow.md
