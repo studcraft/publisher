@@ -13,8 +13,8 @@ hash seeds.
 from __future__ import annotations
 
 import re
-from collections.abc import Iterable
-from dataclasses import dataclass
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -218,17 +218,26 @@ def _split_terms(text: str, pattern: re.Pattern[str] | None) -> list[tuple[str, 
     return parts or [(text, False)]
 
 
-def _words(text: str, pattern: re.Pattern[str] | None) -> list[tuple[tuple[str, bool], ...]]:
-    """Return ``text`` as words, each a tuple of (fragment, is_term) runs.
+def _words(
+    segments: Sequence[tuple[str, bool]], pattern: re.Pattern[str] | None
+) -> list[tuple[tuple[str, bool], ...]]:
+    """Return ``segments`` as words, each a tuple of (fragment, bold) runs.
+
+    A segment marked bold is bold whole — that is a label, which the eye searches for.
+    Segments not marked are searched for glossary terms instead.
 
     A word is what whitespace separates, which is not the same as what term matching
     separates. "Priority." is one word made of a bold run and a plain full stop; splitting
     on the term boundary instead would put a space before the full stop. A multi-word term
     like "Attack Dice" is two words, each entirely bold.
     """
+    pairs: list[tuple[str, bool]] = []
+    for text, forced in segments:
+        pairs.extend([(text, True)] if forced else _split_terms(text, pattern))
+
     words: list[tuple[tuple[str, bool], ...]] = []
     current: list[tuple[str, bool]] = []
-    for fragment, is_term in _split_terms(text, pattern):
+    for fragment, is_term in pairs:
         for piece in re.split(r"(\s+)", fragment):
             if not piece:
                 continue
@@ -250,18 +259,18 @@ def _style(base: str, bold: bool) -> str:
 
 def _wrapped(
     pdf: FPDF,
-    text: str,
+    segments: Sequence[tuple[str, bool]],
     width: float,
     size: float,
     base: str = "",
     pattern: re.Pattern[str] | None = None,
 ) -> list[list[tuple[tuple[str, bool], ...]]]:
-    """Return ``text`` wrapped to ``width`` as lines of words.
+    """Return ``segments`` wrapped to ``width`` as lines of words.
 
     Words are measured in the style they will be drawn in — bold Helvetica is wider than
     regular — so the wrap and the drawing cannot disagree.
     """
-    words = _words(text, pattern)
+    words = _words(segments, pattern)
     if not words:
         return [[]]
 
@@ -312,28 +321,95 @@ def _draw_wrapped(
     return y
 
 
-def _section_body(section: Section) -> list[tuple[str, str]]:
-    """Return the section's drawable text as (font style, text) pairs, in order."""
-    body = []
-    if section.intro:
-        body.append(("I", _printable(section.intro)))
-    for line in section.lines:
-        body.append(("I" if line.authored else "", _line_text(line)))
-    return body
+@dataclass(frozen=True)
+class Row:
+    """One drawable row: the text, how it is styled, and where it starts.
 
-
-def _line_text(line: Line) -> str:
-    """Return the printed form of ``line``.
-
-    A rule-anchored line carries its rule ID, so a disputed call can be looked up in the
-    ruleset. An authored line carries no ID because there is none to carry, and that
-    absence is the marker: it is set in italic and the footer says what italic means. A
-    literal "[scenario]" prefix was tried and removed — on a play aid it reads as noise
-    beside a heading and an intro that already say the same thing.
+    ``indent`` insets the whole row — lookup results and sequences sit under their label.
+    ``column`` is where the second cell of a lookup begins, measured from ``indent``; it is
+    the same for every row of one lookup, which is what makes the results scan as a column
+    rather than as sentences.
     """
-    if line.authored:
-        return _printable(line.text)
-    return _printable(f"{line.text}  ({line.rule})")
+
+    segments: tuple[tuple[str, bool], ...]
+    style: str
+    indent: float = 0.0
+    column: float = 0.0
+    tail: tuple[tuple[str, bool], ...] = ()
+
+
+def _suffix(line: Line) -> tuple[tuple[str, bool], ...]:
+    """Return the trailing rule reference, so a disputed call can be looked up.
+
+    A lookup whose rows come from different rules cites all of them, in one place: three
+    obstacle thresholds are three rules, and printing an ID per row would put the citation
+    inside the column it exists to keep scannable.
+
+    An authored entry has none: there is no rule to cite. That absence is the marker — it
+    is also set in italic, and the footer says what italic means.
+    """
+    cited = line.cited
+    return ((f"  ({', '.join(cited)})", False),) if cited else ()
+
+
+def _entry_rows(pdf: FPDF, line: Line, metrics: Metrics, width: float) -> list[Row]:
+    """Return the rows ``line`` draws as, according to its shape."""
+    style = "I" if line.authored else ""
+    label = ((_printable(line.label), True),) if line.label else ()
+    indent = metrics.body * 0.45
+
+    if line.kind == "prose":
+        gap = ((": ", False),) if line.label else ()
+        return [Row(label + gap + ((_printable(line.text), False),) + _suffix(line), style)]
+
+    header = [Row(label + _suffix(line), style)] if line.label else []
+
+    if line.kind == "sequence":
+        joined = "  >  ".join(_printable(step) for step in line.steps)
+        body = [Row(((joined, False),), style, indent=indent)]
+        if not header:
+            body = [Row(((joined, False),) + _suffix(line), style)]
+        return header + body
+
+    # lookup: one column of conditions, one of results, aligned across every row.
+    pdf.set_font("Helvetica", _style(style, True), metrics.body)
+    column = max(pdf.get_string_width(_printable(o.when)) for o in line.outcomes)
+    column += pdf.get_string_width("  ")
+    rows = [
+        Row(
+            ((_printable(outcome.when), True),),
+            style,
+            indent=indent,
+            column=column,
+            tail=((_printable(outcome.then), False),),
+        )
+        for outcome in line.outcomes
+    ]
+    if not header:
+        rows[0] = replace(rows[0], tail=rows[0].tail + _suffix(line))
+    return header + rows
+
+
+def _section_rows(pdf: FPDF, section: Section, metrics: Metrics, width: float) -> list[Row]:
+    """Return every row the section draws, in order."""
+    rows = []
+    if section.intro:
+        rows.append(Row(((_printable(section.intro), False),), "I"))
+    for line in section.lines:
+        rows.extend(_entry_rows(pdf, line, metrics, width))
+    return rows
+
+
+def _row_lines(
+    pdf: FPDF, row: Row, metrics: Metrics, pattern: re.Pattern[str] | None, width: float
+) -> tuple[list, list]:
+    """Return the wrapped head and tail of ``row``."""
+    head = _wrapped(pdf, row.segments, width - row.indent, metrics.body, row.style, pattern)
+    if not row.tail:
+        return head, []
+    available = width - row.indent - row.column
+    tail = _wrapped(pdf, row.tail, available, metrics.body, row.style, pattern)
+    return head, tail
 
 
 def _section_height(
@@ -345,8 +421,9 @@ def _section_height(
 ) -> float:
     """Return the vertical space ``section`` needs, without drawing it."""
     height = metrics.heading_lead + metrics.line_height
-    for base, text in _section_body(section):
-        height += metrics.line_height * len(_wrapped(pdf, text, width, metrics.body, base, pattern))
+    for row in _section_rows(pdf, section, metrics, width):
+        head, tail = _row_lines(pdf, row, metrics, pattern, width)
+        height += metrics.line_height * max(len(head), len(tail) or 1)
     return height
 
 
@@ -366,9 +443,21 @@ def _draw_section(
     pdf.cell(width, metrics.line_height, _printable(section.heading), align="L")
     y += metrics.line_height
 
-    for base, text in _section_body(section):
-        lines = _wrapped(pdf, text, width, metrics.body, base, pattern)
-        y = _draw_wrapped(pdf, lines, x, y, metrics.body, base, metrics.line_height)
+    for row in _section_rows(pdf, section, metrics, width):
+        head, tail = _row_lines(pdf, row, metrics, pattern, width)
+        top = y
+        _draw_wrapped(pdf, head, x + row.indent, y, metrics.body, row.style, metrics.line_height)
+        if tail:
+            _draw_wrapped(
+                pdf,
+                tail,
+                x + row.indent + row.column,
+                top,
+                metrics.body,
+                row.style,
+                metrics.line_height,
+            )
+        y = top + metrics.line_height * max(len(head), len(tail) or 1)
 
     return y
 

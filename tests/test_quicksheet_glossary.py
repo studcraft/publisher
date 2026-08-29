@@ -28,7 +28,7 @@ def clone(tmp_path: Path) -> Path:
 def _flat(text: str, terms: tuple[str, ...] = TERMS) -> list[tuple[str, bool]]:
     """Return the (fragment, is_term) runs for ``text``, ignoring word boundaries."""
     pattern = render._term_pattern(terms)
-    return [run for word in render._words(text, pattern) for run in word]
+    return [run for word in render._words([(text, False)], pattern) for run in word]
 
 
 def test_terms_come_from_the_glossary_document(clone: Path) -> None:
@@ -99,7 +99,7 @@ def test_partial_words_do_not_match() -> None:
 def test_punctuation_stays_attached_to_its_term() -> None:
     """A term followed by a full stop is one word, or the page shows 'Impact .'."""
     pattern = render._term_pattern(TERMS)
-    words = render._words("Resolve the Impact, then stop.", pattern)
+    words = render._words([("Resolve the Impact, then stop.", False)], pattern)
 
     assert (("Impact", True), (",", False)) in words
 
@@ -107,7 +107,7 @@ def test_punctuation_stays_attached_to_its_term() -> None:
 def test_multi_word_term_is_two_bold_words() -> None:
     """'Attack Roll' wraps like two words but both are bold."""
     pattern = render._term_pattern(TERMS)
-    words = render._words("The Attack Roll decides.", pattern)
+    words = render._words([("The Attack Roll decides.", False)], pattern)
 
     assert (("Attack", True),) in words
     assert (("Roll", True),) in words

@@ -90,43 +90,47 @@
     {
       "id": "scenario",
       "heading": "The Scenario",
-      "intro": "The ruleset defines how models behave; the scenario defines the game. This is ours.",
+      "intro": "",
       "lines": [
         {
           "rule": null,
-          "text": "Three minifigures per warband. Two or more players.",
+          "label": "Warband",
+          "text": "3 minifigures each. 2 or more players.",
           "doc": null,
           "source_line": null
         },
         {
           "rule": null,
-          "text": "The game ends when only one warband still has a model on the battlefield.",
+          "label": "Game ends",
+          "text": "when only one warband still has a model on the battlefield.",
           "doc": null,
           "source_line": null
         },
         {
           "rule": null,
-          "text": "That warband wins. No turn limit, no draw.",
+          "label": "Winner",
+          "text": "that warband. No turn limit, no draw.",
           "doc": null,
           "source_line": null
+        },
+        {
+          "rule": "FLOW-001",
+          "label": "Before Turn 1",
+          "steps": [
+            "Agree battlefield size",
+            "Agree Deployment Volume (W x D x H in UB)",
+            "Build forces",
+            "Deploy",
+            "Determine Priority"
+          ],
+          "doc": "03-game-flow.md",
+          "source_line": 29
         },
         {
           "rule": "FLOW-013",
           "text": "A scenario may restrict or extend the rules, never contradict them.",
           "doc": "03-game-flow.md",
           "source_line": 207
-        },
-        {
-          "rule": "FLOW-001",
-          "text": "Before Turn 1: agree battlefield size, agree the Deployment Volume (W x D x H in UB), build forces, deploy, determine Priority.",
-          "doc": "03-game-flow.md",
-          "source_line": 29
-        },
-        {
-          "rule": "FLOW-010",
-          "text": "End condition says when the game stops; victory condition says who wins.",
-          "doc": "03-game-flow.md",
-          "source_line": 173
         }
       ]
     },
@@ -137,43 +141,52 @@
       "lines": [
         {
           "rule": "FLOW-003",
-          "text": "Priority: every player rolls 1D6. Highest to lowest is the Activation Order; first place holds Priority. Reroll ties among the tied players only.",
+          "label": "Priority",
+          "text": "every player rolls 1D6. Highest to lowest is the Activation Order. Reroll ties among the tied players only.",
           "doc": "03-game-flow.md",
           "source_line": 69
         },
         {
           "rule": "FLOW-003",
-          "text": "The Priority holder chooses once: activate now keeping their place, or cede Priority and drop to last while everyone else moves up.",
+          "label": "Priority holder",
+          "text": "chooses once — activate now keeping their place, or cede and drop to last.",
           "doc": "03-game-flow.md",
           "source_line": 69
         },
         {
-          "rule": "FLOW-002",
-          "text": "Activate one unit at a time down the order. Skip players with none left. Continue until every unit has activated.",
-          "doc": "03-game-flow.md",
-          "source_line": 50
-        },
-        {
-          "rule": "FLOW-004",
-          "text": "A unit activates exactly once per Turn. Its activation ends when the AP are spent or the player stops.",
-          "doc": "03-game-flow.md",
-          "source_line": 92
-        },
-        {
           "rule": "CORE-006",
-          "text": "Every unit gets exactly 3 Action Points per activation. No unit ever gets more.",
+          "label": "AP",
+          "text": "exactly 3 per activation, every unit, always.",
           "doc": "02-core-rules.md",
           "source_line": 119
         },
         {
+          "rule": "FLOW-004",
+          "label": "Activation",
+          "text": "once per Turn. Ends when the AP are spent or the player stops.",
+          "doc": "03-game-flow.md",
+          "source_line": 92
+        },
+        {
           "rule": "FLOW-007",
-          "text": "Spend AP in any legal order. Actions combine freely: Move / Move / Attack is legal, so is Rotate / Move / Attack.",
+          "text": "Spend AP in any legal order. Move / Move / Attack is legal, so is Rotate / Move / Attack.",
           "doc": "03-game-flow.md",
           "source_line": 109
         },
         {
+          "rule": "FLOW-002",
+          "text": "Activate one unit at a time down the order, skipping players with none left.",
+          "doc": "03-game-flow.md",
+          "source_line": 50
+        },
+        {
           "rule": "FLOW-009",
-          "text": "End of Turn: resolve temporary effects, then scenario effects, then roll Priority again.",
+          "label": "End of Turn",
+          "steps": [
+            "Temporary effects",
+            "Scenario effects",
+            "Roll Priority again"
+          ],
           "doc": "03-game-flow.md",
           "source_line": 159
         }
@@ -186,37 +199,77 @@
       "lines": [
         {
           "rule": "INF-002",
-          "text": "Forward: up to 4 UB (12 studs). 1 AP.",
+          "label": "Forward",
+          "text": "4 UB (12 studs) — 1 AP",
           "doc": "17-infantry.md",
           "source_line": 42
         },
         {
           "rule": "INF-004",
-          "text": "Backward: up to 4 UB (12 studs). 1 AP. Facing does not change.",
+          "label": "Backward",
+          "text": "4 UB (12 studs) — 1 AP. Facing unchanged.",
           "doc": "17-infantry.md",
           "source_line": 80
         },
         {
           "rule": "INF-003",
-          "text": "Sideways: up to 3 UB (12 studs). 1 AP.",
+          "label": "Sideways",
+          "text": "3 UB (12 studs) — 1 AP",
           "doc": "17-infantry.md",
           "source_line": 62
         },
         {
           "rule": "INF-005",
-          "text": "Rotate to any facing: 1 AP. No measuring.",
+          "label": "Rotate",
+          "text": "any facing — 1 AP. No measuring.",
           "doc": "17-infantry.md",
           "source_line": 94
         },
         {
+          "rule": "INF-012",
+          "label": "Wounded",
+          "text": "2 UB max in any direction — 6 studs forward or back, 8 sideways.",
+          "doc": "17-infantry.md",
+          "source_line": 194
+        },
+        {
+          "rule": "INF-006",
+          "label": "Obstacles",
+          "outcomes": [
+            {
+              "when": "1-3 layers",
+              "then": "cross freely, no extra cost",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "4-6 layers",
+              "then": "climb, +1 AP per obstacle",
+              "rule": "INF-007",
+              "doc": "17-infantry.md",
+              "source_line": 122
+            },
+            {
+              "when": "7+ layers",
+              "then": "impassable without slope, stair or ramp",
+              "rule": "INF-008",
+              "doc": "17-infantry.md",
+              "source_line": 132
+            }
+          ],
+          "doc": "17-infantry.md",
+          "source_line": 112
+        },
+        {
           "rule": "MOVE-007",
-          "text": "No diagonal movement. Reach an off-axis square by combining legs; each leg is its own action and its own 1 AP.",
+          "text": "No diagonals. Combine legs; each leg is its own action and its own 1 AP.",
           "doc": "07-movement.md",
           "source_line": 52
         },
         {
           "rule": "INF-002",
-          "text": "Each move is measured on its own: 2 AP of movement is two moves of up to 4 UB, not one of 8 UB.",
+          "text": "Each move is measured on its own: 2 AP is two moves of 4 UB, not one of 8.",
           "doc": "17-infantry.md",
           "source_line": 42
         },
@@ -225,30 +278,6 @@
           "text": "Measure along the direction of travel, from the face of the base that leads.",
           "doc": "07-movement.md",
           "source_line": 42
-        },
-        {
-          "rule": "INF-012",
-          "text": "Wounded: at most 2 UB in any direction — 6 studs forward or back, 8 studs sideways. Everything else about the move is unchanged.",
-          "doc": "17-infantry.md",
-          "source_line": 194
-        },
-        {
-          "rule": "INF-006",
-          "text": "Obstacle up to 3 plate layers (1 brick): cross freely, no extra cost.",
-          "doc": "17-infantry.md",
-          "source_line": 112
-        },
-        {
-          "rule": "INF-007",
-          "text": "Obstacle 4 to 6 layers: climb for 1 extra AP per obstacle crossed. The climb does not extend the move's distance limit.",
-          "doc": "17-infantry.md",
-          "source_line": 122
-        },
-        {
-          "rule": "INF-008",
-          "text": "Obstacle 7+ layers: impassable without a slope, stair or ramp.",
-          "doc": "17-infantry.md",
-          "source_line": 132
         }
       ]
     },
@@ -259,9 +288,68 @@
       "lines": [
         {
           "rule": "CBT-001",
-          "text": "1 AP per weapon system attacking, however many dice it makes. Declare weapon, declare target, check Line of Sight, check range, roll, count Impacts, defender resolves them.",
+          "label": "Sequence",
+          "steps": [
+            "Declare weapon",
+            "Declare target",
+            "Line of Sight",
+            "Range",
+            "Roll",
+            "Count Impacts",
+            "Defender resolves"
+          ],
           "doc": "11-combat.md",
           "source_line": 36
+        },
+        {
+          "rule": "CBT-001",
+          "label": "Cost",
+          "text": "1 AP per weapon system, however many dice it makes.",
+          "doc": "11-combat.md",
+          "source_line": 36
+        },
+        {
+          "rule": "WPN-005",
+          "label": "Range",
+          "text": "weapon length x 6. A 4-stud weapon reaches 24 studs; a 6-stud, 36.",
+          "doc": "10-weapons.md",
+          "source_line": 117
+        },
+        {
+          "rule": "WPN-006",
+          "label": "Attack Dice",
+          "text": "1 per functional muzzle. Muzzle size changes strength, never the count.",
+          "doc": "10-weapons.md",
+          "source_line": 133
+        },
+        {
+          "rule": "CBT-005",
+          "label": "Attack Roll",
+          "outcomes": [
+            {
+              "when": "4-6",
+              "then": "1 Impact",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "1-3",
+              "then": "no Impact",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            }
+          ],
+          "doc": "11-combat.md",
+          "source_line": 92
+        },
+        {
+          "rule": "CBT-015",
+          "label": "Wounded attack",
+          "text": "roll 2D6, keep the LOWER, then read it above. Same dice count. Never stacks.",
+          "doc": "11-combat.md",
+          "source_line": 209
         },
         {
           "rule": "CORE-009",
@@ -271,39 +359,15 @@
         },
         {
           "rule": "CBT-002",
-          "text": "Any legally targetable part being visible from the attacker's viewpoint is enough.",
+          "text": "Any legally targetable part visible from the attacker's viewpoint is enough.",
           "doc": "11-combat.md",
           "source_line": 56
         },
         {
-          "rule": "WPN-005",
-          "text": "Range = weapon length x 6. A 4-stud weapon reaches 24 studs; a 6-stud weapon, 36.",
-          "doc": "10-weapons.md",
-          "source_line": 117
-        },
-        {
           "rule": "WPN-002",
-          "text": "A functional muzzle is a visibly round opening on the weapon front. Square pieces are not muzzles.",
+          "text": "A functional muzzle is a visibly round opening. Square pieces are not muzzles.",
           "doc": "10-weapons.md",
           "source_line": 50
-        },
-        {
-          "rule": "WPN-006",
-          "text": "Attack Dice = functional muzzles, one D6 each. Muzzle size changes strength, never the number of dice.",
-          "doc": "10-weapons.md",
-          "source_line": 133
-        },
-        {
-          "rule": "CBT-005",
-          "text": "Attack Roll, per die: 4-6 scores one Impact, 1-3 nothing. A die can never score more than one.",
-          "doc": "11-combat.md",
-          "source_line": 92
-        },
-        {
-          "rule": "CBT-015",
-          "text": "Wounded attacker or Wounded weapon: for each Attack Die roll 2D6 and keep the LOWER, then read it as above. Same number of dice. Wounded states never stack.",
-          "doc": "11-combat.md",
-          "source_line": 209
         }
       ]
     },
@@ -314,43 +378,106 @@
       "lines": [
         {
           "rule": "DMG-008",
-          "text": "Resolve each Impact on its own: pick the component hit, Geometry Check, Damage Roll, state change.",
+          "label": "Per Impact",
+          "steps": [
+            "Choose component",
+            "Geometry Check",
+            "Damage Roll",
+            "State change"
+          ],
           "doc": "16-damage-system.md",
           "source_line": 253
         },
         {
           "rule": "WPN-021",
-          "text": "Impact Strength = muzzle size x 3. A 1x1 muzzle is 3, a 2x2 is 6, an NxN is 3N.",
+          "label": "Strength",
+          "text": "muzzle size x 3. 1x1 = 3, 2x2 = 6, NxN = 3N.",
           "doc": "10-weapons.md",
           "source_line": 337
         },
         {
           "rule": "DMG-003",
-          "text": "Resistance is not a statistic: it is the thinnest material the Impact must cross, in plate layers. Plate = 1, brick = 3. Empty space counts for nothing; walls are never added together.",
+          "label": "Resistance",
+          "text": "thinnest material the Impact crosses, in plate layers. Plate 1, brick 3. Empty space counts nothing; walls never add up.",
           "doc": "16-damage-system.md",
           "source_line": 120
         },
         {
           "rule": "DMG-013",
-          "text": "Geometry Check: Strength below Resistance, the Impact stops and no die is rolled. Strength equal or above, continue.",
+          "label": "Geometry Check",
+          "outcomes": [
+            {
+              "when": "Str < Res",
+              "then": "Impact stops, no die rolled",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "Str >= Res",
+              "then": "roll for damage",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            }
+          ],
           "doc": "16-damage-system.md",
           "source_line": 320
         },
         {
           "rule": "DMG-014",
-          "text": "Damage Roll, by the defender, one D6: 1-3 damages and advances the state one step, 4-6 does nothing. Note this reads opposite to the Attack Roll.",
+          "label": "Damage Roll",
+          "outcomes": [
+            {
+              "when": "1-3",
+              "then": "state advances one step",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "4-6",
+              "then": "no effect",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            }
+          ],
           "doc": "16-damage-system.md",
           "source_line": 335
         },
         {
           "rule": "DMG-002",
-          "text": "States: Operational, then Wounded, then Dead. Infantry shows it physically: upright, seated, removed. No tokens.",
+          "label": "States",
+          "outcomes": [
+            {
+              "when": "Operational",
+              "then": "upright",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "Wounded",
+              "then": "seated",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            },
+            {
+              "when": "Dead",
+              "then": "removed",
+              "rule": null,
+              "doc": null,
+              "source_line": null
+            }
+          ],
           "doc": "16-damage-system.md",
           "source_line": 76
         },
         {
           "rule": "DMG-002",
-          "text": "Wounded changes only the capability it provides — infantry moves shorter (INF-012), a weapon rolls the Wounded attack (CBT-015). Resistance, Strength and AP costs are untouched.",
+          "text": "Wounded changes only the capability it provides — infantry moves shorter (INF-012), a weapon rolls the Wounded attack (CBT-015). Resistance, Strength and AP costs untouched.",
           "doc": "16-damage-system.md",
           "source_line": 76
         }

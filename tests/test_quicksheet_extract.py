@@ -152,8 +152,8 @@ text = "Where did this come from?"
         _build(index, _spec(tmp_path, body))
 
 
-def test_line_without_text_fails(index: dict, tmp_path: Path) -> None:
-    """A line with a rule but no text prints nothing, so it fails."""
+def test_line_with_no_content_fails(index: dict, tmp_path: Path) -> None:
+    """A line with a rule but no content of any shape prints nothing, so it fails."""
     body = """
 [[section]]
 id = "movement"
@@ -162,7 +162,7 @@ heading = "Movement"
 [[section.line]]
 rule = "MINI-001"
 """
-    with pytest.raises(extract.SpecError, match="missing 'text'"):
+    with pytest.raises(extract.SpecError, match="would print nothing"):
         _build(index, _spec(tmp_path, body))
 
 
@@ -342,3 +342,151 @@ text = "t"
 """
     with pytest.raises(extract.SpecError, match="cannot be both"):
         _build(index, _spec(tmp_path, body))
+
+
+def test_outcome_shape_is_read(index: dict, tmp_path: Path) -> None:
+    """A lookup keeps its rows in order, so the sheet can align them into a column."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Attack Roll"
+outcome = [
+    { when = "4-6", then = "1 Impact" },
+    { when = "1-3", then = "no Impact" },
+]
+"""
+    line = _build(index, _spec(tmp_path, body)).sections[0].lines[0]
+
+    assert line.kind == "lookup"
+    assert line.label == "Attack Roll"
+    assert [(o.when, o.then) for o in line.outcomes] == [("4-6", "1 Impact"), ("1-3", "no Impact")]
+
+
+def test_steps_shape_is_read(index: dict, tmp_path: Path) -> None:
+    """A sequence keeps its order: that is the whole content of a procedure."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Sequence"
+steps = ["Declare weapon", "Declare target", "Roll"]
+"""
+    line = _build(index, _spec(tmp_path, body)).sections[0].lines[0]
+
+    assert line.kind == "sequence"
+    assert line.steps == ("Declare weapon", "Declare target", "Roll")
+
+
+def test_two_shapes_at_once_fails(index: dict, tmp_path: Path) -> None:
+    """Text and a lookup together leave the renderer no answer about how to draw it."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+text = "Both at once."
+outcome = [{ when = "4-6", then = "1 Impact" }]
+"""
+    with pytest.raises(extract.SpecError, match="one shape"):
+        _build(index, _spec(tmp_path, body))
+
+
+def test_label_alone_fails(index: dict, tmp_path: Path) -> None:
+    """A label with nothing under it is a heading without an answer."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Nothing here"
+"""
+    with pytest.raises(extract.SpecError, match="print nothing"):
+        _build(index, _spec(tmp_path, body))
+
+
+def test_outcome_row_needs_both_cells(index: dict, tmp_path: Path) -> None:
+    """A condition with no result, or the reverse, is half a row."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Roll"
+outcome = [{ when = "4-6" }]
+"""
+    with pytest.raises(extract.SpecError, match="'then'"):
+        _build(index, _spec(tmp_path, body))
+
+
+def test_unknown_outcome_key_fails(index: dict, tmp_path: Path) -> None:
+    """Unknown keys are rejected inside outcome rows too, not just at the levels above."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Roll"
+outcome = [{ when = "4-6", then = "1 Impact", note = "x" }]
+"""
+    with pytest.raises(extract.SpecError, match="note"):
+        _build(index, _spec(tmp_path, body))
+
+
+def test_outcome_row_can_cite_its_own_rule(index: dict, tmp_path: Path) -> None:
+    """The rows of one lookup often come from different rules; all of them must anchor.
+
+    Without this, grouping three thresholds into one table silently drops two citations —
+    the table still says the right thing, but two of its rows are anchored to nothing.
+    """
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Obstacles"
+outcome = [
+    { when = "low", then = "free" },
+    { when = "high", then = "blocked", rule = "MINI-003" },
+]
+"""
+    line = _build(index, _spec(tmp_path, body)).sections[0].lines[0]
+
+    assert line.cited == ("MINI-001", "MINI-003")
+    assert line.outcomes[1].doc == "02-mini.md"
+    assert line.outcomes[1].source_line == 7
+
+
+def test_outcome_row_citing_a_missing_rule_fails(index: dict, tmp_path: Path) -> None:
+    """A row's citation is checked like any other, and names where it was made."""
+    body = """
+[[section]]
+id = "s"
+heading = "S"
+
+[[section.line]]
+rule = "MINI-001"
+label = "Obstacles"
+outcome = [{ when = "high", then = "blocked", rule = "MINI-404" }]
+"""
+    with pytest.raises(extract.SpecError) as excinfo:
+        _build(index, _spec(tmp_path, body))
+
+    assert "MINI-404" in str(excinfo.value)
+    assert "outcome 0" in str(excinfo.value)

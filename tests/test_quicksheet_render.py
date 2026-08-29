@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from publisher.quicksheet import render as renderers
-from publisher.quicksheet.model import Document, Line, Page, Section, Source
+from publisher.quicksheet.model import Document, Line, Outcome, Page, Section, Source
 from publisher.quicksheet.render import pdf as render
 
 _STREAM = re.compile(rb"stream\r?\n(.*?)\r?\nendstream", re.DOTALL)
@@ -190,3 +190,70 @@ def test_the_registry_creates_the_publish_tree(tmp_path: Path) -> None:
 
     assert written == tmp_path / "prod" / "v0.2.0draft" / "prod_en.pdf"
     assert written.exists()
+
+
+def _lookup_sheet() -> Document:
+    return _sheet(
+        (
+            Section(
+                id="damage",
+                heading="Damage",
+                lines=(
+                    Line(
+                        rule="DMG-014",
+                        label="Damage Roll",
+                        outcomes=(
+                            Outcome("1-3", "state advances"),
+                            Outcome("4-6", "no effect"),
+                        ),
+                    ),
+                    Line(rule="DMG-008", label="Per Impact", steps=("Choose", "Check", "Roll")),
+                    Line(rule="INF-002", label="Forward", text="4 UB - 1 AP"),
+                ),
+            ),
+        )
+    )
+
+
+def test_lookup_rows_are_drawn(tmp_path: Path) -> None:
+    """A lookup prints its conditions and results, not a sentence containing them."""
+    text = _page_text(render.write(_lookup_sheet(), tmp_path / "a.pdf").read_bytes())
+
+    for fragment in ("Damage Roll", "1-3", "state advances", "4-6", "no effect"):
+        assert fragment in text
+
+
+def test_lookup_results_share_one_column(tmp_path: Path) -> None:
+    """Every result of one lookup starts at the same x, which is what makes it scan."""
+    raw = render.write(_lookup_sheet(), tmp_path / "a.pdf").read_bytes()
+    stream = _page_text.__globals__["_STREAM"]
+    content = []
+    for match in stream.finditer(raw):
+        try:
+            content.append(zlib.decompress(match.group(1)).decode("latin-1"))
+        except zlib.error:
+            content.append(match.group(1).decode("latin-1"))
+    joined = "\n".join(content)
+
+    # Each show-text operator is preceded by its absolute position: `x y Td (text) Tj`.
+    placed = re.findall(r"BT ([\d.]+) ([\d.]+) Td \((.*?)\) Tj ET", joined)
+    xs = {text: x for x, _, text in placed}
+
+    # Text is drawn one word at a time, so compare the first word of each cell.
+    assert xs["state"] == xs["no"], "results do not start at the same x"
+    assert xs["1-3"] == xs["4-6"], "conditions do not start at the same x"
+    assert xs["1-3"] != xs["state"], "conditions and results share a column"
+
+
+def test_sequence_is_drawn_as_a_flow(tmp_path: Path) -> None:
+    """Steps print in order, joined, rather than as separate sentences."""
+    text = _page_text(render.write(_lookup_sheet(), tmp_path / "a.pdf").read_bytes())
+
+    assert "Choose > Check > Roll" in text
+
+
+def test_label_is_separated_from_its_value(tmp_path: Path) -> None:
+    """A prose entry reads 'Label: value', so the eye can stop at the label."""
+    text = _page_text(render.write(_lookup_sheet(), tmp_path / "a.pdf").read_bytes())
+
+    assert "Forward : 4 UB - 1 AP (INF-002)" in text or "Forward: 4 UB - 1 AP (INF-002)" in text

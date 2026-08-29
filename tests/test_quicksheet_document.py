@@ -131,14 +131,14 @@ def test_document_without_sections_fails(tmp_path: Path) -> None:
         document_io.read(path)
 
 
-def test_line_without_text_fails(tmp_path: Path) -> None:
-    """A line that prints nothing is a defect in the edited file."""
+def test_line_with_no_content_fails(tmp_path: Path) -> None:
+    """An entry that prints nothing is a defect in the edited file."""
     path = tmp_path / "document.json"
     payload = _document().to_dict()
-    payload["sections"][0]["lines"][0]["text"] = ""
+    del payload["sections"][0]["lines"][0]["text"]
     path.write_text(json.dumps(payload), encoding="utf-8")
 
-    with pytest.raises(DocumentError, match="missing 'text'"):
+    with pytest.raises(DocumentError, match="prints nothing"):
         document_io.read(path)
 
 
