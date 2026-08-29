@@ -1,0 +1,96 @@
+# The web edition of the StudCraft ruleset.
+#
+# This file names the ruleset documents that are published and what they are called on the
+# web. It does not name rules: which rules a document holds, what order they come in, and
+# what each one says all follow from the ruleset, and a second copy here would drift from it.
+#
+# `slug` is the segment a document is published under. It defaults to the filename with its
+# numeric prefix and extension removed, and is written out explicitly for every document
+# because these are public URLs: upstream renumbering `08-vehicles.md` must not move
+# `/vehicles/veh-003`, and the only way to promise that is to say the slug here.
+
+title = "StudCraft Rules"
+language = "en"
+
+# Empty: English is the primary language and carries no segment of its own. A later
+# translation is this same edition with base_path = "es", which is why every published link
+# is resolved through it rather than hardcoded to the site root.
+base_path = ""
+
+[[document]]
+file = "02-core-rules.md"
+slug = "core-rules"
+title = "Core Rules"
+intro = "The universal rules every StudCraft scenario uses."
+
+[[document]]
+file = "03-game-flow.md"
+slug = "game-flow"
+title = "Game Flow"
+intro = "Priority, activation order, and how a turn is played."
+
+[[document]]
+file = "05-construction-components.md"
+slug = "construction-components"
+title = "Construction and Components"
+intro = "What a model is made of, and which parts of it the rules read."
+
+[[document]]
+file = "06-deployment.md"
+slug = "deployment"
+title = "Deployment"
+intro = "Agreeing a battlefield, and putting forces on it."
+
+[[document]]
+file = "07-movement.md"
+slug = "movement"
+title = "Movement"
+intro = "Distances, directions, and what terrain costs to cross."
+
+[[document]]
+file = "08-vehicles.md"
+slug = "vehicles"
+title = "Vehicles"
+intro = "Pivots, terrain thresholds, and how a vehicle is measured."
+
+[[document]]
+file = "09-transport.md"
+slug = "transport"
+title = "Transport"
+intro = "Carrying units: capacity, clearance, and access."
+
+[[document]]
+file = "10-weapons.md"
+slug = "weapons"
+title = "Weapons"
+intro = "Reading a weapon's profile off the model that carries it."
+
+[[document]]
+file = "11-combat.md"
+slug = "combat"
+title = "Combat"
+intro = "Shooting: targets, rolls, and what an Impact does."
+
+[[document]]
+file = "12-melee.md"
+slug = "melee"
+title = "Melee"
+intro = "Close combat, and the striking ends that resolve it."
+
+[[document]]
+file = "15-geometry-layers.md"
+slug = "geometry-layers"
+title = "Geometry Layers"
+intro = "Gameplay Geometry against Visual Geometry, and the checks made on the model."
+
+[[document]]
+file = "16-damage-system.md"
+slug = "damage-system"
+title = "Damage System"
+intro = "Resistance, penetration, and how damage crosses a model."
+
+[[document]]
+file = "17-infantry.md"
+slug = "infantry"
+title = "Infantry"
+intro = "The infantry base, the distances read from it, and terrain."

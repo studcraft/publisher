@@ -1,0 +1,2901 @@
+{
+  "schema": 1,
+  "name": "rules_web",
+  "language": "en",
+  "base_path": "",
+  "title": "StudCraft Rules",
+  "source": {
+    "repo": "https://github.com/studcraft/studcraft.git",
+    "ruleset_version": "0.2.0 Draft",
+    "commit": "edd8aa4dfa512eee7662251948586f457c372012"
+  },
+  "pages": [
+    {
+      "slug": "core-rules",
+      "parent": null,
+      "title": "Core Rules",
+      "kind": "document",
+      "rule": null,
+      "doc": "02-core-rules.md",
+      "source_line": null,
+      "intro": "The universal rules every StudCraft scenario uses.",
+      "entries": [
+        {
+          "rule": "CORE-001",
+          "title": "Unit Base (UB)",
+          "slug": "core-001"
+        },
+        {
+          "rule": "CORE-002",
+          "title": "Facing",
+          "slug": "core-002"
+        },
+        {
+          "rule": "CORE-003",
+          "title": "Infantry",
+          "slug": "core-003"
+        },
+        {
+          "rule": "CORE-004",
+          "title": "Vehicles",
+          "slug": "core-004"
+        },
+        {
+          "rule": "CORE-005",
+          "title": "Structures",
+          "slug": "core-005"
+        },
+        {
+          "rule": "CORE-006",
+          "title": "Action Points",
+          "slug": "core-006"
+        },
+        {
+          "rule": "CORE-007",
+          "title": "Physical Interaction",
+          "slug": "core-007"
+        },
+        {
+          "rule": "CORE-008",
+          "title": "Physical Visibility",
+          "slug": "core-008"
+        },
+        {
+          "rule": "CORE-009",
+          "title": "If You Can See It",
+          "slug": "core-009"
+        },
+        {
+          "rule": "CORE-010",
+          "title": "Physical Cover",
+          "slug": "core-010"
+        },
+        {
+          "rule": "CORE-014",
+          "title": "Visible Equipment",
+          "slug": "core-014"
+        },
+        {
+          "rule": "CORE-016",
+          "title": "Battlefield Representation",
+          "slug": "core-016"
+        }
+      ]
+    },
+    {
+      "slug": "core-001",
+      "parent": "core-rules",
+      "title": "CORE-001 — Unit Base (UB)",
+      "kind": "rule",
+      "rule": "CORE-001",
+      "doc": "02-core-rules.md",
+      "source_line": 56,
+      "body_html": "<p>StudCraft uses a single universal spatial measurement.</p>\n<p>One <strong>Unit Base (UB)</strong> is a volume measuring:</p>\n<p><strong>4 studs wide × 3 studs deep × 13 plate layers tall</strong></p>\n<p>Read horizontally, it is <code>4 × 3</code> studs.</p>\n<p>Height is counted in plate layers, the ruleset's vertical unit: a plate counts as 1 and a standard brick as 3 (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>; <code>08-vehicles.md</code>, <a href=\"/vehicles/veh-021\" class=\"rule-reference\">VEH-021</a>). It is measured from the underside of the base a model stands on, which is part of the volume rather than the floor beneath it.</p>\n<p>A footprint written <code>W × D UB</code> counts 4-stud widths by 3-stud depths, so a <code>2 × 3 UB</code> footprint measures <code>8 × 9</code> studs.</p>\n<p>A distance written <code>N UB</code> counts N Unit Bases along the single axis its rule names: 4 UB of depth is 12 studs, 3 UB of width is 12 studs (<code>17-infantry.md</code>, <a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>, <a href=\"/infantry/inf-003\" class=\"rule-reference\">INF-003</a>).</p>\n<p>Each rule states which dimensions of the Unit Base it reads. A measured value never replaces a physical check (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-003\" class=\"rule-reference\">GEO-003</a>, <a href=\"/geometry-layers/geo-004\" class=\"rule-reference\">GEO-004</a>).</p>\n<p><img src=\"{{media:core-001-unit-base-volume.png}}\" alt=\"CORE-001 — unit base volume\" /></p>\n"
+    },
+    {
+      "slug": "core-002",
+      "parent": "core-rules",
+      "title": "CORE-002 — Facing",
+      "kind": "rule",
+      "rule": "CORE-002",
+      "doc": "02-core-rules.md",
+      "source_line": 78,
+      "body_html": "<p>Every unit has a facing, and every model must have an obvious front.</p>\n<p>Which part of a model is its front is defined by its domain rule — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-001\" class=\"rule-reference\">INF-001</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-002\" class=\"rule-reference\">VEH-002</a>).</p>\n"
+    },
+    {
+      "slug": "core-003",
+      "parent": "core-rules",
+      "title": "CORE-003 — Infantry",
+      "kind": "rule",
+      "rule": "CORE-003",
+      "doc": "02-core-rules.md",
+      "source_line": 88,
+      "body_html": "<p>Infantry are represented by LEGO minifigures.</p>\n<p>Infantry occupy one Unit Base.</p>\n<p>What an infantry model can do, and how it must be built, is defined by <code>17-infantry.md</code>.</p>\n"
+    },
+    {
+      "slug": "core-004",
+      "parent": "core-rules",
+      "title": "CORE-004 — Vehicles",
+      "kind": "rule",
+      "rule": "CORE-004",
+      "doc": "02-core-rules.md",
+      "source_line": 98,
+      "body_html": "<p>A vehicle is a powered model, and its footprint is defined by the LEGO model itself.</p>\n<p>What a vehicle can do, and how it must be built, is defined by <code>08-vehicles.md</code>.</p>\n"
+    },
+    {
+      "slug": "core-005",
+      "parent": "core-rules",
+      "title": "CORE-005 — Structures",
+      "kind": "rule",
+      "rule": "CORE-005",
+      "doc": "02-core-rules.md",
+      "source_line": 106,
+      "body_html": "<p>Buildings, fortifications and scenery are permanent battlefield elements.</p>\n<p>A structure's doors, windows and other functional parts follow <code>05-construction-components.md</code>. Its walls, slopes, stairs and platforms are terrain governed by <code>07-movement.md</code>.</p>\n<p>How a unit crosses or occupies these constructions is defined by its domain rules:</p>\n<ul>\n<li>Infantry: <code>17-infantry.md</code></li>\n<li>Vehicles: <code>08-vehicles.md</code></li>\n</ul>\n"
+    },
+    {
+      "slug": "core-006",
+      "parent": "core-rules",
+      "title": "CORE-006 — Action Points",
+      "kind": "rule",
+      "rule": "CORE-006",
+      "doc": "02-core-rules.md",
+      "source_line": 119,
+      "body_html": "<p>Every unit activates using Action Points (AP).</p>\n<p>Action Points represent everything a unit can do during its activation. The rule governing an action defines its AP cost.</p>\n<p>Every unit receives exactly <strong>3 Action Points</strong> per activation, regardless of its type or construction. No unit gains additional AP through its profile.</p>\n"
+    },
+    {
+      "slug": "core-007",
+      "parent": "core-rules",
+      "title": "CORE-007 — Physical Interaction",
+      "kind": "rule",
+      "rule": "CORE-007",
+      "doc": "02-core-rules.md",
+      "source_line": 129,
+      "body_html": "<p>Any LEGO element that can physically move may become interactive.</p>\n<p>Opening or closing an interactive element costs:</p>\n<p><strong>1 Action Point</strong></p>\n<p>unless another rule specifies otherwise.</p>\n"
+    },
+    {
+      "slug": "core-008",
+      "parent": "core-rules",
+      "title": "CORE-008 — Physical Visibility",
+      "kind": "rule",
+      "rule": "CORE-008",
+      "doc": "02-core-rules.md",
+      "source_line": 143,
+      "body_html": "<p>StudCraft uses true line of sight.</p>\n<p>A target is visible if any part of it can be physically seen from the attacker's point of view.</p>\n<p>No visibility templates are used.</p>\n<p>Visual Geometry is physically present and therefore affects visibility (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-004\" class=\"rule-reference\">GEO-004</a>).</p>\n<p>A transparent element does not block sight. It stops an Impact only through its own Resistance, like any other component (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-007\" class=\"rule-reference\">DMG-007</a>).</p>\n"
+    },
+    {
+      "slug": "core-009",
+      "parent": "core-rules",
+      "title": "CORE-009 — If You Can See It",
+      "kind": "rule",
+      "rule": "CORE-009",
+      "doc": "02-core-rules.md",
+      "source_line": 157,
+      "body_html": "<blockquote>\n<p><strong>If you can see it, you can shoot it.</strong></p>\n</blockquote>\n"
+    },
+    {
+      "slug": "core-010",
+      "parent": "core-rules",
+      "title": "CORE-010 — Physical Cover",
+      "kind": "rule",
+      "rule": "CORE-010",
+      "doc": "02-core-rules.md",
+      "source_line": 163,
+      "body_html": "<p>Cover is physical, not templated.</p>\n<p>A component that is completely hidden by terrain, another model or Visual Geometry cannot be selected as a target (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-004\" class=\"rule-reference\">GEO-004</a>; <code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-011\" class=\"rule-reference\">DMG-011</a>).</p>\n<p>A partially visible component has no separate cover level. It is simply visible or it is not.</p>\n<p>There is no partial or heavy cover bonus and no abstract cover template.</p>\n"
+    },
+    {
+      "slug": "core-014",
+      "parent": "core-rules",
+      "title": "CORE-014 — Visible Equipment",
+      "kind": "rule",
+      "rule": "CORE-014",
+      "doc": "02-core-rules.md",
+      "source_line": 175,
+      "body_html": "<p>Equipment must be physically represented.</p>\n<p>A unit cannot use equipment that is not present on the model.</p>\n"
+    },
+    {
+      "slug": "core-016",
+      "parent": "core-rules",
+      "title": "CORE-016 — Battlefield Representation",
+      "kind": "rule",
+      "rule": "CORE-016",
+      "doc": "02-core-rules.md",
+      "source_line": 183,
+      "body_html": "<p>Whenever possible, changes in game state should be represented by modifying the model itself.</p>\n<p>StudCraft prefers physical representation over markers.</p>\n"
+    },
+    {
+      "slug": "game-flow",
+      "parent": null,
+      "title": "Game Flow",
+      "kind": "document",
+      "rule": null,
+      "doc": "03-game-flow.md",
+      "source_line": null,
+      "intro": "Priority, activation order, and how a turn is played.",
+      "entries": [
+        {
+          "rule": "FLOW-001",
+          "title": "Starting a Game",
+          "slug": "flow-001"
+        },
+        {
+          "rule": "FLOW-002",
+          "title": "Turn Structure",
+          "slug": "flow-002"
+        },
+        {
+          "rule": "FLOW-003",
+          "title": "Priority",
+          "slug": "flow-003"
+        },
+        {
+          "rule": "FLOW-004",
+          "title": "Unit Activation",
+          "slug": "flow-004"
+        },
+        {
+          "rule": "FLOW-007",
+          "title": "Combining Actions",
+          "slug": "flow-007"
+        },
+        {
+          "rule": "FLOW-008",
+          "title": "Activated Units",
+          "slug": "flow-008"
+        },
+        {
+          "rule": "FLOW-009",
+          "title": "End of Turn",
+          "slug": "flow-009"
+        },
+        {
+          "rule": "FLOW-010",
+          "title": "End of Game",
+          "slug": "flow-010"
+        },
+        {
+          "rule": "FLOW-012",
+          "title": "No Hidden Statistics",
+          "slug": "flow-012"
+        },
+        {
+          "rule": "FLOW-013",
+          "title": "Scenario",
+          "slug": "flow-013"
+        }
+      ]
+    },
+    {
+      "slug": "flow-001",
+      "parent": "game-flow",
+      "title": "FLOW-001 — Starting a Game",
+      "kind": "rule",
+      "rule": "FLOW-001",
+      "doc": "03-game-flow.md",
+      "source_line": 29,
+      "body_html": "<p>StudCraft is played by <strong>two or more players</strong>, each fielding their own force.</p>\n<p>Before the first Turn:</p>\n<ol>\n<li>Select a scenario (<code>FLOW-013</code>).</li>\n<li>Agree the objectives and how victory is judged.</li>\n<li>Agree on the battlefield size.</li>\n<li>Agree the Deployment Volume — <code>W × D × H</code> in Unit Bases (<code>06-deployment.md</code>, <a href=\"/deployment/dep-001\" class=\"rule-reference\">DEP-001</a>).</li>\n<li>Build each player's force.</li>\n<li>Deploy all units.</li>\n<li>Determine Priority.</li>\n<li>Begin Turn 1.</li>\n</ol>\n<p>The battlefield and Deployment Volume are agreed before forces are built so that the physical space and mission can influence force construction.</p>\n<p>If the scenario already defines the objectives, step 2 confirms them. If the players are creating the scenario, this is where they establish them.</p>\n"
+    },
+    {
+      "slug": "flow-002",
+      "parent": "game-flow",
+      "title": "FLOW-002 — Turn Structure",
+      "kind": "rule",
+      "rule": "FLOW-002",
+      "doc": "03-game-flow.md",
+      "source_line": 50,
+      "body_html": "<p>Each game is divided into Turns.</p>\n<p>At the beginning of every Turn:</p>\n<ol>\n<li>Determine Priority (<code>FLOW-003</code>).</li>\n<li>Activate units one at a time in the Activation Order.</li>\n<li>Skip players who have no unactivated units remaining.</li>\n<li>Continue until every unit has been activated once.</li>\n<li>Resolve End of Turn effects (<code>FLOW-009</code>).</li>\n<li>Begin a new Turn.</li>\n</ol>\n<p>Every unit therefore receives exactly one activation per Turn.</p>\n<p>This alternating structure keeps all players involved throughout the Turn rather than giving one player a complete sequence of actions before the opponent can respond.</p>\n"
+    },
+    {
+      "slug": "flow-003",
+      "parent": "game-flow",
+      "title": "FLOW-003 — Priority",
+      "kind": "rule",
+      "rule": "FLOW-003",
+      "doc": "03-game-flow.md",
+      "source_line": 69,
+      "body_html": "<p>At the beginning of every Turn, every player with units still on the battlefield rolls <strong>1D6</strong>, simultaneously.</p>\n<p>The results determine the <strong>Activation Order</strong>, from highest result to lowest. The player placed first holds <strong>Priority</strong>.</p>\n<p>Ties are resolved by rerolling only the tied players. The reroll determines their order among themselves; all other positions remain unchanged. A tie in a reroll is resolved the same way.</p>\n<p>The player with Priority makes one choice:</p>\n<ul>\n<li><strong>Activate</strong> one of their own units immediately, keeping their position in the Activation Order.</li>\n<li><strong>Cede Priority</strong>, moving to the last position in the Activation Order while every other player moves up one position.</li>\n</ul>\n<p>This choice is made only once, at the beginning of the Turn.</p>\n<p>A player who reaches first position because another player ceded Priority does not gain another Priority choice.</p>\n<p>Priority determines who acts first; it does not change the number of activations a player receives.</p>\n<p>Priority and Activation Order are determined again at the beginning of every Turn.</p>\n"
+    },
+    {
+      "slug": "flow-004",
+      "parent": "game-flow",
+      "title": "FLOW-004 — Unit Activation",
+      "kind": "rule",
+      "rule": "FLOW-004",
+      "doc": "03-game-flow.md",
+      "source_line": 92,
+      "body_html": "<p>When a unit is activated, it receives its Action Points (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>).</p>\n<p>The player may spend those Action Points in any legal order.</p>\n<p>The activation ends when:</p>\n<ul>\n<li>the unit has spent all available Action Points; or</li>\n<li>the player chooses to stop.</li>\n</ul>\n<p>A unit may be activated only once per Turn.</p>\n<p>The activation is the fundamental decision unit of StudCraft: all actions performed by a unit belong to the same continuous activation.</p>\n"
+    },
+    {
+      "slug": "flow-007",
+      "parent": "game-flow",
+      "title": "FLOW-007 — Combining Actions",
+      "kind": "rule",
+      "rule": "FLOW-007",
+      "doc": "03-game-flow.md",
+      "source_line": 109,
+      "body_html": "<p>Actions may be combined freely during an activation.</p>\n<p>Players may perform any legal sequence of actions provided they have enough Action Points.</p>\n<p>Examples:</p>\n<p><strong>Example A</strong></p>\n<ul>\n<li>Move</li>\n<li>Move</li>\n<li>Attack</li>\n</ul>\n<p><strong>Example B</strong></p>\n<ul>\n<li>Open Door</li>\n<li>Move</li>\n<li>Close Door</li>\n</ul>\n<p><strong>Example C</strong></p>\n<ul>\n<li>Rotate</li>\n<li>Move</li>\n<li>Attack</li>\n</ul>\n<p><strong>Example D</strong></p>\n<ul>\n<li>Open Ramp</li>\n<li>Disembark</li>\n<li>Close Ramp</li>\n</ul>\n<p>StudCraft therefore does not require players to finish one type of action before beginning another.</p>\n"
+    },
+    {
+      "slug": "flow-008",
+      "parent": "game-flow",
+      "title": "FLOW-008 — Activated Units",
+      "kind": "rule",
+      "rule": "FLOW-008",
+      "doc": "03-game-flow.md",
+      "source_line": 145,
+      "body_html": "<p>After completing its activation, a unit becomes <strong>Activated</strong>.</p>\n<p>An Activated unit:</p>\n<ul>\n<li>May still be attacked and resolves incoming Impacts normally as the defender (<code>11-combat.md</code>, <a href=\"/combat/cbt-008\" class=\"rule-reference\">CBT-008</a>).</li>\n<li>Continues to occupy the battlefield normally.</li>\n<li>Cannot activate again until the next Turn.</li>\n</ul>\n<p>Being Activated does not create a defensive action or reaction. It only records that the unit has already completed its activation for the current Turn.</p>\n"
+    },
+    {
+      "slug": "flow-009",
+      "parent": "game-flow",
+      "title": "FLOW-009 — End of Turn",
+      "kind": "rule",
+      "rule": "FLOW-009",
+      "doc": "03-game-flow.md",
+      "source_line": 159,
+      "body_html": "<p>A Turn ends when every unit has completed one activation.</p>\n<p>Then:</p>\n<ol>\n<li>Resolve temporary effects.</li>\n<li>Resolve scenario effects.</li>\n<li>Begin the next Turn by determining Priority.</li>\n</ol>\n<p>End of Turn effects occur after all unit activations and before the next Turn begins.</p>\n"
+    },
+    {
+      "slug": "flow-010",
+      "parent": "game-flow",
+      "title": "FLOW-010 — End of Game",
+      "kind": "rule",
+      "rule": "FLOW-010",
+      "doc": "03-game-flow.md",
+      "source_line": 173,
+      "body_html": "<p>The active scenario determines when the game ends and how victory is judged (<code>FLOW-013</code>).</p>\n<p>A scenario may end the game through conditions such as:</p>\n<ul>\n<li>A fixed Turn limit.</li>\n<li>Capturing an objective.</li>\n<li>Eliminating a specific target.</li>\n<li>Escorting a convoy.</li>\n<li>Evacuating the battlefield.</li>\n</ul>\n<p><strong>The end condition determines when the game stops.</strong></p>\n<p><strong>The victory condition determines who wins when it stops.</strong></p>\n<p>These are separate rules and a scenario must define both.</p>\n<p>For example, a scenario may state that the game ends when a convoy reaches the far edge or Turn 6 ends, and that the escorting player wins if the convoy arrived.</p>\n"
+    },
+    {
+      "slug": "flow-012",
+      "parent": "game-flow",
+      "title": "FLOW-012 — No Hidden Statistics",
+      "kind": "rule",
+      "rule": "FLOW-012",
+      "doc": "03-game-flow.md",
+      "source_line": 195,
+      "body_html": "<p>StudCraft does not use hidden activation statistics.</p>\n<p>Every unit receives the same Action Point allotment defined by <code>02-core-rules.md</code> (<a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>) and follows the same activation sequence (<code>FLOW-004</code>).</p>\n<p>A unit's physical construction determines what it can do.</p>\n<p>The game therefore does not require hidden Initiative, Speed or Activation values to determine when or how often a unit acts.</p>\n"
+    },
+    {
+      "slug": "flow-013",
+      "parent": "game-flow",
+      "title": "FLOW-013 — Scenario",
+      "kind": "rule",
+      "rule": "FLOW-013",
+      "doc": "03-game-flow.md",
+      "source_line": 207,
+      "body_html": "<p>Every game is played under a scenario.</p>\n<p>The ruleset defines how models behave. The scenario defines what the players are trying to accomplish and when the game ends.</p>\n<p>A scenario <strong>must</strong> state:</p>\n<ul>\n<li><strong>How the game ends</strong> — a Turn limit, a condition being met, or both (<code>FLOW-010</code>).</li>\n<li><strong>How victory is judged</strong> — what each player must achieve and how a winner is determined when the game ends.</li>\n<li>Whether the game can end in a draw.</li>\n</ul>\n<p>A scenario <strong>may</strong> also state:</p>\n<ul>\n<li>The battlefield size and Deployment Volume (<code>FLOW-001</code>, <code>06-deployment.md</code>, <a href=\"/deployment/dep-001\" class=\"rule-reference\">DEP-001</a>).</li>\n<li>Where terrain and structures are placed (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-005\" class=\"rule-reference\">CORE-005</a>).</li>\n<li>Restrictions on otherwise-legal actions, such as restricting reverse movement (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-006\" class=\"rule-reference\">VEH-006</a>) or restricting how a weapon system's Attack Dice are split (<code>11-combat.md</code>, <a href=\"/combat/cbt-007\" class=\"rule-reference\">CBT-007</a>).</li>\n<li>Scenario-specific objectives, capture rules, victory points or other mission mechanics.</li>\n</ul>\n<p>Scenario rules are third in the rule priority order (<code>02-core-rules.md</code>, Universal Rule). They may restrict or extend the ruleset for that game but may not contradict Foundations or Core Rules.</p>\n<p>The core rules define model behavior and the general flow of play; the scenario defines the specific purpose and conditions of the game.</p>\n"
+    },
+    {
+      "slug": "construction-components",
+      "parent": null,
+      "title": "Construction and Components",
+      "kind": "document",
+      "rule": null,
+      "doc": "05-construction-components.md",
+      "source_line": null,
+      "intro": "What a model is made of, and which parts of it the rules read.",
+      "entries": [
+        {
+          "rule": "CMP-001",
+          "title": "Functional Components",
+          "slug": "cmp-001"
+        },
+        {
+          "rule": "CMP-003",
+          "title": "Wheels",
+          "slug": "cmp-003"
+        },
+        {
+          "rule": "CMP-004",
+          "title": "Tracks",
+          "slug": "cmp-004"
+        },
+        {
+          "rule": "CMP-005",
+          "title": "Hover System",
+          "slug": "cmp-005"
+        },
+        {
+          "rule": "CMP-006",
+          "title": "Walkers",
+          "slug": "cmp-006"
+        },
+        {
+          "rule": "CMP-008",
+          "title": "Turrets",
+          "slug": "cmp-008"
+        },
+        {
+          "rule": "CMP-014",
+          "title": "Shields",
+          "slug": "cmp-014"
+        },
+        {
+          "rule": "CMP-016",
+          "title": "Functional Integrity",
+          "slug": "cmp-016"
+        },
+        {
+          "rule": "CMP-018",
+          "title": "Access Openings",
+          "slug": "cmp-018"
+        },
+        {
+          "rule": "CMP-019",
+          "title": "Interactive Elements",
+          "slug": "cmp-019"
+        },
+        {
+          "rule": "CMP-020",
+          "title": "Doors",
+          "slug": "cmp-020"
+        },
+        {
+          "rule": "CMP-021",
+          "title": "Ramps",
+          "slug": "cmp-021"
+        },
+        {
+          "rule": "CMP-022",
+          "title": "Windows",
+          "slug": "cmp-022"
+        }
+      ]
+    },
+    {
+      "slug": "cmp-001",
+      "parent": "construction-components",
+      "title": "CMP-001 — Functional Components",
+      "kind": "rule",
+      "rule": "CMP-001",
+      "doc": "05-construction-components.md",
+      "source_line": 29,
+      "body_html": "<p>A functional component is a physical part of a model that affects gameplay.</p>\n<p>Decorative elements have no gameplay effect unless another rule gives them one.</p>\n"
+    },
+    {
+      "slug": "cmp-003",
+      "parent": "construction-components",
+      "title": "CMP-003 — Wheels",
+      "kind": "rule",
+      "rule": "CMP-003",
+      "doc": "05-construction-components.md",
+      "source_line": 37,
+      "body_html": "<p>A functional wheel must physically touch the ground and rotate freely.</p>\n<p>Decorative wheels are ignored.</p>\n"
+    },
+    {
+      "slug": "cmp-004",
+      "parent": "construction-components",
+      "title": "CMP-004 — Tracks",
+      "kind": "rule",
+      "rule": "CMP-004",
+      "doc": "05-construction-components.md",
+      "source_line": 45,
+      "body_html": "<p>Tracks must be physically represented, and both sides of the vehicle should contain them.</p>\n<p>Decorative track details have no effect.</p>\n"
+    },
+    {
+      "slug": "cmp-005",
+      "parent": "construction-components",
+      "title": "CMP-005 — Hover System",
+      "kind": "rule",
+      "rule": "CMP-005",
+      "doc": "05-construction-components.md",
+      "source_line": 53,
+      "body_html": "<p>Hover vehicles replace wheels or tracks with hover emitters.</p>\n<p>Hover components must be visually distinguishable.</p>\n"
+    },
+    {
+      "slug": "cmp-006",
+      "parent": "construction-components",
+      "title": "CMP-006 — Walkers",
+      "kind": "rule",
+      "rule": "CMP-006",
+      "doc": "05-construction-components.md",
+      "source_line": 61,
+      "body_html": "<p>Walkers use articulated legs instead of wheels or tracks, and those legs must visibly support the vehicle.</p>\n<p>Decorative legs have no gameplay effect.</p>\n"
+    },
+    {
+      "slug": "cmp-008",
+      "parent": "construction-components",
+      "title": "CMP-008 — Turrets",
+      "kind": "rule",
+      "rule": "CMP-008",
+      "doc": "05-construction-components.md",
+      "source_line": 69,
+      "body_html": "<p>A turret is a weapon mount (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-009\" class=\"rule-reference\">WPN-009</a>) that must physically rotate, and the weapons mounted on it rotate with it.</p>\n"
+    },
+    {
+      "slug": "cmp-014",
+      "parent": "construction-components",
+      "title": "CMP-014 — Shields",
+      "kind": "rule",
+      "rule": "CMP-014",
+      "doc": "05-construction-components.md",
+      "source_line": 75,
+      "body_html": "<p>A Shield is defensive equipment physically attached to an infantry model, visible on it, and occupying one of the two hands <code>17-infantry.md</code> (<a href=\"/infantry/inf-001\" class=\"rule-reference\">INF-001</a>) gives a minifigure.</p>\n<p>A shield protects only what it physically stands between: one interposed between the attacker and a component protects it (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-006\" class=\"rule-reference\">DMG-006</a>), one facing away blocks nothing. Orientation matters for that reason, not for any separate defensive bonus.</p>\n"
+    },
+    {
+      "slug": "cmp-016",
+      "parent": "construction-components",
+      "title": "CMP-016 — Functional Integrity",
+      "kind": "rule",
+      "rule": "CMP-016",
+      "doc": "05-construction-components.md",
+      "source_line": 83,
+      "body_html": "<p>Removing a functional component immediately changes what the model can do.</p>\n<p>Gameplay always reflects the current physical model.</p>\n"
+    },
+    {
+      "slug": "cmp-018",
+      "parent": "construction-components",
+      "title": "CMP-018 — Access Openings",
+      "kind": "rule",
+      "rule": "CMP-018",
+      "doc": "05-construction-components.md",
+      "source_line": 91,
+      "body_html": "<p>An access opening must physically pass every model that uses it.</p>\n<p>With the component in its open position, measure the <strong>clear opening</strong>, including any elements that reduce its available space (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-004\" class=\"rule-reference\">GEO-004</a>). The opening must be at least as wide as the model's front edge (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-002\" class=\"rule-reference\">CORE-002</a>) and as tall as the model stands.</p>\n<p>Whether a model can reach the opening is governed by the applicable movement rule (<code>17-infantry.md</code>, <a href=\"/infantry/inf-008\" class=\"rule-reference\">INF-008</a>; <code>08-vehicles.md</code>, <a href=\"/vehicles/veh-021\" class=\"rule-reference\">VEH-021</a>).</p>\n<p>The check is made against the model as physically built and is repeated whenever the model changes (<a href=\"/construction-components/cmp-016\" class=\"rule-reference\">CMP-016</a>).</p>\n<blockquote>\n<p><strong>If it fits, it passes.</strong></p>\n</blockquote>\n<p><img src=\"{{media:cmp-018-clear-opening.png}}\" alt=\"CMP-018 — clear opening\" /></p>\n"
+    },
+    {
+      "slug": "cmp-019",
+      "parent": "construction-components",
+      "title": "CMP-019 — Interactive Elements",
+      "kind": "rule",
+      "rule": "CMP-019",
+      "doc": "05-construction-components.md",
+      "source_line": 107,
+      "body_html": "<p>Interactive elements must physically exist. What operating one costs is defined in <code>02-core-rules.md</code>, <a href=\"/core-rules/core-007\" class=\"rule-reference\">CORE-007</a>.</p>\n"
+    },
+    {
+      "slug": "cmp-020",
+      "parent": "construction-components",
+      "title": "CMP-020 — Doors",
+      "kind": "rule",
+      "rule": "CMP-020",
+      "doc": "05-construction-components.md",
+      "source_line": 113,
+      "body_html": "<p>Functional doors:</p>\n<ul>\n<li>must open physically</li>\n<li>may close physically</li>\n</ul>\n<p>The opening must physically pass the models that use the door (<a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n"
+    },
+    {
+      "slug": "cmp-021",
+      "parent": "construction-components",
+      "title": "CMP-021 — Ramps",
+      "kind": "rule",
+      "rule": "CMP-021",
+      "doc": "05-construction-components.md",
+      "source_line": 124,
+      "body_html": "<p>A ramp must physically rotate or lower. Where it leads to an opening, that opening must physically pass the models that use it (<a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n"
+    },
+    {
+      "slug": "cmp-022",
+      "parent": "construction-components",
+      "title": "CMP-022 — Windows",
+      "kind": "rule",
+      "rule": "CMP-022",
+      "doc": "05-construction-components.md",
+      "source_line": 130,
+      "body_html": "<p>Transparent LEGO elements represent windows.</p>\n"
+    },
+    {
+      "slug": "deployment",
+      "parent": null,
+      "title": "Deployment",
+      "kind": "document",
+      "rule": null,
+      "doc": "06-deployment.md",
+      "source_line": null,
+      "intro": "Agreeing a battlefield, and putting forces on it.",
+      "entries": [
+        {
+          "rule": "DEP-001",
+          "title": "Deployment Volume",
+          "slug": "dep-001"
+        },
+        {
+          "rule": "DEP-002",
+          "title": "Army Capacity",
+          "slug": "dep-002"
+        },
+        {
+          "rule": "DEP-003",
+          "title": "Vehicle Footprint",
+          "slug": "dep-003"
+        },
+        {
+          "rule": "DEP-004",
+          "title": "Infantry",
+          "slug": "dep-004"
+        },
+        {
+          "rule": "DEP-005",
+          "title": "Transport Capacity",
+          "slug": "dep-005"
+        },
+        {
+          "rule": "DEP-006",
+          "title": "Embarked Units",
+          "slug": "dep-006"
+        },
+        {
+          "rule": "DEP-007",
+          "title": "Embarking, Disembarking and Transport State",
+          "slug": "dep-007"
+        },
+        {
+          "rule": "DEP-008",
+          "title": "Mixed Forces",
+          "slug": "dep-008"
+        },
+        {
+          "rule": "DEP-009",
+          "title": "Scenario Scaling",
+          "slug": "dep-009"
+        }
+      ]
+    },
+    {
+      "slug": "dep-001",
+      "parent": "deployment",
+      "title": "DEP-001 — Deployment Volume",
+      "kind": "rule",
+      "rule": "DEP-001",
+      "doc": "06-deployment.md",
+      "source_line": 35,
+      "body_html": "<p>Before the game begins, players agree on a <strong>Deployment Volume</strong>.</p>\n<p>A Deployment Volume is measured in <strong>Unit Bases (UB)</strong> (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>) and written <code>W × D × H</code>.</p>\n<ul>\n<li><code>W × D</code> is the available floor area, counted in Unit Bases.</li>\n<li><code>H</code> is the maximum deployment height in Unit Bases.</li>\n</ul>\n<p>If only two dimensions are given, the Deployment Volume is <strong>1 UB high</strong>.</p>\n<p>Deployment Volumes may have any dimensions agreed upon by the players or defined by the scenario.</p>\n<blockquote>\n<p><strong>If it fits, it deploys.</strong></p>\n</blockquote>\n"
+    },
+    {
+      "slug": "dep-002",
+      "parent": "deployment",
+      "title": "DEP-002 — Army Capacity",
+      "kind": "rule",
+      "rule": "DEP-002",
+      "doc": "06-deployment.md",
+      "source_line": 52,
+      "body_html": "<p>A player's army is any combination of models that can be physically placed within the agreed Deployment Volume.</p>\n<p>Every model must fit within the Deployment Volume's floor and beneath its ceiling. Models cannot overlap. A model occupies whole Unit Bases: a footprint covering part of one covers all of it.</p>\n<p>The player chooses which models to deploy. No points or other army-capacity system is used.</p>\n<p>The physical placement of the models is the final check. A combination is legal if all models can be placed within the Deployment Volume at the same time.</p>\n"
+    },
+    {
+      "slug": "dep-003",
+      "parent": "deployment",
+      "title": "DEP-003 — Vehicle Footprint",
+      "kind": "rule",
+      "rule": "DEP-003",
+      "doc": "06-deployment.md",
+      "source_line": 64,
+      "body_html": "<p>A vehicle occupies every Unit Base covered by its footprint.</p>\n<p>The footprint determines the vehicle's horizontal Deployment Volume occupation.</p>\n<p>Example:</p>\n<p>Vehicle dimensions:</p>\n<p><code>2 × 5 UB</code></p>\n<p>Deployment occupation:</p>\n<p><code>10 Unit Bases</code></p>\n<p>Those Unit Bases are occupied and cannot be occupied by another model.</p>\n<p>Vehicle height is checked separately against the Deployment Volume ceiling.</p>\n"
+    },
+    {
+      "slug": "dep-004",
+      "parent": "deployment",
+      "title": "DEP-004 — Infantry",
+      "kind": "rule",
+      "rule": "DEP-004",
+      "doc": "06-deployment.md",
+      "source_line": 86,
+      "body_html": "<p>Each infantry model occupies 1 Unit Base (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-003\" class=\"rule-reference\">CORE-003</a>).</p>\n<p>When deployed individually, this UB counts against the Deployment Volume floor.</p>\n<p>When embarked inside a transport, the infantry model occupies the transport's interior space and does not consume additional Deployment Volume floor space (<code>DEP-006</code>).</p>\n"
+    },
+    {
+      "slug": "dep-005",
+      "parent": "deployment",
+      "title": "DEP-005 — Transport Capacity",
+      "kind": "rule",
+      "rule": "DEP-005",
+      "doc": "06-deployment.md",
+      "source_line": 96,
+      "body_html": "<p>Transport capacity is not purchased.</p>\n<p>It is determined entirely by the physical cargo compartment.</p>\n<p>If a Unit Base fits inside the vehicle, a minifigure may be transported in it (<code>09-transport.md</code>, <a href=\"/transport/trn-019\" class=\"rule-reference\">TRN-019</a>).</p>\n<p>If it does not fit, it cannot.</p>\n<blockquote>\n<p><strong>The LEGO model is the source of truth.</strong></p>\n</blockquote>\n"
+    },
+    {
+      "slug": "dep-006",
+      "parent": "deployment",
+      "title": "DEP-006 — Embarked Units",
+      "kind": "rule",
+      "rule": "DEP-006",
+      "doc": "06-deployment.md",
+      "source_line": 110,
+      "body_html": "<p>Embarked units are considered part of the transport during deployment.</p>\n<p>Their occupied space is the transport interior, not additional Deployment Volume floor space.</p>\n<p>This represents one of the main strategic advantages of transport vehicles.</p>\n<p>Example:</p>\n<p>A transport occupies:</p>\n<p><code>2 × 5 UB</code></p>\n<p>It physically carries:</p>\n<p>8 infantry.</p>\n<p>Deployment occupation:</p>\n<p>Only the transport footprint.</p>\n<p>The infantry do not consume additional Deployment Volume floor space while embarked.</p>\n<p>The waiver applies only to embarked units. A model carried on the outside — on a roof, bonnet, hull top or outside of a turret — is not embarked.</p>\n<p>An externally carried infantry model is therefore deployed individually and occupies 1 Unit Base of Deployment Volume floor space (<code>DEP-004</code>).</p>\n<p>An externally carried vehicle is deployed according to its own footprint (<code>DEP-003</code>).</p>\n<p>Externally carried models also form part of the physical model for deployment-height purposes and must fit beneath the Deployment Volume ceiling (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-030\" class=\"rule-reference\">VEH-030</a>).</p>\n"
+    },
+    {
+      "slug": "dep-007",
+      "parent": "deployment",
+      "title": "DEP-007 — Embarking, Disembarking and Transport State",
+      "kind": "rule",
+      "rule": "DEP-007",
+      "doc": "06-deployment.md",
+      "source_line": 144,
+      "body_html": "<p>Embarking, disembarking, access points, and open/closed transport rules are defined in <code>09-transport.md</code>.</p>\n<p>Deployment only determines how much battlefield space a transport and its embarked units consume before the game begins.</p>\n<p>See <code>DEP-005</code> and <code>DEP-006</code>.</p>\n"
+    },
+    {
+      "slug": "dep-008",
+      "parent": "deployment",
+      "title": "DEP-008 — Mixed Forces",
+      "kind": "rule",
+      "rule": "DEP-008",
+      "doc": "06-deployment.md",
+      "source_line": 154,
+      "body_html": "<p>Players may freely combine infantry, vehicles and transports within their Deployment Volume.</p>\n<p>For example:</p>\n<ul>\n<li>20 infantry.</li>\n<li>2 tanks and 8 infantry.</li>\n<li>1 super-heavy transport carrying 2 walkers and 4 infantry.</li>\n</ul>\n<p>These are examples only.</p>\n<p>Any combination is legal if all models can be physically placed within the Deployment Volume at the same time.</p>\n"
+    },
+    {
+      "slug": "dep-009",
+      "parent": "deployment",
+      "title": "DEP-009 — Scenario Scaling",
+      "kind": "rule",
+      "rule": "DEP-009",
+      "doc": "06-deployment.md",
+      "source_line": 170,
+      "body_html": "<p>StudCraft naturally supports multiple game sizes.</p>\n<p>Examples:</p>\n"
+    },
+    {
+      "slug": "movement",
+      "parent": null,
+      "title": "Movement",
+      "kind": "document",
+      "rule": null,
+      "doc": "07-movement.md",
+      "source_line": null,
+      "intro": "Distances, directions, and what terrain costs to cross.",
+      "entries": [
+        {
+          "rule": "MOVE-001",
+          "title": "Unit Orientation",
+          "slug": "move-001"
+        },
+        {
+          "rule": "MOVE-003",
+          "title": "Measuring Movement",
+          "slug": "move-003"
+        },
+        {
+          "rule": "MOVE-007",
+          "title": "No Diagonal Movement",
+          "slug": "move-007"
+        },
+        {
+          "rule": "MOVE-012",
+          "title": "Slopes",
+          "slug": "move-012"
+        },
+        {
+          "rule": "MOVE-013",
+          "title": "Stairs",
+          "slug": "move-013"
+        },
+        {
+          "rule": "MOVE-014",
+          "title": "Vertical Access",
+          "slug": "move-014"
+        },
+        {
+          "rule": "MOVE-015",
+          "title": "Falling",
+          "slug": "move-015"
+        },
+        {
+          "rule": "MOVE-017",
+          "title": "Collision",
+          "slug": "move-017"
+        },
+        {
+          "rule": "MOVE-018",
+          "title": "Doors",
+          "slug": "move-018"
+        },
+        {
+          "rule": "MOVE-019",
+          "title": "Ramps",
+          "slug": "move-019"
+        },
+        {
+          "rule": "MOVE-020",
+          "title": "Interactive Terrain",
+          "slug": "move-020"
+        }
+      ]
+    },
+    {
+      "slug": "move-001",
+      "parent": "movement",
+      "title": "MOVE-001 — Unit Orientation",
+      "kind": "rule",
+      "rule": "MOVE-001",
+      "doc": "07-movement.md",
+      "source_line": 34,
+      "body_html": "<p>Movement is always performed relative to the current facing of the unit (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-002\" class=\"rule-reference\">CORE-002</a>).</p>\n<p>Which directions a unit may move in is its own domain's rule: infantry moves forward, backward, left and right (<code>17-infantry.md</code>, <a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a> through <a href=\"/infantry/inf-004\" class=\"rule-reference\">INF-004</a>), while a vehicle moves forward and in reverse and changes direction by turning (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-005\" class=\"rule-reference\">VEH-005</a>, <a href=\"/vehicles/veh-006\" class=\"rule-reference\">VEH-006</a>, <a href=\"/vehicles/veh-008\" class=\"rule-reference\">VEH-008</a> through <a href=\"/vehicles/veh-011\" class=\"rule-reference\">VEH-011</a>).</p>\n"
+    },
+    {
+      "slug": "move-003",
+      "parent": "movement",
+      "title": "MOVE-003 — Measuring Movement",
+      "kind": "rule",
+      "rule": "MOVE-003",
+      "doc": "07-movement.md",
+      "source_line": 42,
+      "body_html": "<p>Movement is measured along the direction of travel, and the whole distance is measured from one point on the model, not from wherever the model happens to be widest.</p>\n<p>Where that point is, is its own domain's rule — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-004\" class=\"rule-reference\">VEH-004</a>).</p>\n<p>When movement ends, the unit occupies its new position completely.</p>\n"
+    },
+    {
+      "slug": "move-007",
+      "parent": "movement",
+      "title": "MOVE-007 — No Diagonal Movement",
+      "kind": "rule",
+      "rule": "MOVE-007",
+      "doc": "07-movement.md",
+      "source_line": 52,
+      "body_html": "<p>StudCraft does not use diagonal movement.</p>\n<p>A unit reaches an off-axis position by combining the movement and turns allowed by its own domain — infantry combines forward or backward movement with sideways movement (<code>17-infantry.md</code>, <a href=\"/infantry/inf-003\" class=\"rule-reference\">INF-003</a>), while vehicles combine forward movement with turns (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-007\" class=\"rule-reference\">VEH-007</a>). Each movement leg is a separate movement action and costs 1 Action Point.</p>\n<blockquote>\n<p><strong>No diagonal movement.</strong></p>\n</blockquote>\n"
+    },
+    {
+      "slug": "move-012",
+      "parent": "movement",
+      "title": "MOVE-012 — Slopes",
+      "kind": "rule",
+      "rule": "MOVE-012",
+      "doc": "07-movement.md",
+      "source_line": 66,
+      "body_html": "<p>A slope is built from LEGO slope elements, and is a valid climbing surface.</p>\n<p>Whether a given unit may ascend one is its own domain's question — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-009\" class=\"rule-reference\">INF-009</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-027\" class=\"rule-reference\">VEH-027</a>).</p>\n"
+    },
+    {
+      "slug": "move-013",
+      "parent": "movement",
+      "title": "MOVE-013 — Stairs",
+      "kind": "rule",
+      "rule": "MOVE-013",
+      "doc": "07-movement.md",
+      "source_line": 74,
+      "body_html": "<p>A stepped surface is terrain built from discrete steps, whatever the steps are built from, and each step has a measurable height. Each step is an obstacle in its own right, read individually.</p>\n<p>Whether a given unit may climb one is its own domain's question — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-009\" class=\"rule-reference\">INF-009</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-027\" class=\"rule-reference\">VEH-027</a>).</p>\n"
+    },
+    {
+      "slug": "move-014",
+      "parent": "movement",
+      "title": "MOVE-014 — Vertical Access",
+      "kind": "rule",
+      "rule": "MOVE-014",
+      "doc": "07-movement.md",
+      "source_line": 82,
+      "body_html": "<p>Any stable LEGO surface may support a unit, and physical construction determines accessibility.</p>\n<p>Which constructions grant a given unit access is its own domain's question — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-008\" class=\"rule-reference\">INF-008</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-021\" class=\"rule-reference\">VEH-021</a>, <a href=\"/vehicles/veh-027\" class=\"rule-reference\">VEH-027</a>).</p>\n"
+    },
+    {
+      "slug": "move-015",
+      "parent": "movement",
+      "title": "MOVE-015 — Falling",
+      "kind": "rule",
+      "rule": "MOVE-015",
+      "doc": "07-movement.md",
+      "source_line": 90,
+      "body_html": "<p>A unit that leaves a higher position without support falls. A unit may do this deliberately — stepping off a ledge is a legal way to descend, at the risk its own domain's rule describes — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-011\" class=\"rule-reference\">INF-011</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-026\" class=\"rule-reference\">VEH-026</a>).</p>\n<p>The unit is placed directly below the point it left, at the first surface that physically supports it. Falling immediately ends the movement action; any unspent movement from that action is lost.</p>\n"
+    },
+    {
+      "slug": "move-017",
+      "parent": "movement",
+      "title": "MOVE-017 — Collision",
+      "kind": "rule",
+      "rule": "MOVE-017",
+      "doc": "07-movement.md",
+      "source_line": 98,
+      "body_html": "<p>Units may not finish movement occupying the same physical space. Models may not overlap.</p>\n<p>Friendly units may move around each other if enough space physically exists. Enemy units block movement unless another rule allows otherwise.</p>\n"
+    },
+    {
+      "slug": "move-018",
+      "parent": "movement",
+      "title": "MOVE-018 — Doors",
+      "kind": "rule",
+      "rule": "MOVE-018",
+      "doc": "07-movement.md",
+      "source_line": 106,
+      "body_html": "<p>Closed doors block movement. Once opened, the doorway becomes a valid movement path for any model the opening physically passes (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n<p>Opening or closing a door is an interactive element action (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-007\" class=\"rule-reference\">CORE-007</a>).</p>\n"
+    },
+    {
+      "slug": "move-019",
+      "parent": "movement",
+      "title": "MOVE-019 — Ramps",
+      "kind": "rule",
+      "rule": "MOVE-019",
+      "doc": "07-movement.md",
+      "source_line": 114,
+      "body_html": "<p>A lowered ramp immediately becomes usable terrain (<a href=\"/movement/move-014\" class=\"rule-reference\">MOVE-014</a>). Whether it grants a given unit access is its own domain's question — infantry (<code>17-infantry.md</code>, <a href=\"/infantry/inf-008\" class=\"rule-reference\">INF-008</a>), vehicles (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-027\" class=\"rule-reference\">VEH-027</a>). Where the ramp leads to an opening, that opening must physically pass the model as well (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n<p>Lowering or raising a ramp is an interactive element action (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-007\" class=\"rule-reference\">CORE-007</a>).</p>\n"
+    },
+    {
+      "slug": "move-020",
+      "parent": "movement",
+      "title": "MOVE-020 — Interactive Terrain",
+      "kind": "rule",
+      "rule": "MOVE-020",
+      "doc": "07-movement.md",
+      "source_line": 122,
+      "body_html": "<p>Any movable LEGO element may become part of a movement path.</p>\n<p>Examples:</p>\n<ul>\n<li>Drawbridges</li>\n<li>Elevators</li>\n<li>Gates</li>\n<li>Hinged platforms</li>\n</ul>\n<p>Operating one is an interactive element action (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-007\" class=\"rule-reference\">CORE-007</a>).</p>\n"
+    },
+    {
+      "slug": "vehicles",
+      "parent": null,
+      "title": "Vehicles",
+      "kind": "document",
+      "rule": null,
+      "doc": "08-vehicles.md",
+      "source_line": null,
+      "intro": "Pivots, terrain thresholds, and how a vehicle is measured.",
+      "entries": [
+        {
+          "rule": "VEH-001",
+          "title": "Vehicle Footprint",
+          "slug": "veh-001"
+        },
+        {
+          "rule": "VEH-002",
+          "title": "Vehicle Facing",
+          "slug": "veh-002"
+        },
+        {
+          "rule": "VEH-003",
+          "title": "Measuring Vehicle Length",
+          "slug": "veh-003"
+        },
+        {
+          "rule": "VEH-004",
+          "title": "Standard Movement",
+          "slug": "veh-004"
+        },
+        {
+          "rule": "VEH-005",
+          "title": "Forward Movement",
+          "slug": "veh-005"
+        },
+        {
+          "rule": "VEH-006",
+          "title": "Reverse Movement",
+          "slug": "veh-006"
+        },
+        {
+          "rule": "VEH-007",
+          "title": "No Diagonal Movement",
+          "slug": "veh-007"
+        },
+        {
+          "rule": "VEH-008",
+          "title": "Wheel Vehicles",
+          "slug": "veh-008"
+        },
+        {
+          "rule": "VEH-009",
+          "title": "Tracked Vehicles",
+          "slug": "veh-009"
+        },
+        {
+          "rule": "VEH-010",
+          "title": "Walkers",
+          "slug": "veh-010"
+        },
+        {
+          "rule": "VEH-011",
+          "title": "Hover Vehicles",
+          "slug": "veh-011"
+        },
+        {
+          "rule": "VEH-012",
+          "title": "Locomotion Type",
+          "slug": "veh-012"
+        },
+        {
+          "rule": "VEH-013",
+          "title": "Pilot",
+          "slug": "veh-013"
+        },
+        {
+          "rule": "VEH-014",
+          "title": "Weapon Systems",
+          "slug": "veh-014"
+        },
+        {
+          "rule": "VEH-015",
+          "title": "Crew",
+          "slug": "veh-015"
+        },
+        {
+          "rule": "VEH-016",
+          "title": "Passengers",
+          "slug": "veh-016"
+        },
+        {
+          "rule": "VEH-017",
+          "title": "Components",
+          "slug": "veh-017"
+        },
+        {
+          "rule": "VEH-018",
+          "title": "Damage",
+          "slug": "veh-018"
+        },
+        {
+          "rule": "VEH-019",
+          "title": "Immobilized Vehicles",
+          "slug": "veh-019"
+        },
+        {
+          "rule": "VEH-020",
+          "title": "Construction Priority",
+          "slug": "veh-020"
+        },
+        {
+          "rule": "VEH-021",
+          "title": "Terrain Threshold",
+          "slug": "veh-021"
+        },
+        {
+          "rule": "VEH-022",
+          "title": "Wheeled and Tracked Thresholds",
+          "slug": "veh-022"
+        },
+        {
+          "rule": "VEH-023",
+          "title": "Walker Thresholds",
+          "slug": "veh-023"
+        },
+        {
+          "rule": "VEH-024",
+          "title": "Hover Thresholds",
+          "slug": "veh-024"
+        },
+        {
+          "rule": "VEH-025",
+          "title": "Stranded Vehicles",
+          "slug": "veh-025"
+        },
+        {
+          "rule": "VEH-026",
+          "title": "Vehicle Falling",
+          "slug": "veh-026"
+        },
+        {
+          "rule": "VEH-027",
+          "title": "Vehicle Ascent",
+          "slug": "veh-027"
+        },
+        {
+          "rule": "VEH-029",
+          "title": "Where Height Is Counted From",
+          "slug": "veh-029"
+        },
+        {
+          "rule": "VEH-030",
+          "title": "What Counts Toward Height",
+          "slug": "veh-030"
+        },
+        {
+          "rule": "VEH-031",
+          "title": "What Damage Does to Movement",
+          "slug": "veh-031"
+        }
+      ]
+    },
+    {
+      "slug": "veh-001",
+      "parent": "vehicles",
+      "title": "VEH-001 — Vehicle Footprint",
+      "kind": "rule",
+      "rule": "VEH-001",
+      "doc": "08-vehicles.md",
+      "source_line": 25,
+      "body_html": "<p>A powered vehicle occupies two or more Unit Bases (UB) (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>).</p>\n<table>\n<thead>\n<tr>\n<th>Vehicle</th>\n<th style=\"text-align:right\">Footprint</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Bike</td>\n<td style=\"text-align:right\">1 × 2 UB</td>\n</tr>\n<tr>\n<td>Buggy</td>\n<td style=\"text-align:right\">2 × 2 UB</td>\n</tr>\n<tr>\n<td>Jeep</td>\n<td style=\"text-align:right\">2 × 3 UB</td>\n</tr>\n<tr>\n<td>Tank</td>\n<td style=\"text-align:right\">2 × 5 UB</td>\n</tr>\n<tr>\n<td>Heavy Transport</td>\n<td style=\"text-align:right\">3 × 8 UB</td>\n</tr>\n<tr>\n<td>Super Heavy</td>\n<td style=\"text-align:right\">Player Built</td>\n</tr>\n</tbody>\n</table>\n<p>There is no maximum footprint size. A vehicle's height is bounded by the agreed Deployment Volume ceiling (<code>06-deployment.md</code>, <a href=\"/deployment/dep-001\" class=\"rule-reference\">DEP-001</a>).</p>\n"
+    },
+    {
+      "slug": "veh-002",
+      "parent": "vehicles",
+      "title": "VEH-002 — Vehicle Facing",
+      "kind": "rule",
+      "rule": "VEH-002",
+      "doc": "08-vehicles.md",
+      "source_line": 42,
+      "body_html": "<p>Every vehicle must have an obvious front.</p>\n<p>The front is the end the model is built to lead with. Facing follows <code>02-core-rules.md</code> (<a href=\"/core-rules/core-002\" class=\"rule-reference\">CORE-002</a>) and determines movement and turning (<code>07-movement.md</code>, <a href=\"/movement/move-001\" class=\"rule-reference\">MOVE-001</a>; <a href=\"/vehicles/veh-008\" class=\"rule-reference\">VEH-008</a> through <a href=\"/vehicles/veh-011\" class=\"rule-reference\">VEH-011</a>).</p>\n"
+    },
+    {
+      "slug": "veh-003",
+      "parent": "vehicles",
+      "title": "VEH-003 — Measuring Vehicle Length",
+      "kind": "rule",
+      "rule": "VEH-003",
+      "doc": "08-vehicles.md",
+      "source_line": 50,
+      "body_html": "<p>Vehicle length is measured along its longest axis.</p>\n<p>Movement distance is calculated from this length. Decorative elements are ignored.</p>\n"
+    },
+    {
+      "slug": "veh-004",
+      "parent": "vehicles",
+      "title": "VEH-004 — Standard Movement",
+      "kind": "rule",
+      "rule": "VEH-004",
+      "doc": "08-vehicles.md",
+      "source_line": 58,
+      "body_html": "<p>A vehicle moves <strong>three times its own length</strong> for <strong>1 Action Point</strong> (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>).</p>\n<p>Measure from the vehicle's front along its facing (<code>07-movement.md</code>, <a href=\"/movement/move-003\" class=\"rule-reference\">MOVE-003</a>). The same point is used when moving in reverse (<a href=\"/vehicles/veh-006\" class=\"rule-reference\">VEH-006</a>).</p>\n<table>\n<thead>\n<tr>\n<th>Vehicle</th>\n<th style=\"text-align:right\">Length</th>\n<th style=\"text-align:right\">Movement</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Bike</td>\n<td style=\"text-align:right\">6 studs</td>\n<td style=\"text-align:right\">18 studs</td>\n</tr>\n<tr>\n<td>Buggy</td>\n<td style=\"text-align:right\">8 studs</td>\n<td style=\"text-align:right\">24 studs</td>\n</tr>\n<tr>\n<td>Jeep</td>\n<td style=\"text-align:right\">9 studs</td>\n<td style=\"text-align:right\">27 studs</td>\n</tr>\n<tr>\n<td>Tank</td>\n<td style=\"text-align:right\">15 studs</td>\n<td style=\"text-align:right\">45 studs</td>\n</tr>\n<tr>\n<td>Heavy Transport</td>\n<td style=\"text-align:right\">24 studs</td>\n<td style=\"text-align:right\">72 studs</td>\n</tr>\n</tbody>\n</table>\n<p>A Wounded Pilot or locomotion damage changes this (<a href=\"/vehicles/veh-031\" class=\"rule-reference\">VEH-031</a>).</p>\n"
+    },
+    {
+      "slug": "veh-005",
+      "parent": "vehicles",
+      "title": "VEH-005 — Forward Movement",
+      "kind": "rule",
+      "rule": "VEH-005",
+      "doc": "08-vehicles.md",
+      "source_line": 76,
+      "body_html": "<p>Vehicles normally move forward in their current facing.</p>\n"
+    },
+    {
+      "slug": "veh-006",
+      "parent": "vehicles",
+      "title": "VEH-006 — Reverse Movement",
+      "kind": "rule",
+      "rule": "VEH-006",
+      "doc": "08-vehicles.md",
+      "source_line": 82,
+      "body_html": "<p>Vehicles may move backwards while retaining their current facing.</p>\n<p>Reverse movement uses the same distance as forward movement unless restricted by a scenario.</p>\n"
+    },
+    {
+      "slug": "veh-007",
+      "parent": "vehicles",
+      "title": "VEH-007 — No Diagonal Movement",
+      "kind": "rule",
+      "rule": "VEH-007",
+      "doc": "08-vehicles.md",
+      "source_line": 90,
+      "body_html": "<p>Vehicles do not move diagonally (<code>07-movement.md</code>, <a href=\"/movement/move-007\" class=\"rule-reference\">MOVE-007</a>).</p>\n<p>They combine forward or reverse movement with turns.</p>\n"
+    },
+    {
+      "slug": "veh-008",
+      "parent": "vehicles",
+      "title": "VEH-008 — Wheel Vehicles",
+      "kind": "rule",
+      "rule": "VEH-008",
+      "doc": "08-vehicles.md",
+      "source_line": 98,
+      "body_html": "<p>Wheel vehicles may perform either of the following for <strong>1 Action Point</strong>:</p>\n<ul>\n<li>90° left turn</li>\n<li>90° right turn</li>\n</ul>\n<p>They pivot around their rear axle.</p>\n"
+    },
+    {
+      "slug": "veh-009",
+      "parent": "vehicles",
+      "title": "VEH-009 — Tracked Vehicles",
+      "kind": "rule",
+      "rule": "VEH-009",
+      "doc": "08-vehicles.md",
+      "source_line": 109,
+      "body_html": "<p>Tracked vehicles pivot around their centre.</p>\n<p>For <strong>1 Action Point</strong>, they may rotate:</p>\n<ul>\n<li>90°</li>\n<li>180°</li>\n<li>270°</li>\n</ul>\n"
+    },
+    {
+      "slug": "veh-010",
+      "parent": "vehicles",
+      "title": "VEH-010 — Walkers",
+      "kind": "rule",
+      "rule": "VEH-010",
+      "doc": "08-vehicles.md",
+      "source_line": 121,
+      "body_html": "<p>Walkers pivot around their centre.</p>\n<p>For <strong>1 Action Point</strong>, they may rotate 90° in either direction.</p>\n"
+    },
+    {
+      "slug": "veh-011",
+      "parent": "vehicles",
+      "title": "VEH-011 — Hover Vehicles",
+      "kind": "rule",
+      "rule": "VEH-011",
+      "doc": "08-vehicles.md",
+      "source_line": 129,
+      "body_html": "<p>Hover vehicles move forward and backward using standard movement (<a href=\"/vehicles/veh-004\" class=\"rule-reference\">VEH-004</a>).</p>\n<p>They may turn 90° left or right for <strong>1 Action Point</strong>, pivoting around their centre.</p>\n"
+    },
+    {
+      "slug": "veh-012",
+      "parent": "vehicles",
+      "title": "VEH-012 — Locomotion Type",
+      "kind": "rule",
+      "rule": "VEH-012",
+      "doc": "08-vehicles.md",
+      "source_line": 137,
+      "body_html": "<p>Every vehicle must clearly represent one locomotion system.</p>\n<p>Examples:</p>\n<ul>\n<li>Wheels</li>\n<li>Tracks</li>\n<li>Walker legs</li>\n<li>Hover system</li>\n</ul>\n<p>Vehicles cannot combine locomotion systems unless explicitly designed to do so.</p>\n"
+    },
+    {
+      "slug": "veh-013",
+      "parent": "vehicles",
+      "title": "VEH-013 — Pilot",
+      "kind": "rule",
+      "rule": "VEH-013",
+      "doc": "08-vehicles.md",
+      "source_line": 152,
+      "body_html": "<p>Every powered vehicle requires a Pilot: a minifigure physically occupying a visible operating position (<code>VEH-015</code>).</p>\n<p>A decorative empty seat is not a Pilot.</p>\n<p>The Pilot occupies one Unit Base (<code>09-transport.md</code>, <a href=\"/transport/trn-014\" class=\"rule-reference\">TRN-014</a>), so the vehicle requires space for the Pilot in addition to its machinery. This establishes the two-Unit-Base minimum in <a href=\"/vehicles/veh-001\" class=\"rule-reference\">VEH-001</a>.</p>\n<p>The Pilot resolves Impacts as a normal component (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-002\" class=\"rule-reference\">DMG-002</a>).</p>\n<p>A vehicle without a Pilot cannot move.</p>\n<p>Any other minifigure aboard — crew (<code>VEH-015</code>) or passenger (<code>VEH-016</code>) — may take over for <strong>1 Action Point</strong>, physically moving into the operating position. That minifigure is the Pilot from then on.</p>\n"
+    },
+    {
+      "slug": "veh-014",
+      "parent": "vehicles",
+      "title": "VEH-014 — Weapon Systems",
+      "kind": "rule",
+      "rule": "VEH-014",
+      "doc": "08-vehicles.md",
+      "source_line": 168,
+      "body_html": "<p>Each visible vehicle weapon is an independent weapon system and follows the universal Weapon System rules (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-008\" class=\"rule-reference\">WPN-008</a>; <code>11-combat.md</code>, <a href=\"/combat/cbt-006\" class=\"rule-reference\">CBT-006</a>).</p>\n"
+    },
+    {
+      "slug": "veh-015",
+      "parent": "vehicles",
+      "title": "VEH-015 — Crew",
+      "kind": "rule",
+      "rule": "VEH-015",
+      "doc": "08-vehicles.md",
+      "source_line": 174,
+      "body_html": "<p>Vehicles may carry one or more crew members.</p>\n<p>Crew must physically fit inside the vehicle. Each crew member occupies one Unit Base (<code>09-transport.md</code>, <a href=\"/transport/trn-014\" class=\"rule-reference\">TRN-014</a>, <a href=\"/transport/trn-019\" class=\"rule-reference\">TRN-019</a>).</p>\n<p>Exposed crew can be targeted. Fully enclosed crew is protected by the construction.</p>\n"
+    },
+    {
+      "slug": "veh-016",
+      "parent": "vehicles",
+      "title": "VEH-016 — Passengers",
+      "kind": "rule",
+      "rule": "VEH-016",
+      "doc": "08-vehicles.md",
+      "source_line": 184,
+      "body_html": "<p>Passenger capacity is determined by interior volume (<code>09-transport.md</code>).</p>\n<p>A passenger may embark only when the transport has enough free Unit Bases for that passenger (<code>09-transport.md</code>, <a href=\"/transport/trn-005\" class=\"rule-reference\">TRN-005</a>).</p>\n<p>No transport capacity statistic exists.</p>\n"
+    },
+    {
+      "slug": "veh-017",
+      "parent": "vehicles",
+      "title": "VEH-017 — Components",
+      "kind": "rule",
+      "rule": "VEH-017",
+      "doc": "08-vehicles.md",
+      "source_line": 194,
+      "body_html": "<p>Vehicles are collections of components.</p>\n<p>Examples:</p>\n<ul>\n<li>Pilot</li>\n<li>Wheels</li>\n<li>Tracks</li>\n<li>Weapons</li>\n<li>Doors</li>\n<li>Windows</li>\n<li>Turrets</li>\n</ul>\n<p>Components resolve Impacts independently (<code>16-damage-system.md</code>).</p>\n"
+    },
+    {
+      "slug": "veh-018",
+      "parent": "vehicles",
+      "title": "VEH-018 — Damage",
+      "kind": "rule",
+      "rule": "VEH-018",
+      "doc": "08-vehicles.md",
+      "source_line": 212,
+      "body_html": "<p>Vehicles have no Hit Points.</p>\n<p>Impacts affect individual components.</p>\n<p>Examples:</p>\n<ul>\n<li>Broken window</li>\n<li>Disabled weapon</li>\n<li>Destroyed wheel</li>\n<li>Lost Pilot</li>\n<li>Destroyed door</li>\n</ul>\n"
+    },
+    {
+      "slug": "veh-019",
+      "parent": "vehicles",
+      "title": "VEH-019 — Immobilized Vehicles",
+      "kind": "rule",
+      "rule": "VEH-019",
+      "doc": "08-vehicles.md",
+      "source_line": 228,
+      "body_html": "<p>A vehicle that cannot move remains on the battlefield and may continue operating its functional systems unless another rule states otherwise.</p>\n<p>This includes vehicles immobilized by Pilot loss (<code>VEH-013</code>), destroyed locomotion (<code>VEH-031</code>) or being stranded (<code>VEH-025</code>).</p>\n"
+    },
+    {
+      "slug": "veh-020",
+      "parent": "vehicles",
+      "title": "VEH-020 — Construction Priority",
+      "kind": "rule",
+      "rule": "VEH-020",
+      "doc": "08-vehicles.md",
+      "source_line": 236,
+      "body_html": "<p>Vehicle performance should emerge from construction.</p>\n<blockquote>\n<p><strong>Can this be represented by the LEGO model?</strong></p>\n</blockquote>\n<p>If so, construction takes priority over abstraction.</p>\n"
+    },
+    {
+      "slug": "veh-021",
+      "parent": "vehicles",
+      "title": "VEH-021 — Terrain Threshold",
+      "kind": "rule",
+      "rule": "VEH-021",
+      "doc": "08-vehicles.md",
+      "source_line": 246,
+      "body_html": "<p>Every vehicle has a <strong>Terrain Threshold</strong>, determined by its locomotion (<code>VEH-022</code> through <code>VEH-024</code>).</p>\n<p>It is measured in plate layers (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>).</p>\n<ul>\n<li>An obstacle taller than the threshold blocks movement.</li>\n<li>A rise greater than the threshold requires a slope or ramp (<code>VEH-027</code>).</li>\n<li>A drop deeper than the threshold strands the vehicle (<code>VEH-025</code>).</li>\n<li>Obstacles and drops equal to the threshold are crossed normally.</li>\n</ul>\n<p>A vehicle leaving a height entirely is falling and uses <a href=\"/vehicles/veh-026\" class=\"rule-reference\">VEH-026</a> instead.</p>\n"
+    },
+    {
+      "slug": "veh-022",
+      "parent": "vehicles",
+      "title": "VEH-022 — Wheeled and Tracked Thresholds",
+      "kind": "rule",
+      "rule": "VEH-022",
+      "doc": "08-vehicles.md",
+      "source_line": 261,
+      "body_html": "<p>For wheeled and tracked vehicles, the Terrain Threshold is the height of the wheel or road wheel's axle above the ground.</p>\n<p>This is half the wheel's diameter. Where a tracked vehicle has no visible axle, use half the height of the track run.</p>\n"
+    },
+    {
+      "slug": "veh-023",
+      "parent": "vehicles",
+      "title": "VEH-023 — Walker Thresholds",
+      "kind": "rule",
+      "rule": "VEH-023",
+      "doc": "08-vehicles.md",
+      "source_line": 269,
+      "body_html": "<p>For walkers, the Terrain Threshold is the height of the knee joint above the ground (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-006\" class=\"rule-reference\">CMP-006</a>).</p>\n<p>Where no distinct knee exists, use half the leg's standing height.</p>\n"
+    },
+    {
+      "slug": "veh-024",
+      "parent": "vehicles",
+      "title": "VEH-024 — Hover Thresholds",
+      "kind": "rule",
+      "rule": "VEH-024",
+      "doc": "08-vehicles.md",
+      "source_line": 277,
+      "body_html": "<p>For hover vehicles, the Terrain Threshold is the height of the hover assembly (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-005\" class=\"rule-reference\">CMP-005</a>), measured from the ground to where the assembly meets the hull.</p>\n<p>A hull resting directly on the ground has a threshold of 0.</p>\n<p>Hover vehicles cannot be stranded by drops and may pass over depressions.</p>\n<p>They cannot cross a gap wider than their own footprint: a surface must remain beneath the vehicle.</p>\n<p>If the hover assembly is destroyed, the hull settles and the vehicle is Immobilized (<code>VEH-031</code>).</p>\n"
+    },
+    {
+      "slug": "veh-025",
+      "parent": "vehicles",
+      "title": "VEH-025 — Stranded Vehicles",
+      "kind": "rule",
+      "rule": "VEH-025",
+      "doc": "08-vehicles.md",
+      "source_line": 291,
+      "body_html": "<p>A vehicle that enters a drop deeper than its Terrain Threshold becomes <strong>stranded</strong> and is Immobilized (<code>VEH-019</code>).</p>\n<p>Its position in the depression represents the state; no marker is used (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-016\" class=\"rule-reference\">CORE-016</a>).</p>\n<p>A stranded vehicle cannot be freed.</p>\n<p>Hover vehicles cannot be stranded (<code>VEH-024</code>).</p>\n"
+    },
+    {
+      "slug": "veh-026",
+      "parent": "vehicles",
+      "title": "VEH-026 — Vehicle Falling",
+      "kind": "rule",
+      "rule": "VEH-026",
+      "doc": "08-vehicles.md",
+      "source_line": 303,
+      "body_html": "<p>A vehicle that leaves a height without using a slope or ramp falls.</p>\n<p>Measure the fall from the surface left to the surface reached, in plate layers (<code>07-movement.md</code>, <a href=\"/movement/move-015\" class=\"rule-reference\">MOVE-015</a>).</p>\n<p>A fall no deeper than the Terrain Threshold causes no damage.</p>\n<p>Beyond the threshold, roll one D6 for every complete brick (3 plate layers) of additional fall. Each roll is a Damage Roll (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-014\" class=\"rule-reference\">DMG-014</a>):</p>\n<ul>\n<li>4–6: no effect</li>\n<li>1–3: one component advances one state</li>\n</ul>\n<p>Each failed roll is assigned to a component physically touching the ground when the vehicle lands. The controlling player chooses the component.</p>\n<p>Failures beyond the number of eligible components are lost.</p>\n<p>Crew and passengers are never harmed by a vehicle's fall.</p>\n<p>Hover vehicles take no falling damage.</p>\n<p>Infantry may disembark from a vehicle at the bottom of a drop (<code>09-transport.md</code>, <a href=\"/transport/trn-006\" class=\"rule-reference\">TRN-006</a>), but the drop's walls remain ordinary terrain (<code>17-infantry.md</code>, <a href=\"/infantry/inf-008\" class=\"rule-reference\">INF-008</a>).</p>\n"
+    },
+    {
+      "slug": "veh-027",
+      "parent": "vehicles",
+      "title": "VEH-027 — Vehicle Ascent",
+      "kind": "rule",
+      "rule": "VEH-027",
+      "doc": "08-vehicles.md",
+      "source_line": 328,
+      "body_html": "<p>A vehicle may cross a rise no greater than its Terrain Threshold (<code>VEH-021</code>) directly.</p>\n<p>A greater rise requires a slope or ramp covering the entire rise and resting on both surfaces. The angle is not measured (<code>07-movement.md</code>, <a href=\"/movement/move-012\" class=\"rule-reference\">MOVE-012</a>; <code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-021\" class=\"rule-reference\">CMP-021</a>).</p>\n<p>If no suitable slope or ramp exists, the rise is impassable.</p>\n<p>A stepped surface is a chain of such rises, each read on its own (<code>07-movement.md</code>, <a href=\"/movement/move-013\" class=\"rule-reference\">MOVE-013</a>).</p>\n<p>A vehicle descending a full slope or ramp is driving, not falling. Any other descent is a fall (<code>VEH-026</code>).</p>\n"
+    },
+    {
+      "slug": "veh-029",
+      "parent": "vehicles",
+      "title": "VEH-029 — Where Height Is Counted From",
+      "kind": "rule",
+      "rule": "VEH-029",
+      "doc": "08-vehicles.md",
+      "source_line": 342,
+      "body_html": "<p>Vehicle height is measured from the surface the vehicle rests on when standing on its own locomotion to its highest point.</p>\n<p>Locomotion counts.</p>\n<p>A vehicle carried inside another vehicle is measured as it would stand on its own, against the agreed Deployment Volume ceiling (<code>06-deployment.md</code>, <a href=\"/deployment/dep-001\" class=\"rule-reference\">DEP-001</a>; <code>09-transport.md</code>, <a href=\"/transport/trn-001\" class=\"rule-reference\">TRN-001</a>, <a href=\"/transport/trn-003\" class=\"rule-reference\">TRN-003</a>).</p>\n<p>Terrain does not change a vehicle's legal height. A vehicle on a hill, in a depression or on a ramp is not remeasured.</p>\n<p>Height is measured vertically, never along a leaning element.</p>\n<p>Terrain capability is still read from the relevant locomotion component (<code>VEH-022</code> through <code>VEH-024</code>).</p>\n"
+    },
+    {
+      "slug": "veh-030",
+      "parent": "vehicles",
+      "title": "VEH-030 — What Counts Toward Height",
+      "kind": "rule",
+      "rule": "VEH-030",
+      "doc": "08-vehicles.md",
+      "source_line": 358,
+      "body_html": "<p>Vehicle height is measured to the highest point of its <strong>Gameplay Geometry</strong> (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-001\" class=\"rule-reference\">GEO-001</a>).</p>\n<p>Visual Geometry does not affect the height limit.</p>\n<table>\n<thead>\n<tr>\n<th>Element</th>\n<th>Layer</th>\n<th>Counts</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Bare mast, flag, ornament, non-functional antenna</td>\n<td>Visual</td>\n<td>No</td>\n</tr>\n<tr>\n<td>Mast carrying an observation post</td>\n<td>Gameplay</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Turret mounting a weapon</td>\n<td>Gameplay</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Superstructure holding a crew station</td>\n<td>Gameplay</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Transport space</td>\n<td>Gameplay</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Decorative armour</td>\n<td>Visual</td>\n<td>No</td>\n</tr>\n</tbody>\n</table>\n<p>Movable Gameplay Geometry is measured in its highest position during play.</p>\n<p>Models carried outside a vehicle are not embarked and count toward vehicle height. They also occupy their own Deployment Volume space (<code>06-deployment.md</code>, <a href=\"/deployment/dep-006\" class=\"rule-reference\">DEP-006</a>).</p>\n<p>Adding Visual Geometry does not change vehicle height or legality.</p>\n"
+    },
+    {
+      "slug": "veh-031",
+      "parent": "vehicles",
+      "title": "VEH-031 — What Damage Does to Movement",
+      "kind": "rule",
+      "rule": "VEH-031",
+      "doc": "08-vehicles.md",
+      "source_line": 381,
+      "body_html": "<p>If one or more, but fewer than half, of a vehicle's locomotion components are Dead (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-002\" class=\"rule-reference\">DMG-002</a>), its movement is reduced to <strong>twice its own length</strong> per movement action instead of three times (<code>VEH-004</code>).</p>\n<p>If half or more of them are Dead, the vehicle cannot move and is Immobilized (<code>VEH-019</code>).</p>\n<p>A vehicle with a Wounded Pilot (<code>VEH-013</code>) is also reduced to twice its length, unless it cannot move for another reason.</p>\n<p>Facing, measurement and Action Point cost are unchanged.</p>\n<table>\n<thead>\n<tr>\n<th>Vehicle</th>\n<th style=\"text-align:right\">Normal</th>\n<th style=\"text-align:right\">Reduced</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Bike</td>\n<td style=\"text-align:right\">18 studs</td>\n<td style=\"text-align:right\">12 studs</td>\n</tr>\n<tr>\n<td>Buggy</td>\n<td style=\"text-align:right\">24 studs</td>\n<td style=\"text-align:right\">16 studs</td>\n</tr>\n<tr>\n<td>Jeep</td>\n<td style=\"text-align:right\">27 studs</td>\n<td style=\"text-align:right\">18 studs</td>\n</tr>\n<tr>\n<td>Tank</td>\n<td style=\"text-align:right\">45 studs</td>\n<td style=\"text-align:right\">30 studs</td>\n</tr>\n<tr>\n<td>Heavy Transport</td>\n<td style=\"text-align:right\">72 studs</td>\n<td style=\"text-align:right\">48 studs</td>\n</tr>\n</tbody>\n</table>\n<p>A Wounded locomotion component does not change movement distance.</p>\n<p>A locomotion component provides the vehicle's movement or its support against the battlefield — wheels, tracks, legs, repulsors (<code>VEH-012</code>). The test is what the component does, not what type the vehicle is. Decorative parts are not locomotion (<code>15-geometry-layers.md</code>, <a href=\"/geometry-layers/geo-002\" class=\"rule-reference\">GEO-002</a>) and are not counted.</p>\n<p>Examples:</p>\n<table>\n<thead>\n<tr>\n<th>Locomotion</th>\n<th>1 Dead</th>\n<th>2 Dead</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>2 wheels</td>\n<td>cannot move</td>\n<td>—</td>\n</tr>\n<tr>\n<td>4 wheels</td>\n<td>reduced</td>\n<td>cannot move</td>\n</tr>\n<tr>\n<td>2 tracks</td>\n<td>cannot move</td>\n<td>—</td>\n</tr>\n<tr>\n<td>4 walker legs</td>\n<td>reduced</td>\n<td>cannot move</td>\n</tr>\n<tr>\n<td>4 repulsors</td>\n<td>reduced</td>\n<td>cannot move</td>\n</tr>\n</tbody>\n</table>\n"
+    },
+    {
+      "slug": "transport",
+      "parent": null,
+      "title": "Transport",
+      "kind": "document",
+      "rule": null,
+      "doc": "09-transport.md",
+      "source_line": null,
+      "intro": "Carrying units: capacity, clearance, and access.",
+      "entries": [
+        {
+          "rule": "TRN-001",
+          "title": "Unit Base Occupancy",
+          "slug": "trn-001"
+        },
+        {
+          "rule": "TRN-002",
+          "title": "Infantry Occupancy",
+          "slug": "trn-002"
+        },
+        {
+          "rule": "TRN-003",
+          "title": "Cargo Capacity",
+          "slug": "trn-003"
+        },
+        {
+          "rule": "TRN-004",
+          "title": "Interior Layout",
+          "slug": "trn-004"
+        },
+        {
+          "rule": "TRN-005",
+          "title": "Embarking",
+          "slug": "trn-005"
+        },
+        {
+          "rule": "TRN-006",
+          "title": "Disembarking",
+          "slug": "trn-006"
+        },
+        {
+          "rule": "TRN-007",
+          "title": "Access Points",
+          "slug": "trn-007"
+        },
+        {
+          "rule": "TRN-008",
+          "title": "Opening and Closing",
+          "slug": "trn-008"
+        },
+        {
+          "rule": "TRN-009",
+          "title": "Open Transport",
+          "slug": "trn-009"
+        },
+        {
+          "rule": "TRN-010",
+          "title": "Closed Transport",
+          "slug": "trn-010"
+        },
+        {
+          "rule": "TRN-011",
+          "title": "Firing Ports",
+          "slug": "trn-011"
+        },
+        {
+          "rule": "TRN-012",
+          "title": "Transparent Elements",
+          "slug": "trn-012"
+        },
+        {
+          "rule": "TRN-013",
+          "title": "Cargo",
+          "slug": "trn-013"
+        },
+        {
+          "rule": "TRN-014",
+          "title": "Crew Compartments",
+          "slug": "trn-014"
+        },
+        {
+          "rule": "TRN-015",
+          "title": "Emergency Exit",
+          "slug": "trn-015"
+        },
+        {
+          "rule": "TRN-016",
+          "title": "Destroyed Access Points",
+          "slug": "trn-016"
+        },
+        {
+          "rule": "TRN-017",
+          "title": "Interior Design Matters",
+          "slug": "trn-017"
+        },
+        {
+          "rule": "TRN-018",
+          "title": "Mobile Terrain",
+          "slug": "trn-018"
+        },
+        {
+          "rule": "TRN-019",
+          "title": "Interior Clearance",
+          "slug": "trn-019"
+        },
+        {
+          "rule": "TRN-020",
+          "title": "Interior Levels",
+          "slug": "trn-020"
+        },
+        {
+          "rule": "TRN-021",
+          "title": "An Embarked Model Is Its Own Unit",
+          "slug": "trn-021"
+        }
+      ]
+    },
+    {
+      "slug": "trn-001",
+      "parent": "transport",
+      "title": "TRN-001 — Unit Base Occupancy",
+      "kind": "rule",
+      "rule": "TRN-001",
+      "doc": "09-transport.md",
+      "source_line": 23,
+      "body_html": "<p>Every transported object occupies one or more Unit Bases, except cargo, which may occupy a fraction of one (<code>TRN-013</code>).</p>\n<p>See <code>02-core-rules.md</code> (<a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>) for the Unit Base definition.</p>\n<p>Examples:</p>\n<ul>\n<li>Infantry: 1 UB</li>\n<li>Motorcycle: 2 UB</li>\n<li>Walker: its footprint</li>\n<li>Cargo: its physical volume</li>\n</ul>\n"
+    },
+    {
+      "slug": "trn-002",
+      "parent": "transport",
+      "title": "TRN-002 — Infantry Occupancy",
+      "kind": "rule",
+      "rule": "TRN-002",
+      "doc": "09-transport.md",
+      "source_line": 38,
+      "body_html": "<p>Every infantry model occupies exactly <strong>1 Unit Base</strong>, including its weapons and equipment (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-003\" class=\"rule-reference\">CORE-003</a>).</p>\n<p>Infantry never shares a Unit Base, regardless of posture.</p>\n"
+    },
+    {
+      "slug": "trn-003",
+      "parent": "transport",
+      "title": "TRN-003 — Cargo Capacity",
+      "kind": "rule",
+      "rule": "TRN-003",
+      "doc": "09-transport.md",
+      "source_line": 46,
+      "body_html": "<p>A transport's capacity is the Unit Base volume available inside its cargo compartment.</p>\n<p>Count the Unit Bases available on the compartment floor and apply its clear height (<code>TRN-019</code>).</p>\n<ul>\n<li>Infantry occupies 1 UB and never shares it (<code>TRN-002</code>).</li>\n<li>Cargo may share a UB vertically (<code>TRN-013</code>).</li>\n<li>A load is legal when its occupied volume does not exceed the available capacity.</li>\n</ul>\n<p>Example:</p>\n<p>A cargo bay measuring <code>2 × 4 UB</code> with one Unit Base of clear height provides <strong>8 UB</strong> of capacity.</p>\n"
+    },
+    {
+      "slug": "trn-004",
+      "parent": "transport",
+      "title": "TRN-004 — Interior Layout",
+      "kind": "rule",
+      "rule": "TRN-004",
+      "doc": "09-transport.md",
+      "source_line": 62,
+      "body_html": "<p>The interior layout of a transport determines its available space.</p>\n<p>Seats, benches, racks, lockers and other functional elements occupy physical space and may reduce capacity.</p>\n"
+    },
+    {
+      "slug": "trn-005",
+      "parent": "transport",
+      "title": "TRN-005 — Embarking",
+      "kind": "rule",
+      "rule": "TRN-005",
+      "doc": "09-transport.md",
+      "source_line": 70,
+      "body_html": "<p>Embarking costs <strong>1 Action Point</strong>.</p>\n<p>The unit must:</p>\n<ul>\n<li>Be adjacent to a functional access point.</li>\n<li>Use an open access point.</li>\n<li>Fit inside the transport (<code>TRN-001</code>, <code>TRN-019</code>).</li>\n</ul>\n<p>Place the unit inside the available transport space.</p>\n"
+    },
+    {
+      "slug": "trn-006",
+      "parent": "transport",
+      "title": "TRN-006 — Disembarking",
+      "kind": "rule",
+      "rule": "TRN-006",
+      "doc": "09-transport.md",
+      "source_line": 84,
+      "body_html": "<p>Disembarking costs <strong>1 Action Point</strong>.</p>\n<p>The unit must be placed adjacent to a functional access point with enough space to stand there.</p>\n<p>If no legal position is available, it cannot disembark.</p>\n"
+    },
+    {
+      "slug": "trn-007",
+      "parent": "transport",
+      "title": "TRN-007 — Access Points",
+      "kind": "rule",
+      "rule": "TRN-007",
+      "doc": "09-transport.md",
+      "source_line": 94,
+      "body_html": "<p>Only functional access points may be used.</p>\n<p>An access point must physically pass the models that use it (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n<p>Examples:</p>\n<ul>\n<li>Doors</li>\n<li>Rear ramps</li>\n<li>Side hatches</li>\n<li>Roof hatches</li>\n</ul>\n"
+    },
+    {
+      "slug": "trn-008",
+      "parent": "transport",
+      "title": "TRN-008 — Opening and Closing",
+      "kind": "rule",
+      "rule": "TRN-008",
+      "doc": "09-transport.md",
+      "source_line": 109,
+      "body_html": "<p>Opening or closing an access point costs <strong>1 Action Point</strong> (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-007\" class=\"rule-reference\">CORE-007</a>).</p>\n<p>The component must physically move.</p>\n"
+    },
+    {
+      "slug": "trn-009",
+      "parent": "transport",
+      "title": "TRN-009 — Open Transport",
+      "kind": "rule",
+      "rule": "TRN-009",
+      "doc": "09-transport.md",
+      "source_line": 117,
+      "body_html": "<p>A transport is open when its passengers are physically visible.</p>\n<p>Visible passengers:</p>\n<ul>\n<li>May be targeted.</li>\n<li>May attack.</li>\n<li>Follow normal line of sight rules (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-008\" class=\"rule-reference\">CORE-008</a>, <a href=\"/core-rules/core-009\" class=\"rule-reference\">CORE-009</a>).</li>\n</ul>\n<p>Examples:</p>\n<ul>\n<li>Jeep</li>\n<li>Truck</li>\n<li>Hover platform</li>\n<li>Open boat</li>\n<li>Flatbed vehicle</li>\n</ul>\n"
+    },
+    {
+      "slug": "trn-010",
+      "parent": "transport",
+      "title": "TRN-010 — Closed Transport",
+      "kind": "rule",
+      "rule": "TRN-010",
+      "doc": "09-transport.md",
+      "source_line": 137,
+      "body_html": "<p>A transport is closed when its passengers are completely enclosed.</p>\n<p>Passengers inside:</p>\n<ul>\n<li>Cannot be targeted directly.</li>\n<li>Cannot attack unless they have physical line of sight through an opening.</li>\n</ul>\n<p>The vehicle's construction protects its passengers according to the Component Damage System (<code>16-damage-system.md</code>).</p>\n"
+    },
+    {
+      "slug": "trn-011",
+      "parent": "transport",
+      "title": "TRN-011 — Firing Ports",
+      "kind": "rule",
+      "rule": "TRN-011",
+      "doc": "09-transport.md",
+      "source_line": 150,
+      "body_html": "<p>A transport may provide firing ports through:</p>\n<ul>\n<li>Windows</li>\n<li>Gun ports</li>\n<li>Roof hatches</li>\n<li>Observation slits</li>\n</ul>\n<p>A passenger may attack through an opening only if it has physical line of sight to the target.</p>\n<p>The opening determines the available firing arc.</p>\n<p>A firing port does not need to pass a model (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a>).</p>\n<p>A component serving as both a firing port and an access point must satisfy <a href=\"/construction-components/cmp-018\" class=\"rule-reference\">CMP-018</a> in its access-point role.</p>\n"
+    },
+    {
+      "slug": "trn-012",
+      "parent": "transport",
+      "title": "TRN-012 — Transparent Elements",
+      "kind": "rule",
+      "rule": "TRN-012",
+      "doc": "09-transport.md",
+      "source_line": 169,
+      "body_html": "<p>Transparent LEGO elements may represent windows or viewports (<code>05-construction-components.md</code>, <a href=\"/construction-components/cmp-022\" class=\"rule-reference\">CMP-022</a>).</p>\n<p>They do not block line of sight when transparent (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-008\" class=\"rule-reference\">CORE-008</a>).</p>\n"
+    },
+    {
+      "slug": "trn-013",
+      "parent": "transport",
+      "title": "TRN-013 — Cargo",
+      "kind": "rule",
+      "rule": "TRN-013",
+      "doc": "09-transport.md",
+      "source_line": 177,
+      "body_html": "<p>Cargo occupies physical volume and may share a Unit Base vertically.</p>\n<p>A Unit Base may be divided into slices according to cargo height. The total height of cargo sharing one Unit Base cannot exceed its 13 plate layers (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>).</p>\n<p>Cargo narrower than <code>4 × 3</code> studs still occupies a full horizontal slice. Sharing is therefore vertical only.</p>\n<p>Cargo covering multiple Unit Bases occupies the corresponding slice in each one.</p>\n<p>Examples:</p>\n<ul>\n<li>A 4-plate crate occupies 4/13 UB.</li>\n<li>Three 4-plate crates fit in one UB.</li>\n<li>A 13-plate cargo object occupies one full UB.</li>\n<li>Infantry never shares a UB (<code>TRN-002</code>).</li>\n</ul>\n<p>Cargo and passengers use the same available transport volume.</p>\n"
+    },
+    {
+      "slug": "trn-014",
+      "parent": "transport",
+      "title": "TRN-014 — Crew Compartments",
+      "kind": "rule",
+      "rule": "TRN-014",
+      "doc": "09-transport.md",
+      "source_line": 198,
+      "body_html": "<p>Crew members occupy their own Unit Bases.</p>\n<p>A crew position is separate from passenger capacity.</p>\n<p>A driver position therefore requires its own space in addition to cargo or passenger space.</p>\n"
+    },
+    {
+      "slug": "trn-015",
+      "parent": "transport",
+      "title": "TRN-015 — Emergency Exit",
+      "kind": "rule",
+      "rule": "TRN-015",
+      "doc": "09-transport.md",
+      "source_line": 208,
+      "body_html": "<p>If an access point becomes unusable, passengers may use any remaining functional access point.</p>\n<p>If none remain, they cannot disembark.</p>\n"
+    },
+    {
+      "slug": "trn-016",
+      "parent": "transport",
+      "title": "TRN-016 — Destroyed Access Points",
+      "kind": "rule",
+      "rule": "TRN-016",
+      "doc": "09-transport.md",
+      "source_line": 216,
+      "body_html": "<p>A destroyed access point permanently changes the vehicle's available access.</p>\n<p>Examples:</p>\n<ul>\n<li>Blown-off door</li>\n<li>Jammed hatch</li>\n<li>Destroyed ramp</li>\n</ul>\n<p>The model should represent the change whenever possible.</p>\n"
+    },
+    {
+      "slug": "trn-017",
+      "parent": "transport",
+      "title": "TRN-017 — Interior Design Matters",
+      "kind": "rule",
+      "rule": "TRN-017",
+      "doc": "09-transport.md",
+      "source_line": 230,
+      "body_html": "<p>Interior construction affects transport capacity and operation.</p>\n<p>Examples:</p>\n<ul>\n<li>Benches reduce available space.</li>\n<li>Wide corridors provide easier access.</li>\n<li>Multiple exits provide alternative access points.</li>\n<li>Large ramps provide access to larger models.</li>\n</ul>\n"
+    },
+    {
+      "slug": "trn-018",
+      "parent": "transport",
+      "title": "TRN-018 — Mobile Terrain",
+      "kind": "rule",
+      "rule": "TRN-018",
+      "doc": "09-transport.md",
+      "source_line": 243,
+      "body_html": "<p>Transport vehicles are battlefield terrain.</p>\n<p>Their:</p>\n<ul>\n<li>Doors</li>\n<li>Windows</li>\n<li>Roofs</li>\n<li>Walls</li>\n<li>Hatches</li>\n<li>Ramps</li>\n</ul>\n<p>may interact with units and movement according to the rules governing those elements.</p>\n"
+    },
+    {
+      "slug": "trn-019",
+      "parent": "transport",
+      "title": "TRN-019 — Interior Clearance",
+      "kind": "rule",
+      "rule": "TRN-019",
+      "doc": "09-transport.md",
+      "source_line": 260,
+      "body_html": "<p>A model fits inside a transport only if the Unit Base volume it occupies can physically fit within the available space (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>).</p>\n<p>Measure clear height from the surface the model rests on to the obstruction above it.</p>\n<ul>\n<li>Infantry and crew require <strong>1 UB</strong> of clear height.</li>\n<li>Cargo requires only its own height (<code>TRN-013</code>).</li>\n<li>Benches, roofs, racks, beams and other elements reduce available space.</li>\n<li>An open position has no upper clearance requirement.</li>\n</ul>\n<p>A compartment shorter than 1 UB of clear height cannot carry infantry or crew.</p>\n"
+    },
+    {
+      "slug": "trn-020",
+      "parent": "transport",
+      "title": "TRN-020 — Interior Levels",
+      "kind": "rule",
+      "rule": "TRN-020",
+      "doc": "09-transport.md",
+      "source_line": 275,
+      "body_html": "<p>A vehicle may have multiple interior levels.</p>\n<p>Each level requires <strong>1 Unit Base of clear height</strong> above its own floor (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>).</p>\n<p>Each floor above the lowest adds its own physical thickness.</p>\n<table>\n<thead>\n<tr>\n<th>Levels</th>\n<th style=\"text-align:right\">Minimum height above lowest floor</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td style=\"text-align:right\">1 UB</td>\n</tr>\n<tr>\n<td>2</td>\n<td style=\"text-align:right\">2 UB + 1 plate</td>\n</tr>\n<tr>\n<td>3</td>\n<td style=\"text-align:right\">3 UB + 2 plates</td>\n</tr>\n</tbody>\n</table>\n<p>Each level has its own cargo capacity and clearance (<code>TRN-003</code>, <code>TRN-019</code>).</p>\n<p>The number of levels a vehicle can contain is limited by its construction and deployment height agreement.</p>\n"
+    },
+    {
+      "slug": "trn-021",
+      "parent": "transport",
+      "title": "TRN-021 — An Embarked Model Is Its Own Unit",
+      "kind": "rule",
+      "rule": "TRN-021",
+      "doc": "09-transport.md",
+      "source_line": 295,
+      "body_html": "<p>A model a vehicle carries, or is about to carry, remains its own unit. It activates in its own right and receives its own Action Points (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>).</p>\n<p>Those are the Action Points it spends to embark (<code>TRN-005</code>), to disembark (<code>TRN-006</code>), and to open or close the access point it uses (<code>TRN-008</code>).</p>\n<p>While embarked it counts as part of its transport for Deployment Volume (<code>06-deployment.md</code>, <a href=\"/deployment/dep-006\" class=\"rule-reference\">DEP-006</a>). Carried on the outside it is not embarked, and occupies its own (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-030\" class=\"rule-reference\">VEH-030</a>).</p>\n"
+    },
+    {
+      "slug": "weapons",
+      "parent": null,
+      "title": "Weapons",
+      "kind": "document",
+      "rule": null,
+      "doc": "10-weapons.md",
+      "source_line": null,
+      "intro": "Reading a weapon's profile off the model that carries it.",
+      "entries": [
+        {
+          "rule": "WPN-001",
+          "title": "Functional Weapon",
+          "slug": "wpn-001"
+        },
+        {
+          "rule": "WPN-002",
+          "title": "Functional Muzzle",
+          "slug": "wpn-002"
+        },
+        {
+          "rule": "WPN-003",
+          "title": "Weapon Dimensions",
+          "slug": "wpn-003"
+        },
+        {
+          "rule": "WPN-004",
+          "title": "Weapon Capacity",
+          "slug": "wpn-004"
+        },
+        {
+          "rule": "WPN-005",
+          "title": "Weapon Range",
+          "slug": "wpn-005"
+        },
+        {
+          "rule": "WPN-006",
+          "title": "Rate of Fire",
+          "slug": "wpn-006"
+        },
+        {
+          "rule": "WPN-007",
+          "title": "Muzzle Adjacency",
+          "slug": "wpn-007"
+        },
+        {
+          "rule": "WPN-008",
+          "title": "Weapon Systems",
+          "slug": "wpn-008"
+        },
+        {
+          "rule": "WPN-009",
+          "title": "Weapon Mounts",
+          "slug": "wpn-009"
+        },
+        {
+          "rule": "WPN-010",
+          "title": "Infantry Weapons",
+          "slug": "wpn-010"
+        },
+        {
+          "rule": "WPN-011",
+          "title": "Vehicle Weapons",
+          "slug": "wpn-011"
+        },
+        {
+          "rule": "WPN-012",
+          "title": "Line of Fire",
+          "slug": "wpn-012"
+        },
+        {
+          "rule": "WPN-014",
+          "title": "Multiple Weapons",
+          "slug": "wpn-014"
+        },
+        {
+          "rule": "WPN-015",
+          "title": "Decorative Weapons",
+          "slug": "wpn-015"
+        },
+        {
+          "rule": "WPN-016",
+          "title": "Weapon Damage",
+          "slug": "wpn-016"
+        },
+        {
+          "rule": "WPN-018",
+          "title": "Weapon Proportion",
+          "slug": "wpn-018"
+        },
+        {
+          "rule": "WPN-019",
+          "title": "Weapon Front Footprint",
+          "slug": "wpn-019"
+        },
+        {
+          "rule": "WPN-020",
+          "title": "Muzzle Placement",
+          "slug": "wpn-020"
+        },
+        {
+          "rule": "WPN-021",
+          "title": "Impact Strength",
+          "slug": "wpn-021"
+        }
+      ]
+    },
+    {
+      "slug": "wpn-001",
+      "parent": "weapons",
+      "title": "WPN-001 — Functional Weapon",
+      "kind": "rule",
+      "rule": "WPN-001",
+      "doc": "10-weapons.md",
+      "source_line": 34,
+      "body_html": "<p>A weapon is any LEGO construction capable of making an attack.</p>\n<p>Every ranged weapon must include:</p>\n<ul>\n<li>A weapon body carrying the muzzle or striking end.</li>\n<li>At least one functional muzzle (<a href=\"/weapons/wpn-002\" class=\"rule-reference\">WPN-002</a>).</li>\n<li>A physical mounting point.</li>\n</ul>\n<p>Melee weapons replace the muzzle with a functional striking end, as defined in <code>12-melee.md</code> (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>).</p>\n<p>Weapons that do not satisfy these conditions are decorative.</p>\n"
+    },
+    {
+      "slug": "wpn-002",
+      "parent": "weapons",
+      "title": "WPN-002 — Functional Muzzle",
+      "kind": "rule",
+      "rule": "WPN-002",
+      "doc": "10-weapons.md",
+      "source_line": 50,
+      "body_html": "<p>A functional muzzle is a round construction area on the Weapon Front. Common sizes include:</p>\n<ul>\n<li>1×1</li>\n<li>2×2</li>\n<li>3×3</li>\n<li>4×4</li>\n</ul>\n<p>This list is illustrative, not a limit. A muzzle may be any size that physically fits its Weapon Front Footprint (<a href=\"/weapons/wpn-019\" class=\"rule-reference\">WPN-019</a>).</p>\n<p>Square or rectangular pieces do not represent functional muzzles. The muzzle must be visibly round, whether made from a single piece or several pieces.</p>\n<p>Each functional muzzle represents one firing barrel.</p>\n<p>Muzzle size determines Impact Strength (<a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>).</p>\n<p>Melee weapons use a functional striking end in place of a muzzle, as defined in <code>12-melee.md</code> (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>).</p>\n"
+    },
+    {
+      "slug": "wpn-003",
+      "parent": "weapons",
+      "title": "WPN-003 — Weapon Dimensions",
+      "kind": "rule",
+      "rule": "WPN-003",
+      "doc": "10-weapons.md",
+      "source_line": 71,
+      "body_html": "<p>Weapon Length is the longest dimension of the functional Weapon Body, measured along its firing axis. Weapon Width is the side of the Weapon Body's front face, which is built square.</p>\n<p>Mounting hardware and decorative elements are ignored.</p>\n"
+    },
+    {
+      "slug": "wpn-004",
+      "parent": "weapons",
+      "title": "WPN-004 — Weapon Capacity",
+      "kind": "rule",
+      "rule": "WPN-004",
+      "doc": "10-weapons.md",
+      "source_line": 79,
+      "body_html": "<p>The sum of the Weapon Length of every weapon mounted on a platform may not exceed the platform's longest horizontal dimension.</p>\n<p><strong>Σ(Weapon Length) ≤ Platform Length</strong></p>\n<p>Platform Length is the largest horizontal dimension of the Unit Base or vehicle carrying the weapons.</p>\n<p>Examples:</p>\n<p><strong>Infantry — 1 UB, 4 × 3 studs</strong></p>\n<p>Valid:</p>\n<ul>\n<li>One weapon, length 4.</li>\n<li>Two weapons, length 2 each.</li>\n<li>One weapon length 3 plus one weapon length 1.</li>\n</ul>\n<p>Invalid:</p>\n<ul>\n<li>Two weapons, length 4 each.</li>\n</ul>\n<p><strong>Jeep — 2 × 3 UB, 8 × 9 studs</strong></p>\n<p>Valid:</p>\n<ul>\n<li>One weapon, length 9.</li>\n<li>Two weapons, length 4 each.</li>\n<li>Three weapons, length 3 each.</li>\n<li>One weapon length 5 plus two weapons length 2.</li>\n</ul>\n<p>Invalid:</p>\n<ul>\n<li>Two weapons, length 9 each.</li>\n<li>Three weapons, length 4 each.</li>\n</ul>\n"
+    },
+    {
+      "slug": "wpn-005",
+      "parent": "weapons",
+      "title": "WPN-005 — Weapon Range",
+      "kind": "rule",
+      "rule": "WPN-005",
+      "doc": "10-weapons.md",
+      "source_line": 117,
+      "body_html": "<p>Weapon Range equals <strong>Weapon Length × 6</strong>.</p>\n<table>\n<thead>\n<tr>\n<th>Weapon Length</th>\n<th style=\"text-align:right\">Maximum Range</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>2 studs</td>\n<td style=\"text-align:right\">12 studs</td>\n</tr>\n<tr>\n<td>4 studs</td>\n<td style=\"text-align:right\">24 studs</td>\n</tr>\n<tr>\n<td>6 studs</td>\n<td style=\"text-align:right\">36 studs</td>\n</tr>\n<tr>\n<td>8 studs</td>\n<td style=\"text-align:right\">48 studs</td>\n</tr>\n<tr>\n<td>12 studs</td>\n<td style=\"text-align:right\">72 studs</td>\n</tr>\n</tbody>\n</table>\n<p>Line of Sight remains a physical check (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-008\" class=\"rule-reference\">CORE-008</a>), so maximum range is only relevant where that distance is unobstructed.</p>\n"
+    },
+    {
+      "slug": "wpn-006",
+      "parent": "weapons",
+      "title": "WPN-006 — Rate of Fire",
+      "kind": "rule",
+      "rule": "WPN-006",
+      "doc": "10-weapons.md",
+      "source_line": 133,
+      "body_html": "<p>Each functional muzzle grants <strong>1 Attack Die (D6)</strong>.</p>\n<p>Muzzle size affects Impact Strength (<a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>), not the number of dice.</p>\n<p>Each die is resolved as an Attack Roll (<code>11-combat.md</code>, <a href=\"/combat/cbt-005\" class=\"rule-reference\">CBT-005</a>):</p>\n<ul>\n<li>4–6: the shot generates one Impact.</li>\n<li>1–3: the die produces nothing.</li>\n</ul>\n<table>\n<thead>\n<tr>\n<th style=\"text-align:right\">Functional Muzzles</th>\n<th style=\"text-align:right\">Attack Dice</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align:right\">1</td>\n<td style=\"text-align:right\">1</td>\n</tr>\n<tr>\n<td style=\"text-align:right\">2</td>\n<td style=\"text-align:right\">2</td>\n</tr>\n<tr>\n<td style=\"text-align:right\">3</td>\n<td style=\"text-align:right\">3</td>\n</tr>\n<tr>\n<td style=\"text-align:right\">4</td>\n<td style=\"text-align:right\">4</td>\n</tr>\n<tr>\n<td style=\"text-align:right\">6</td>\n<td style=\"text-align:right\">6</td>\n</tr>\n</tbody>\n</table>\n<p>A Wounded weapon still grants one die per muzzle; the dice are resolved differently as defined in <code>11-combat.md</code> (<a href=\"/combat/cbt-015\" class=\"rule-reference\">CBT-015</a>).</p>\n"
+    },
+    {
+      "slug": "wpn-007",
+      "parent": "weapons",
+      "title": "WPN-007 — Muzzle Adjacency",
+      "kind": "rule",
+      "rule": "WPN-007",
+      "doc": "10-weapons.md",
+      "source_line": 156,
+      "body_html": "<p>Functional muzzles may be placed directly adjacent to one another.</p>\n<p>No minimum separation is required.</p>\n<p>Muzzles may not overlap (<a href=\"/weapons/wpn-020\" class=\"rule-reference\">WPN-020</a>).</p>\n"
+    },
+    {
+      "slug": "wpn-008",
+      "parent": "weapons",
+      "title": "WPN-008 — Weapon Systems",
+      "kind": "rule",
+      "rule": "WPN-008",
+      "doc": "10-weapons.md",
+      "source_line": 166,
+      "body_html": "<p>Each independently mounted weapon is a separate weapon system.</p>\n<p>For example, a tank with a main cannon, coaxial machine gun and roof machine gun has three weapon systems.</p>\n<p>Targeting rules are defined in <code>11-combat.md</code> (<a href=\"/combat/cbt-006\" class=\"rule-reference\">CBT-006</a>, <a href=\"/combat/cbt-007\" class=\"rule-reference\">CBT-007</a>).</p>\n"
+    },
+    {
+      "slug": "wpn-009",
+      "parent": "weapons",
+      "title": "WPN-009 — Weapon Mounts",
+      "kind": "rule",
+      "rule": "WPN-009",
+      "doc": "10-weapons.md",
+      "source_line": 176,
+      "body_html": "<p>Weapons must be physically attached to the model.</p>\n<p>Valid mounts include:</p>\n<ul>\n<li>Hands</li>\n<li>Turrets</li>\n<li>Hull mounts</li>\n<li>Pintle mounts</li>\n<li>Side mounts</li>\n</ul>\n<p>Floating weapons are not permitted.</p>\n"
+    },
+    {
+      "slug": "wpn-010",
+      "parent": "weapons",
+      "title": "WPN-010 — Infantry Weapons",
+      "kind": "rule",
+      "rule": "WPN-010",
+      "doc": "10-weapons.md",
+      "source_line": 192,
+      "body_html": "<p>Infantry weapons must be carried by the minifigure in its two hands (<code>17-infantry.md</code>, <a href=\"/infantry/inf-001\" class=\"rule-reference\">INF-001</a>).</p>\n<p>One-handed weapons occupy one hand.</p>\n<p>Two-handed weapons occupy both.</p>\n<p>The model determines what the unit can use.</p>\n"
+    },
+    {
+      "slug": "wpn-011",
+      "parent": "weapons",
+      "title": "WPN-011 — Vehicle Weapons",
+      "kind": "rule",
+      "rule": "WPN-011",
+      "doc": "10-weapons.md",
+      "source_line": 204,
+      "body_html": "<p>Vehicle weapons must be permanently mounted.</p>\n<p>Examples include:</p>\n<ul>\n<li>Hull cannons</li>\n<li>Turret cannons</li>\n<li>Side weapons</li>\n<li>Roof weapons</li>\n</ul>\n<p>Weapon position determines its firing arc.</p>\n"
+    },
+    {
+      "slug": "wpn-012",
+      "parent": "weapons",
+      "title": "WPN-012 — Line of Fire",
+      "kind": "rule",
+      "rule": "WPN-012",
+      "doc": "10-weapons.md",
+      "source_line": 219,
+      "body_html": "<p>A weapon's Line of Fire follows the universal Line of Sight rule (<code>11-combat.md</code>, <a href=\"/combat/cbt-002\" class=\"rule-reference\">CBT-002</a>).</p>\n<p>It is determined from the attacker's point of view (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-008\" class=\"rule-reference\">CORE-008</a>), not from the muzzle itself.</p>\n<p>Buildings, terrain and vehicles block Line of Sight. Transparent elements do not.</p>\n"
+    },
+    {
+      "slug": "wpn-014",
+      "parent": "weapons",
+      "title": "WPN-014 — Multiple Weapons",
+      "kind": "rule",
+      "rule": "WPN-014",
+      "doc": "10-weapons.md",
+      "source_line": 229,
+      "body_html": "<p>A unit carrying multiple weapons may use them according to its available Action Points.</p>\n"
+    },
+    {
+      "slug": "wpn-015",
+      "parent": "weapons",
+      "title": "WPN-015 — Decorative Weapons",
+      "kind": "rule",
+      "rule": "WPN-015",
+      "doc": "10-weapons.md",
+      "source_line": 235,
+      "body_html": "<p>Decorative barrels, antennas, hoses and mechanical details have no gameplay effect.</p>\n<p>Only functional weapons and their functional muzzles count.</p>\n"
+    },
+    {
+      "slug": "wpn-016",
+      "parent": "weapons",
+      "title": "WPN-016 — Weapon Damage",
+      "kind": "rule",
+      "rule": "WPN-016",
+      "doc": "10-weapons.md",
+      "source_line": 243,
+      "body_html": "<p>Weapons do not have a damage value.</p>\n<p>Each successful Attack Die generates an Impact whose Strength is determined by the muzzle or striking end that produced it (<a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>).</p>\n<p>The effect of the Impact depends on the target's Resistance and the Geometry Check (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>, <a href=\"/damage-system/dmg-013\" class=\"rule-reference\">DMG-013</a>), followed by the Damage Roll (<a href=\"/damage-system/dmg-014\" class=\"rule-reference\">DMG-014</a>).</p>\n<p>Cover only determines whether the target can be selected (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-010\" class=\"rule-reference\">CORE-010</a>).</p>\n"
+    },
+    {
+      "slug": "wpn-018",
+      "parent": "weapons",
+      "title": "WPN-018 — Weapon Proportion",
+      "kind": "rule",
+      "rule": "WPN-018",
+      "doc": "10-weapons.md",
+      "source_line": 255,
+      "body_html": "<p>Weapon Length must be at least twice its Weapon Width.</p>\n<p><strong>Length ≥ 2 × Width</strong></p>\n<p>Valid examples:</p>\n<ul>\n<li>1×2</li>\n<li>1×4</li>\n<li>2×4</li>\n<li>2×6</li>\n<li>3×6</li>\n<li>4×8</li>\n</ul>\n<p>Invalid examples:</p>\n<ul>\n<li>2×2</li>\n<li>4×4</li>\n<li>6×6</li>\n</ul>\n"
+    },
+    {
+      "slug": "wpn-019",
+      "parent": "weapons",
+      "title": "WPN-019 — Weapon Front Footprint",
+      "kind": "rule",
+      "rule": "WPN-019",
+      "doc": "10-weapons.md",
+      "source_line": 278,
+      "body_html": "<p>Every weapon has exactly one Weapon Front: the only face from which it may fire.</p>\n<p>The Weapon Front is a square construction area whose dimensions equal the Weapon Width.</p>\n<p>Muzzles may only be placed within this footprint.</p>\n"
+    },
+    {
+      "slug": "wpn-020",
+      "parent": "weapons",
+      "title": "WPN-020 — Muzzle Placement",
+      "kind": "rule",
+      "rule": "WPN-020",
+      "doc": "10-weapons.md",
+      "source_line": 288,
+      "body_html": "<p>Every muzzle occupies a square footprint slot inside the Weapon Front Footprint (<a href=\"/weapons/wpn-019\" class=\"rule-reference\">WPN-019</a>).</p>\n<p>Rules:</p>\n<ul>\n<li>Muzzles must be round (<a href=\"/weapons/wpn-002\" class=\"rule-reference\">WPN-002</a>).</li>\n<li>Muzzles may not overlap.</li>\n<li>Every muzzle must fit entirely inside the Weapon Front Footprint.</li>\n<li>Unused footprint space is allowed.</li>\n<li>Muzzles may be adjacent to one another (<a href=\"/weapons/wpn-007\" class=\"rule-reference\">WPN-007</a>).</li>\n</ul>\n<p>The designer may arrange the muzzles in any valid configuration.</p>\n<p>Example:</p>\n<p>A Weapon Body 8 × 4 has a Weapon Width of 4 and therefore a 4 × 4 Weapon Front Footprint.</p>\n<p>Possible configurations include:</p>\n<p><strong>Twin Barrel</strong></p>\n<ul>\n<li>2 muzzles</li>\n<li>2 Attack Dice</li>\n<li>Impact Strength 3 each</li>\n</ul>\n<p><strong>Quad Barrel</strong></p>\n<ul>\n<li>4 muzzles</li>\n<li>4 Attack Dice</li>\n<li>Impact Strength 3 each</li>\n</ul>\n<p><strong>Heavy Cannon</strong></p>\n<ul>\n<li>1 muzzle</li>\n<li>1 Attack Die</li>\n<li>Impact Strength 6</li>\n</ul>\n<p><strong>Hybrid</strong></p>\n<ul>\n<li>1 muzzle of size 2</li>\n<li>2 muzzles of size 1</li>\n<li>3 Attack Dice</li>\n<li>Impact Strengths 6, 3 and 3</li>\n</ul>\n<p>No weapon profile is required. The physical configuration determines the result.</p>\n"
+    },
+    {
+      "slug": "wpn-021",
+      "parent": "weapons",
+      "title": "WPN-021 — Impact Strength",
+      "kind": "rule",
+      "rule": "WPN-021",
+      "doc": "10-weapons.md",
+      "source_line": 337,
+      "body_html": "<p>Impact Strength equals the muzzle size multiplied by 3.</p>\n<p>For melee weapons, use the size of the functional striking end (<code>12-melee.md</code>, <a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>).</p>\n<table>\n<thead>\n<tr>\n<th>Muzzle Size</th>\n<th style=\"text-align:right\">Impact Strength</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1×1</td>\n<td style=\"text-align:right\">3</td>\n</tr>\n<tr>\n<td>2×2</td>\n<td style=\"text-align:right\">6</td>\n</tr>\n<tr>\n<td>3×3</td>\n<td style=\"text-align:right\">9</td>\n</tr>\n<tr>\n<td>4×4</td>\n<td style=\"text-align:right\">12</td>\n</tr>\n<tr>\n<td>N×N</td>\n<td style=\"text-align:right\">3N</td>\n</tr>\n</tbody>\n</table>\n<p>A muzzle N studs wide produces an Impact Strength of 3N.</p>\n<p>A weapon with multiple muzzles of different sizes produces Attack Dice with different Impact Strengths. Each die uses the size of the muzzle that generated it.</p>\n<p>There is no fixed maximum Impact Strength. Larger muzzles require larger Weapon Front Footprints, Weapon Bodies and platforms.</p>\n"
+    },
+    {
+      "slug": "combat",
+      "parent": null,
+      "title": "Combat",
+      "kind": "document",
+      "rule": null,
+      "doc": "11-combat.md",
+      "source_line": null,
+      "intro": "Shooting: targets, rolls, and what an Impact does.",
+      "entries": [
+        {
+          "rule": "CBT-001",
+          "title": "Attack Sequence",
+          "slug": "cbt-001"
+        },
+        {
+          "rule": "CBT-002",
+          "title": "Line of Sight",
+          "slug": "cbt-002"
+        },
+        {
+          "rule": "CBT-003",
+          "title": "Weapon Range",
+          "slug": "cbt-003"
+        },
+        {
+          "rule": "CBT-004",
+          "title": "Attack Dice",
+          "slug": "cbt-004"
+        },
+        {
+          "rule": "CBT-005",
+          "title": "Attack Roll",
+          "slug": "cbt-005"
+        },
+        {
+          "rule": "CBT-006",
+          "title": "Independent Weapon Systems",
+          "slug": "cbt-006"
+        },
+        {
+          "rule": "CBT-007",
+          "title": "Multiple Targets",
+          "slug": "cbt-007"
+        },
+        {
+          "rule": "CBT-008",
+          "title": "Defender Resolution",
+          "slug": "cbt-008"
+        },
+        {
+          "rule": "CBT-009",
+          "title": "Physical State Changes",
+          "slug": "cbt-009"
+        },
+        {
+          "rule": "CBT-011",
+          "title": "No Damage Values",
+          "slug": "cbt-011"
+        },
+        {
+          "rule": "CBT-012",
+          "title": "Cover",
+          "slug": "cbt-012"
+        },
+        {
+          "rule": "CBT-013",
+          "title": "Armour",
+          "slug": "cbt-013"
+        },
+        {
+          "rule": "CBT-015",
+          "title": "Attacking While Wounded",
+          "slug": "cbt-015"
+        }
+      ]
+    },
+    {
+      "slug": "cbt-001",
+      "parent": "combat",
+      "title": "CBT-001 — Attack Sequence",
+      "kind": "rule",
+      "rule": "CBT-001",
+      "doc": "11-combat.md",
+      "source_line": 36,
+      "body_html": "<p>Every attack costs <strong>1 Action Point per weapon system attacking</strong> (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>), regardless of how many Attack Dice that weapon system generates.</p>\n<p>Ranged attacks follow:</p>\n<ol>\n<li>Declare the weapon system.</li>\n<li>Declare the target.</li>\n<li>Verify Line of Sight.</li>\n<li>Verify Weapon Range.</li>\n<li>Generate Attack Dice.</li>\n<li>Resolve the Attack Roll.</li>\n<li>Count successful Impacts.</li>\n<li>Defender resolves the Impacts.</li>\n<li>Apply physical model changes.</li>\n</ol>\n<p>For melee attacks, Line of Sight and Weapon Range are replaced by <strong>Physical Contact</strong> (<code>12-melee.md</code>, <a href=\"/melee/mel-001\" class=\"rule-reference\">MEL-001</a>, <a href=\"/melee/mel-014\" class=\"rule-reference\">MEL-014</a>). All later steps are identical.</p>\n"
+    },
+    {
+      "slug": "cbt-002",
+      "parent": "combat",
+      "title": "CBT-002 — Line of Sight",
+      "kind": "rule",
+      "rule": "CBT-002",
+      "doc": "11-combat.md",
+      "source_line": 56,
+      "body_html": "<p>Ranged attacks use the universal Physical Visibility rule (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-008\" class=\"rule-reference\">CORE-008</a>, <a href=\"/core-rules/core-009\" class=\"rule-reference\">CORE-009</a>).</p>\n<p>A target may be selected if any legal target area is physically visible from the attacker's point of view.</p>\n"
+    },
+    {
+      "slug": "cbt-003",
+      "parent": "combat",
+      "title": "CBT-003 — Weapon Range",
+      "kind": "rule",
+      "rule": "CBT-003",
+      "doc": "11-combat.md",
+      "source_line": 64,
+      "body_html": "<p>A ranged target must be within the weapon's maximum range:</p>\n<p><code>Range = Weapon Length × 6</code></p>\n<p>See <code>10-weapons.md</code>, <a href=\"/weapons/wpn-005\" class=\"rule-reference\">WPN-005</a>.</p>\n<p>Melee attacks do not use Weapon Range.</p>\n"
+    },
+    {
+      "slug": "cbt-004",
+      "parent": "combat",
+      "title": "CBT-004 — Attack Dice",
+      "kind": "rule",
+      "rule": "CBT-004",
+      "doc": "11-combat.md",
+      "source_line": 76,
+      "body_html": "<p>Each weapon system generates Attack Dice according to its weapon rules.</p>\n<p>For ranged weapons, each <strong>Functional Muzzle</strong> generates <strong>1 Attack Die (D6)</strong> (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-006\" class=\"rule-reference\">WPN-006</a>).</p>\n<p>For melee attacks, each independently wielded melee weapon generates <strong>1 Attack Die</strong> (<code>12-melee.md</code>, <a href=\"/melee/mel-003\" class=\"rule-reference\">MEL-003</a>).</p>\n<p>Example:</p>\n<pre><code class=\"language-text\">4 Functional Muzzles → 4 Attack Dice\n</code></pre>\n"
+    },
+    {
+      "slug": "cbt-005",
+      "parent": "combat",
+      "title": "CBT-005 — Attack Roll",
+      "kind": "rule",
+      "rule": "CBT-005",
+      "doc": "11-combat.md",
+      "source_line": 92,
+      "body_html": "<p>Each Attack Die is rolled independently.</p>\n<p>The result determines whether that die generates an Impact:</p>\n<table>\n<thead>\n<tr>\n<th>D6 Result</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>4–6</td>\n<td>1 Impact</td>\n</tr>\n<tr>\n<td>1–3</td>\n<td>No Impact</td>\n</tr>\n</tbody>\n</table>\n<p>Example:</p>\n<pre><code class=\"language-text\">Roll:    2  4  5  6\nResult:     3 Impacts\n</code></pre>\n<p>Each Attack Die can generate a maximum of <strong>1 Impact</strong>.</p>\n"
+    },
+    {
+      "slug": "cbt-006",
+      "parent": "combat",
+      "title": "CBT-006 — Independent Weapon Systems",
+      "kind": "rule",
+      "rule": "CBT-006",
+      "doc": "11-combat.md",
+      "source_line": 114,
+      "body_html": "<p>Each weapon system (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-008\" class=\"rule-reference\">WPN-008</a>) attacks independently and resolves its own Attack Sequence.</p>\n<p>Each weapon system therefore costs <strong>1 Action Point</strong> when it attacks, regardless of the number of Attack Dice it generates.</p>\n"
+    },
+    {
+      "slug": "cbt-007",
+      "parent": "combat",
+      "title": "CBT-007 — Multiple Targets",
+      "kind": "rule",
+      "rule": "CBT-007",
+      "doc": "11-combat.md",
+      "source_line": 122,
+      "body_html": "<p>Unless restricted by a scenario, independent weapon systems may attack different targets.</p>\n<p>A single weapon system normally assigns all of its Attack Dice to one target.</p>\n<p>Its dice may be split between multiple targets only when its mount can physically rotate to re-aim independently of the platform carrying it, such as a turntable, ball joint, swivel mount or a minifigure's shoulder — the rotation point is the shoulder, not the hand.</p>\n<p>Each target must be one the mount reaches by rotating alone, without turning the platform. A minifigure's arm therefore covers the targets in front of it and no others.</p>\n<p>Fixed mounts cannot split their Attack Dice between targets.</p>\n<p>When Attack Dice are split:</p>\n<ul>\n<li>All targets must be declared before any die is rolled.</li>\n<li>The mount must reach each target by rotating alone.</li>\n<li>Line of Sight is checked separately for each target.</li>\n<li>Weapon Range is checked separately for each target.</li>\n<li>A die assigned to a target that fails any of these checks has no valid target and is not rolled.</li>\n<li>The attack still costs the single Action Point for that weapon system.</li>\n</ul>\n"
+    },
+    {
+      "slug": "cbt-008",
+      "parent": "combat",
+      "title": "CBT-008 — Defender Resolution",
+      "kind": "rule",
+      "rule": "CBT-008",
+      "doc": "11-combat.md",
+      "source_line": 145,
+      "body_html": "<p>After successful Impacts are counted, the Component Damage System resolves them.</p>\n<p>That system determines:</p>\n<ol>\n<li>Which component is targeted.</li>\n<li>Whether the Impact penetrates its geometry.</li>\n<li>Whether the component changes state.</li>\n<li>Whether the Impact continues to another component.</li>\n</ol>\n<p>See <code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-011\" class=\"rule-reference\">DMG-011</a> through <a href=\"/damage-system/dmg-016\" class=\"rule-reference\">DMG-016</a>.</p>\n<p>Combat generates the Impacts; the Damage System determines their consequences.</p>\n"
+    },
+    {
+      "slug": "cbt-009",
+      "parent": "combat",
+      "title": "CBT-009 — Physical State Changes",
+      "kind": "rule",
+      "rule": "CBT-009",
+      "doc": "11-combat.md",
+      "source_line": 162,
+      "body_html": "<p>Combat results are represented physically on the LEGO model.</p>\n<p>When a component is destroyed, it is physically removed according to the Universal Destruction rule (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-005\" class=\"rule-reference\">DMG-005</a>).</p>\n"
+    },
+    {
+      "slug": "cbt-011",
+      "parent": "combat",
+      "title": "CBT-011 — No Damage Values",
+      "kind": "rule",
+      "rule": "CBT-011",
+      "doc": "11-combat.md",
+      "source_line": 170,
+      "body_html": "<p>Combat does not assign Damage Values.</p>\n<p>Weapons provide offensive properties such as:</p>\n<ul>\n<li>Attack Dice.</li>\n<li>Impact Strength.</li>\n<li>Ranged delivery through Range and Line of Sight.</li>\n<li>Melee delivery through Physical Contact.</li>\n</ul>\n<p>Impact Strength (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>) is derived from the physical size of the muzzle or striking end. It is used by the Damage System's Geometry Check (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-013\" class=\"rule-reference\">DMG-013</a>).</p>\n<p>The target's construction determines Resistance and all resulting consequences.</p>\n"
+    },
+    {
+      "slug": "cbt-012",
+      "parent": "combat",
+      "title": "CBT-012 — Cover",
+      "kind": "rule",
+      "rule": "CBT-012",
+      "doc": "11-combat.md",
+      "source_line": 187,
+      "body_html": "<p>Cover does not modify weapon performance or Impact resolution.</p>\n<p>It only determines whether a component can be selected as a target (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-010\" class=\"rule-reference\">CORE-010</a>; <code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-011\" class=\"rule-reference\">DMG-011</a>).</p>\n<p>A hidden component is untargetable.</p>\n"
+    },
+    {
+      "slug": "cbt-013",
+      "parent": "combat",
+      "title": "CBT-013 — Armour",
+      "kind": "rule",
+      "rule": "CBT-013",
+      "doc": "11-combat.md",
+      "source_line": 197,
+      "body_html": "<p>Armour is not a separate statistic.</p>\n<p>It is the colloquial description of a component's construction-derived <strong>Resistance</strong> (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>, <a href=\"/damage-system/dmg-004\" class=\"rule-reference\">DMG-004</a>).</p>\n<p>Resistance belongs to the defending component, not the weapon.</p>\n<p>All components use the same Damage System. There is no separate Armour mechanic.</p>\n"
+    },
+    {
+      "slug": "cbt-015",
+      "parent": "combat",
+      "title": "CBT-015 — Attacking While Wounded",
+      "kind": "rule",
+      "rule": "CBT-015",
+      "doc": "11-combat.md",
+      "source_line": 209,
+      "body_html": "<p>A Wounded weapon (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-002\" class=\"rule-reference\">DMG-002</a>) still attacks, but each Attack Die is less reliable.</p>\n<p>For every Attack Die it generates:</p>\n<ol>\n<li>Roll <strong>2D6</strong>.</li>\n<li>Keep the lower result.</li>\n<li>Resolve that result using <a href=\"/combat/cbt-005\" class=\"rule-reference\">CBT-005</a>.</li>\n</ol>\n<p>Therefore:</p>\n<table>\n<thead>\n<tr>\n<th>Kept Result</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>4–6</td>\n<td>1 Impact</td>\n</tr>\n<tr>\n<td>1–3</td>\n<td>No Impact</td>\n</tr>\n</tbody>\n</table>\n<p>The two dice count as <strong>one Attack Die</strong>. The second die can never generate an additional Impact.</p>\n<p>The number of Attack Dice does not change:</p>\n<ul>\n<li>Each Functional Muzzle still generates one ranged Attack Die.</li>\n<li>Each independently wielded melee weapon still generates one melee Attack Die.</li>\n</ul>\n<p>The rule applies to the component making the attack:</p>\n<ul>\n<li>A Wounded soldier with an Operational weapon attacks normally.</li>\n<li>An Operational soldier with a Wounded weapon uses this rule.</li>\n<li>An unarmed attack (<code>12-melee.md</code>, <a href=\"/melee/mel-008\" class=\"rule-reference\">MEL-008</a>) uses the attacker's own state.</li>\n</ul>\n<p>Wounded states do not stack. If both the attacker and its weapon are Wounded, apply this rule only once to each Attack Die.</p>\n<p>Everything else remains unchanged, including:</p>\n<ul>\n<li>Range.</li>\n<li>Impact Strength.</li>\n<li>Action Point cost.</li>\n<li>Target allocation.</li>\n</ul>\n"
+    },
+    {
+      "slug": "melee",
+      "parent": null,
+      "title": "Melee",
+      "kind": "document",
+      "rule": null,
+      "doc": "12-melee.md",
+      "source_line": null,
+      "intro": "Close combat, and the striking ends that resolve it.",
+      "entries": [
+        {
+          "rule": "MEL-001",
+          "title": "Physical Contact",
+          "slug": "mel-001"
+        },
+        {
+          "rule": "MEL-002",
+          "title": "Component Targeting",
+          "slug": "mel-002"
+        },
+        {
+          "rule": "MEL-003",
+          "title": "One Weapon, One Impact",
+          "slug": "mel-003"
+        },
+        {
+          "rule": "MEL-005",
+          "title": "Standard Combat Resolution",
+          "slug": "mel-005"
+        },
+        {
+          "rule": "MEL-006",
+          "title": "Multiple Combatants",
+          "slug": "mel-006"
+        },
+        {
+          "rule": "MEL-007",
+          "title": "Weapons",
+          "slug": "mel-007"
+        },
+        {
+          "rule": "MEL-008",
+          "title": "Unarmed Combat",
+          "slug": "mel-008"
+        },
+        {
+          "rule": "MEL-009",
+          "title": "Shields",
+          "slug": "mel-009"
+        },
+        {
+          "rule": "MEL-011",
+          "title": "Physical Representation",
+          "slug": "mel-011"
+        },
+        {
+          "rule": "MEL-012",
+          "title": "Interaction with Combat Rules",
+          "slug": "mel-012"
+        },
+        {
+          "rule": "MEL-013",
+          "title": "Functional Striking End",
+          "slug": "mel-013"
+        },
+        {
+          "rule": "MEL-014",
+          "title": "Weapon Reach",
+          "slug": "mel-014"
+        }
+      ]
+    },
+    {
+      "slug": "mel-001",
+      "parent": "melee",
+      "title": "MEL-001 — Physical Contact",
+      "kind": "rule",
+      "rule": "MEL-001",
+      "doc": "12-melee.md",
+      "source_line": 42,
+      "body_html": "<p>A melee attack may only be declared if the attacking weapon's functional striking end (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>) is in physical contact with the target component.</p>\n<p>If the weapon cannot physically reach the target, the attack is not legal. No measuring tools are required — physical contact is checked directly on the model.</p>\n"
+    },
+    {
+      "slug": "mel-002",
+      "parent": "melee",
+      "title": "MEL-002 — Component Targeting",
+      "kind": "rule",
+      "rule": "MEL-002",
+      "doc": "12-melee.md",
+      "source_line": 50,
+      "body_html": "<p>A melee attack may target any visible, physically reachable component, exactly like a ranged attack (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-011\" class=\"rule-reference\">DMG-011</a>).</p>\n<p>Examples:</p>\n<ul>\n<li>Minifig</li>\n<li>Shield</li>\n<li>Vehicle crew</li>\n<li>Wheel</li>\n<li>Track</li>\n<li>Door</li>\n<li>Window</li>\n<li>Weapon</li>\n<li>Interactive scenery</li>\n<li>Any other valid physical component</li>\n</ul>\n<p>The target must be reachable by the attacking weapon's functional striking end (<a href=\"/melee/mel-001\" class=\"rule-reference\">MEL-001</a>, <a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>).</p>\n"
+    },
+    {
+      "slug": "mel-003",
+      "parent": "melee",
+      "title": "MEL-003 — One Weapon, One Impact",
+      "kind": "rule",
+      "rule": "MEL-003",
+      "doc": "12-melee.md",
+      "source_line": 71,
+      "body_html": "<p>Every independently wielded melee weapon generates exactly <strong>1 Attack Die (D6)</strong>, regardless of how many functional striking ends (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>) it has built. A weapon never generates additional Attack Dice because it has multiple striking surfaces — only independently wielded weapons count.</p>\n<p>If a weapon has more than one functional striking end, the attacker declares which one delivers the Impact for that attack; that striking end's size determines the Impact's Strength (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>).</p>\n<p>Each independently wielded weapon is its own weapon system (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-008\" class=\"rule-reference\">WPN-008</a>) and costs its own <strong>1 Action Point</strong> to attack with (<code>11-combat.md</code>, <a href=\"/combat/cbt-001\" class=\"rule-reference\">CBT-001</a>) — wielding two weapons and attacking with both is two attacks, not one attack producing two dice.</p>\n<p>If the weapon is Wounded, that die is rolled as <code>11-combat.md</code> (<a href=\"/combat/cbt-015\" class=\"rule-reference\">CBT-015</a>) directs.</p>\n<p>Examples:</p>\n<pre><code>Knife                 → 1 weapon system → 1 Attack Die  → 1 AP\nSword                 → 1 weapon system → 1 Attack Die  → 1 AP\nSword + Dagger        → 2 weapon systems → 2 Attack Dice → 2 AP (attacking with both)\nTwo Swords            → 2 weapon systems → 2 Attack Dice → 2 AP (attacking with both)\nDouble-ended staff    → 1 weapon system → 1 Attack Die  → 1 AP — the attacker declares which end strikes\n</code></pre>\n"
+    },
+    {
+      "slug": "mel-005",
+      "parent": "melee",
+      "title": "MEL-005 — Standard Combat Resolution",
+      "kind": "rule",
+      "rule": "MEL-005",
+      "doc": "12-melee.md",
+      "source_line": 93,
+      "body_html": "<p>Once a melee weapon generates its Attack Die (<a href=\"/melee/mel-003\" class=\"rule-reference\">MEL-003</a>), Combat Resolution (<code>11-combat.md</code>) and the Component Damage System determine every remaining step, exactly as for a ranged Impact.</p>\n"
+    },
+    {
+      "slug": "mel-006",
+      "parent": "melee",
+      "title": "MEL-006 — Multiple Combatants",
+      "kind": "rule",
+      "rule": "MEL-006",
+      "doc": "12-melee.md",
+      "source_line": 99,
+      "body_html": "<p>Several units may engage the same target.</p>\n<p>Each attacking unit resolves its own melee attack independently.</p>\n<p>Impacts are then assigned and resolved normally.</p>\n"
+    },
+    {
+      "slug": "mel-007",
+      "parent": "melee",
+      "title": "MEL-007 — Weapons",
+      "kind": "rule",
+      "rule": "MEL-007",
+      "doc": "12-melee.md",
+      "source_line": 109,
+      "body_html": "<p>Only visible, physically built melee weapons with a functional striking end (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>) may be used — the same decorative-elements principle as ranged weapons (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-015\" class=\"rule-reference\">WPN-015</a>).</p>\n<p>Examples:</p>\n<ul>\n<li>Knife</li>\n<li>Sword</li>\n<li>Axe</li>\n<li>Spear</li>\n<li>Hammer</li>\n<li>Club</li>\n</ul>\n<p>Decorative hilts, guards, and non-functional blades have no gameplay effect.</p>\n"
+    },
+    {
+      "slug": "mel-008",
+      "parent": "melee",
+      "title": "MEL-008 — Unarmed Combat",
+      "kind": "rule",
+      "rule": "MEL-008",
+      "doc": "12-melee.md",
+      "source_line": 126,
+      "body_html": "<p>If no dedicated melee weapon exists, a unit may attack using its bare hands — its own weapon system for AP-cost purposes (<code>11-combat.md</code>, <a href=\"/combat/cbt-001\" class=\"rule-reference\">CBT-001</a>: 1 AP).</p>\n<p>An unarmed attack generates <strong>1 Attack Die</strong>, counting as a size-1 striking end (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>) for Impact Strength purposes, representing punches, kicks, or physical force.</p>\n<p>Because the attacker is the weapon system here, it is the attacker's own Component State that is read: a Wounded minifigure rolls that die as <code>11-combat.md</code> (<a href=\"/combat/cbt-015\" class=\"rule-reference\">CBT-015</a>) directs.</p>\n"
+    },
+    {
+      "slug": "mel-009",
+      "parent": "melee",
+      "title": "MEL-009 — Shields",
+      "kind": "rule",
+      "rule": "MEL-009",
+      "doc": "12-melee.md",
+      "source_line": 136,
+      "body_html": "<p>Shields are defensive components. They never generate Attack Dice. Their interaction with combat is completely defined by the Component Damage System (<code>16-damage-system.md</code>); no melee-specific shield rules exist.</p>\n"
+    },
+    {
+      "slug": "mel-011",
+      "parent": "melee",
+      "title": "MEL-011 — Physical Representation",
+      "kind": "rule",
+      "rule": "MEL-011",
+      "doc": "12-melee.md",
+      "source_line": 142,
+      "body_html": "<p>Combat results should be represented on the LEGO model whenever possible, per the universal physical-representation principle (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-016\" class=\"rule-reference\">CORE-016</a>; <code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-002\" class=\"rule-reference\">DMG-002</a>, <a href=\"/damage-system/dmg-005\" class=\"rule-reference\">DMG-005</a>).</p>\n<p>Examples:</p>\n<ul>\n<li>Wounded minifigure sits.</li>\n<li>Dead minifigure is removed.</li>\n<li>Destroyed components (weapons, shields, doors) are removed.</li>\n</ul>\n<p>No additional markers are required.</p>\n"
+    },
+    {
+      "slug": "mel-012",
+      "parent": "melee",
+      "title": "MEL-012 — Interaction with Combat Rules",
+      "kind": "rule",
+      "rule": "MEL-012",
+      "doc": "12-melee.md",
+      "source_line": 156,
+      "body_html": "<p>Unless explicitly stated otherwise, melee combat follows all rules defined in:</p>\n<ul>\n<li>11-combat.md</li>\n<li>10-weapons.md</li>\n<li>16-damage-system.md</li>\n</ul>\n<p>This document defines only how a melee attack generates an Impact — physical contact (<a href=\"/melee/mel-001\" class=\"rule-reference\">MEL-001</a>), reach (<a href=\"/melee/mel-014\" class=\"rule-reference\">MEL-014</a>), striking ends (<a href=\"/melee/mel-013\" class=\"rule-reference\">MEL-013</a>), and Attack Dice (<a href=\"/melee/mel-003\" class=\"rule-reference\">MEL-003</a>). All subsequent resolution belongs to Combat Resolution and the Component Damage System.</p>\n"
+    },
+    {
+      "slug": "mel-013",
+      "parent": "melee",
+      "title": "MEL-013 — Functional Striking End",
+      "kind": "rule",
+      "rule": "MEL-013",
+      "doc": "12-melee.md",
+      "source_line": 168,
+      "body_html": "<p>A functional striking end is the physical contact surface through which a melee weapon delivers an Impact. It replaces the concept of a firing muzzle for melee weapons (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-001\" class=\"rule-reference\">WPN-001</a>, <a href=\"/weapons/wpn-002\" class=\"rule-reference\">WPN-002</a>).</p>\n<p>A functional striking end is built as an N×N footprint slot — the same sizing as a muzzle (<a href=\"/weapons/wpn-002\" class=\"rule-reference\">WPN-002</a>), including no fixed maximum: it scales with the weapon's construction. Unlike a muzzle, a striking end is <strong>not</strong> required to be built from round pieces: bladed, pointed, and other melee-appropriate shapes are all valid.</p>\n<p>A striking end's size determines the Impact Strength it generates, exactly like a muzzle (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>) — both represent the physical contact surface through which a weapon transfers energy into the target; a muzzle and a functional striking end are the same concept, expressed through two different delivery methods.</p>\n"
+    },
+    {
+      "slug": "mel-014",
+      "parent": "melee",
+      "title": "MEL-014 — Weapon Reach",
+      "kind": "rule",
+      "rule": "MEL-014",
+      "doc": "12-melee.md",
+      "source_line": 178,
+      "body_html": "<p>&quot;Reach&quot; is not a value consulted separately from the Physical Contact check (<a href=\"/melee/mel-001\" class=\"rule-reference\">MEL-001</a>) — it is a description of <em>why</em> that check comes out the way it does. A weapon's Weapon Length (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-003\" class=\"rule-reference\">WPN-003</a>) is what physically lets it touch a target at a given distance; building a longer weapon is how a player makes their model reach farther. There is no reach number to look up, and none is needed — the model already decides the outcome the moment <a href=\"/melee/mel-001\" class=\"rule-reference\">MEL-001</a>'s contact check is made.</p>\n"
+    },
+    {
+      "slug": "geometry-layers",
+      "parent": null,
+      "title": "Geometry Layers",
+      "kind": "document",
+      "rule": null,
+      "doc": "15-geometry-layers.md",
+      "source_line": null,
+      "intro": "Gameplay Geometry against Visual Geometry, and the checks made on the model.",
+      "entries": [
+        {
+          "rule": "GEO-001",
+          "title": "Gameplay Geometry",
+          "slug": "geo-001"
+        },
+        {
+          "rule": "GEO-002",
+          "title": "Visual Geometry",
+          "slug": "geo-002"
+        },
+        {
+          "rule": "GEO-003",
+          "title": "Measured Values",
+          "slug": "geo-003"
+        },
+        {
+          "rule": "GEO-004",
+          "title": "Physical Checks",
+          "slug": "geo-004"
+        },
+        {
+          "rule": "GEO-005",
+          "title": "Functional Equivalence",
+          "slug": "geo-005"
+        }
+      ]
+    },
+    {
+      "slug": "geo-001",
+      "parent": "geometry-layers",
+      "title": "GEO-001 — Gameplay Geometry",
+      "kind": "rule",
+      "rule": "GEO-001",
+      "doc": "15-geometry-layers.md",
+      "source_line": 40,
+      "body_html": "<p><strong>Gameplay Geometry</strong> is the measurable physical information used by the rules.</p>\n<p>Examples include:</p>\n<ul>\n<li>Platform dimensions</li>\n<li>Weapon dimensions</li>\n<li>Muzzle count and size</li>\n<li>Transport volume</li>\n<li>Movement geometry</li>\n</ul>\n<p>Derived values such as Range, Attack Dice, Impact Strength and Capacity are calculated from Gameplay Geometry by their respective rules.</p>\n<p>Gameplay Geometry is objective: the same model produces the same measurements.</p>\n"
+    },
+    {
+      "slug": "geo-002",
+      "parent": "geometry-layers",
+      "title": "GEO-002 — Visual Geometry",
+      "kind": "rule",
+      "rule": "GEO-002",
+      "doc": "15-geometry-layers.md",
+      "source_line": 58,
+      "body_html": "<p><strong>Visual Geometry</strong> is physical LEGO that does not form part of Gameplay Geometry.</p>\n<p>Examples include:</p>\n<ul>\n<li>Decorative slopes</li>\n<li>Pipes</li>\n<li>Exhausts</li>\n<li>Antennas</li>\n<li>Greebling</li>\n<li>Printed elements</li>\n<li>Cosmetic armour</li>\n<li>Decorative plates</li>\n</ul>\n<p>Visual Geometry does not change a measured gameplay value.</p>\n<p>Material an Impact must cross is never ignored: a plate or panel outside a wall is part of what the Impact crosses and adds to its Resistance (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>; <code>GEO-004</code>). What is decorative is the printing on a piece, not the piece.</p>\n"
+    },
+    {
+      "slug": "geo-003",
+      "parent": "geometry-layers",
+      "title": "GEO-003 — Measured Values",
+      "kind": "rule",
+      "rule": "GEO-003",
+      "doc": "15-geometry-layers.md",
+      "source_line": 79,
+      "body_html": "<p>Only Gameplay Geometry is used when calculating measured rule values. Resistance is not one of them — it is read from the model as built (<code>GEO-004</code>).</p>\n<p>Examples include:</p>\n<ul>\n<li>Range</li>\n<li>Attack Dice</li>\n<li>Impact Strength</li>\n<li>Weapon Capacity</li>\n<li>Transport Capacity</li>\n<li>Movement distance</li>\n</ul>\n<p>Visual Geometry is ignored when calculating these values.</p>\n"
+    },
+    {
+      "slug": "geo-004",
+      "parent": "geometry-layers",
+      "title": "GEO-004 — Physical Checks",
+      "kind": "rule",
+      "rule": "GEO-004",
+      "doc": "15-geometry-layers.md",
+      "source_line": 96,
+      "body_html": "<p>Physical checks use the model exactly as it exists on the table, including Visual Geometry.</p>\n<p>This applies to checks such as:</p>\n<ul>\n<li>Line of Sight</li>\n<li>Target visibility</li>\n<li>Cover</li>\n<li>Access openings</li>\n<li>Resistance</li>\n</ul>\n<p>Therefore, Visual Geometry can physically block sight or access, and material an Impact crosses counts toward Resistance, even though none of it modifies a measured value.</p>\n<p>A partially visible component is simply visible; Visual Geometry does not create an abstract cover bonus.</p>\n"
+    },
+    {
+      "slug": "geo-005",
+      "parent": "geometry-layers",
+      "title": "GEO-005 — Functional Equivalence",
+      "kind": "rule",
+      "rule": "GEO-005",
+      "doc": "15-geometry-layers.md",
+      "source_line": 114,
+      "body_html": "<p>Two models with identical Gameplay Geometry have identical measured gameplay values, regardless of their Visual Geometry.</p>\n<p>Adding or removing Visual Geometry does not change those values unless the physical construction changes the Gameplay Geometry itself.</p>\n<p>Every model may therefore be built as a <strong>Minimum Representation</strong> containing only the Gameplay Geometry required by the rules. Additional Visual Geometry may be added freely without changing its measured values.</p>\n"
+    },
+    {
+      "slug": "damage-system",
+      "parent": null,
+      "title": "Damage System",
+      "kind": "document",
+      "rule": null,
+      "doc": "16-damage-system.md",
+      "source_line": null,
+      "intro": "Resistance, penetration, and how damage crosses a model.",
+      "entries": [
+        {
+          "rule": "DMG-001",
+          "title": "Component Targeting",
+          "slug": "dmg-001"
+        },
+        {
+          "rule": "DMG-002",
+          "title": "Component States",
+          "slug": "dmg-002"
+        },
+        {
+          "rule": "DMG-003",
+          "title": "Geometry Defines Resistance",
+          "slug": "dmg-003"
+        },
+        {
+          "rule": "DMG-004",
+          "title": "Reading Resistance",
+          "slug": "dmg-004"
+        },
+        {
+          "rule": "DMG-005",
+          "title": "Universal Destruction",
+          "slug": "dmg-005"
+        },
+        {
+          "rule": "DMG-006",
+          "title": "Internal Components",
+          "slug": "dmg-006"
+        },
+        {
+          "rule": "DMG-007",
+          "title": "No Material-Specific Mechanics",
+          "slug": "dmg-007"
+        },
+        {
+          "rule": "DMG-008",
+          "title": "Impact Resolution",
+          "slug": "dmg-008"
+        },
+        {
+          "rule": "DMG-011",
+          "title": "Select Target Component",
+          "slug": "dmg-011"
+        },
+        {
+          "rule": "DMG-012",
+          "title": "Composite Vehicle Targeting",
+          "slug": "dmg-012"
+        },
+        {
+          "rule": "DMG-013",
+          "title": "Geometry Check",
+          "slug": "dmg-013"
+        },
+        {
+          "rule": "DMG-014",
+          "title": "Damage Roll",
+          "slug": "dmg-014"
+        },
+        {
+          "rule": "DMG-015",
+          "title": "Multiple Impacts",
+          "slug": "dmg-015"
+        },
+        {
+          "rule": "DMG-016",
+          "title": "Penetration",
+          "slug": "dmg-016"
+        },
+        {
+          "rule": "DMG-018",
+          "title": "Recovery",
+          "slug": "dmg-018"
+        }
+      ]
+    },
+    {
+      "slug": "dmg-001",
+      "parent": "damage-system",
+      "title": "DMG-001 — Component Targeting",
+      "kind": "rule",
+      "rule": "DMG-001",
+      "doc": "16-damage-system.md",
+      "source_line": 51,
+      "body_html": "<p>Combat never resolves damage against an entire unit.</p>\n<p>Every Impact is assigned to one visible component.</p>\n<p>Examples include:</p>\n<ul>\n<li>Minifig</li>\n<li>Shield</li>\n<li>Door</li>\n<li>Window</li>\n<li>Cannon</li>\n<li>Turret</li>\n<li>Wheel</li>\n<li>Armour Plate</li>\n<li>Pilot</li>\n<li>Cockpit</li>\n</ul>\n<p>A vehicle is therefore a collection of independent components.</p>\n<p>This keeps damage construction-driven: the physical component receiving the Impact determines the relevant Resistance and state.</p>\n"
+    },
+    {
+      "slug": "dmg-002",
+      "parent": "damage-system",
+      "title": "DMG-002 — Component States",
+      "kind": "rule",
+      "rule": "DMG-002",
+      "doc": "16-damage-system.md",
+      "source_line": 76,
+      "body_html": "<p>Every component uses the same three-state progression:</p>\n<p><strong>Operational → Wounded → Dead</strong></p>\n<p><strong>Operational</strong> — the component functions normally.</p>\n<p><strong>Wounded</strong> — the component has suffered structural damage but remains functional.</p>\n<p>A Wounded component suffers only the degradation associated with the capability it provides:</p>\n<ul>\n<li>Wounded infantry moves less effectively (<code>17-infantry.md</code>, <a href=\"/infantry/inf-012\" class=\"rule-reference\">INF-012</a>).</li>\n<li>A vehicle with a Wounded Pilot moves less effectively (<code>08-vehicles.md</code>, <a href=\"/vehicles/veh-031\" class=\"rule-reference\">VEH-031</a>).</li>\n<li>A Wounded weapon resolves each Attack Die using the Wounded attack rule (<code>11-combat.md</code>, <a href=\"/combat/cbt-015\" class=\"rule-reference\">CBT-015</a>).</li>\n</ul>\n<p>These are the only Wounded-state degradations defined by the core rules.</p>\n<p>All other properties remain unchanged, including:</p>\n<ul>\n<li>Resistance</li>\n<li>Impact Strength</li>\n<li>The Damage Roll rolled against it</li>\n<li>Footprint</li>\n<li>Unit Base occupancy</li>\n<li>Transport capacity</li>\n<li>Action Point costs</li>\n</ul>\n<p>A second successful damaging Impact changes the component from Wounded to Dead.</p>\n<p><strong>Dead</strong> — the component is immediately removed from the model.</p>\n<p>An infantry model represents its state physically:</p>\n<ul>\n<li>Operational: upright</li>\n<li>Wounded: seated</li>\n<li>Dead: removed</li>\n</ul>\n<p>No damage token is required.</p>\n<p>The three-state model replaces abstract health values with visible physical states.</p>\n"
+    },
+    {
+      "slug": "dmg-003",
+      "parent": "damage-system",
+      "title": "DMG-003 — Geometry Defines Resistance",
+      "kind": "rule",
+      "rule": "DMG-003",
+      "doc": "16-damage-system.md",
+      "source_line": 120,
+      "body_html": "<p>Resistance is never assigned as a statistic.</p>\n<p>It is measured directly from the LEGO construction.</p>\n<p>Resistance is the <strong>smallest section of material an Impact must cross in its direction of travel</strong>, measured in plate layers.</p>\n<p>The conversion is:</p>\n<ul>\n<li>1 plate = 1 Resistance</li>\n<li>1 brick = 3 Resistance</li>\n<li>Other LEGO elements are measured by their physical thickness in the direction of travel.</li>\n</ul>\n<p>Only material actually crossed by the Impact contributes.</p>\n<p>Empty internal space contributes nothing.</p>\n<p>If an enclosed structure contains multiple walls, each wall is a separate component with its own Resistance. Their thicknesses are not combined.</p>\n<p>The outer component protects components behind it (<code>DMG-006</code>).</p>\n<p>Impact Strength (<code>10-weapons.md</code>, <a href=\"/weapons/wpn-021\" class=\"rule-reference\">WPN-021</a>) uses the same unit.</p>\n<p>Resistance therefore emerges from construction rather than from a hidden defensive statistic.</p>\n"
+    },
+    {
+      "slug": "dmg-004",
+      "parent": "damage-system",
+      "title": "DMG-004 — Reading Resistance",
+      "kind": "rule",
+      "rule": "DMG-004",
+      "doc": "16-damage-system.md",
+      "source_line": 148,
+      "body_html": "<p>Changing the physical construction of a component changes its Resistance.</p>\n<p>Examples:</p>\n"
+    },
+    {
+      "slug": "dmg-005",
+      "parent": "damage-system",
+      "title": "DMG-005 — Universal Destruction",
+      "kind": "rule",
+      "rule": "DMG-005",
+      "doc": "16-damage-system.md",
+      "source_line": 198,
+      "body_html": "<p>When a component reaches Dead, it is removed from the model.</p>\n<p>Examples:</p>\n<ul>\n<li>Destroy a wheel → remove the wheel.</li>\n<li>Destroy a cannon → remove the cannon.</li>\n<li>Destroy a shield → remove the shield.</li>\n<li>Destroy a door → remove the door.</li>\n<li>Destroy a minifig → remove the minifig.</li>\n</ul>\n<p>There are no special destruction rules.</p>\n<p>The same physical state change applies to every component.</p>\n"
+    },
+    {
+      "slug": "dmg-006",
+      "parent": "damage-system",
+      "title": "DMG-006 — Internal Components",
+      "kind": "rule",
+      "rule": "DMG-006",
+      "doc": "16-damage-system.md",
+      "source_line": 216,
+      "body_html": "<p>Components may protect other components.</p>\n<p>Example:</p>\n<p><strong>Armour → Pilot</strong></p>\n<p>The Pilot cannot be affected while the Armour blocks the Impact.</p>\n<p>If the Armour is penetrated, the Impact may continue toward the Pilot according to <a href=\"/damage-system/dmg-016\" class=\"rule-reference\">DMG-016</a>.</p>\n<p>This creates layered protection through physical construction rather than requiring separate armour mechanics.</p>\n"
+    },
+    {
+      "slug": "dmg-007",
+      "parent": "damage-system",
+      "title": "DMG-007 — No Material-Specific Mechanics",
+      "kind": "rule",
+      "rule": "DMG-007",
+      "doc": "16-damage-system.md",
+      "source_line": 232,
+      "body_html": "<p>All components use the same damage rules regardless of what they represent.</p>\n<p>Glass, metal, wood, infantry and LEGO assemblies are all resolved using:</p>\n<ul>\n<li>Resistance</li>\n<li>Geometry Check</li>\n<li>Damage Roll</li>\n<li>Component State</li>\n</ul>\n<p>Material does not provide special modifiers.</p>\n<p>A component's behavior depends only on its physical construction and the capability it provides.</p>\n<p>This keeps the system universal and prevents hidden material statistics.</p>\n"
+    },
+    {
+      "slug": "dmg-008",
+      "parent": "damage-system",
+      "title": "DMG-008 — Impact Resolution",
+      "kind": "rule",
+      "rule": "DMG-008",
+      "doc": "16-damage-system.md",
+      "source_line": 253,
+      "body_html": "<p>The Damage System begins when a successful Impact has been generated by Combat.</p>\n<p>Each Impact is resolved independently through:</p>\n<p><strong>Select Target Component → Geometry Check → Damage Roll → State Change → Penetration → Model Change</strong></p>\n<p>Combat determines whether an Impact exists. The Damage System determines what that Impact does.</p>\n<p>The same damage procedure therefore applies regardless of whether the Impact came from a ranged weapon or a melee attack.</p>\n"
+    },
+    {
+      "slug": "dmg-011",
+      "parent": "damage-system",
+      "title": "DMG-011 — Select Target Component",
+      "kind": "rule",
+      "rule": "DMG-011",
+      "doc": "16-damage-system.md",
+      "source_line": 267,
+      "body_html": "<p>Every successful Impact is assigned to one visible component.</p>\n<p>Hidden components cannot be selected directly.</p>\n<p>Examples:</p>\n<ul>\n<li>Shield</li>\n<li>Wheel</li>\n<li>Cannon</li>\n<li>Door</li>\n<li>Minifig</li>\n<li>Armour Plate</li>\n</ul>\n<p>Impacts are never assigned to an entire vehicle.</p>\n<p>Target selection is component-based so that damage always interacts with the physical LEGO structure rather than with an abstract unit health value.</p>\n"
+    },
+    {
+      "slug": "dmg-012",
+      "parent": "damage-system",
+      "title": "DMG-012 — Composite Vehicle Targeting",
+      "kind": "rule",
+      "rule": "DMG-012",
+      "doc": "16-damage-system.md",
+      "source_line": 288,
+      "body_html": "<p>Each component of a vehicle behaves independently.</p>\n<p>When an attack generates multiple Impacts, each Impact may be assigned to a different visible component of the same target unit.</p>\n<p>Example:</p>\n<p>A Jeep contains:</p>\n<ul>\n<li>Chassis</li>\n<li>Driver</li>\n<li>Cannon</li>\n<li>Four Wheels</li>\n<li>Windows</li>\n<li>Doors</li>\n</ul>\n<p>Six incoming Impacts could be assigned as:</p>\n<ul>\n<li>2 → Window</li>\n<li>1 → Wheel</li>\n<li>2 → Turret</li>\n<li>1 → Door</li>\n</ul>\n<p>Each component resolves its assigned Impacts independently.</p>\n<p>Destroying one component does not automatically damage another.</p>\n<p>This allows complex models to behave as collections of physical components without requiring vehicle-specific damage tables.</p>\n"
+    },
+    {
+      "slug": "dmg-013",
+      "parent": "damage-system",
+      "title": "DMG-013 — Geometry Check",
+      "kind": "rule",
+      "rule": "DMG-013",
+      "doc": "16-damage-system.md",
+      "source_line": 320,
+      "body_html": "<p>Compare the Impact Strength with the target component's Resistance.</p>\n<table>\n<thead>\n<tr>\n<th>Relationship</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Strength &lt; Resistance</td>\n<td>The Impact ends immediately. No Damage Roll is made.</td>\n</tr>\n<tr>\n<td>Strength ≥ Resistance</td>\n<td>The Impact can affect the component and proceeds to <a href=\"/damage-system/dmg-014\" class=\"rule-reference\">DMG-014</a>.</td>\n</tr>\n</tbody>\n</table>\n<p>If the Impact cannot physically overcome the component's Resistance, no further damage resolution occurs.</p>\n<p>Geometry therefore determines whether an effect is physically possible before probability is introduced.</p>\n"
+    },
+    {
+      "slug": "dmg-014",
+      "parent": "damage-system",
+      "title": "DMG-014 — Damage Roll",
+      "kind": "rule",
+      "rule": "DMG-014",
+      "doc": "16-damage-system.md",
+      "source_line": 335,
+      "body_html": "<p>For every Impact that passes the Geometry Check, the defender rolls one D6.</p>\n<table>\n<thead>\n<tr>\n<th>D6 Result</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1–3</td>\n<td>Damage — advance the component's state one step.</td>\n</tr>\n<tr>\n<td>4–6</td>\n<td>No Damage — the component remains unchanged.</td>\n</tr>\n</tbody>\n</table>\n<p>A successful Damage Roll changes the component:</p>\n<p><strong>Operational → Wounded</strong></p>\n<p>or:</p>\n<p><strong>Wounded → Dead</strong></p>\n<p>The Damage Roll represents uncertainty after the Impact has already proved physically capable of affecting the component.</p>\n<p>It does not represent armour.</p>\n<p>The distinction is fundamental:</p>\n<p><strong>Geometry determines possibility. Dice determine outcome.</strong></p>\n"
+    },
+    {
+      "slug": "dmg-015",
+      "parent": "damage-system",
+      "title": "DMG-015 — Multiple Impacts",
+      "kind": "rule",
+      "rule": "DMG-015",
+      "doc": "16-damage-system.md",
+      "source_line": 362,
+      "body_html": "<p>Each Impact is resolved independently.</p>\n<p>Impacts never combine their Strength.</p>\n<p>Each successful Impact creates another opportunity to change the target component's state.</p>\n<p>Example:</p>\n<p>A two-muzzle shotgun generates two successful Impacts against an Operational minifig.</p>\n<p>If both Damage Rolls result in <strong>1–3</strong>:</p>\n<p><strong>Operational → Wounded → Dead</strong></p>\n<p>The minifig is destroyed by two separate Impacts, not by combining their Strength.</p>\n<p>This preserves the principle that each weapon muzzle produces an independent effect.</p>\n"
+    },
+    {
+      "slug": "dmg-016",
+      "parent": "damage-system",
+      "title": "DMG-016 — Penetration",
+      "kind": "rule",
+      "rule": "DMG-016",
+      "doc": "16-damage-system.md",
+      "source_line": 384,
+      "body_html": "<p>An Impact may continue through multiple components.</p>\n<p>When an Impact passes the Geometry Check, subtract the Resistance of the component it crossed:</p>\n<p><strong>Remaining Strength = Current Strength − Component Resistance</strong></p>\n<p>If Remaining Strength is greater than zero, the Impact continues in the same direction toward the next component.</p>\n<p>Penetration does not depend on the Damage Roll.</p>\n<p>The Impact continues whether the current component becomes Wounded or remains unchanged.</p>\n"
+    },
+    {
+      "slug": "dmg-018",
+      "parent": "damage-system",
+      "title": "DMG-018 — Recovery",
+      "kind": "rule",
+      "rule": "DMG-018",
+      "doc": "16-damage-system.md",
+      "source_line": 422,
+      "body_html": "<p>A damaged component is not repaired. What is broken stays broken.</p>\n<p>A Wounded minifigure is the one thing that recovers: it may spend <strong>1 Action Point</strong> to return to Operational — infantry on foot, and a Pilot or crew member inside a vehicle alike.</p>\n<p><strong>Wounded → Operational</strong></p>\n<p>A Dead component cannot return. It has already been removed from the model (<code>DMG-002</code>).</p>\n"
+    },
+    {
+      "slug": "infantry",
+      "parent": null,
+      "title": "Infantry",
+      "kind": "document",
+      "rule": null,
+      "doc": "17-infantry.md",
+      "source_line": null,
+      "intro": "The infantry base, the distances read from it, and terrain.",
+      "entries": [
+        {
+          "rule": "INF-001",
+          "title": "Infantry Unit",
+          "slug": "inf-001"
+        },
+        {
+          "rule": "INF-002",
+          "title": "Forward Movement",
+          "slug": "inf-002"
+        },
+        {
+          "rule": "INF-003",
+          "title": "Side Movement",
+          "slug": "inf-003"
+        },
+        {
+          "rule": "INF-004",
+          "title": "Backward Movement",
+          "slug": "inf-004"
+        },
+        {
+          "rule": "INF-005",
+          "title": "Rotation",
+          "slug": "inf-005"
+        },
+        {
+          "rule": "INF-006",
+          "title": "One Brick Obstacles",
+          "slug": "inf-006"
+        },
+        {
+          "rule": "INF-007",
+          "title": "Two Brick Obstacles",
+          "slug": "inf-007"
+        },
+        {
+          "rule": "INF-008",
+          "title": "Three Brick Obstacles",
+          "slug": "inf-008"
+        },
+        {
+          "rule": "INF-009",
+          "title": "Slopes and Stairs",
+          "slug": "inf-009"
+        },
+        {
+          "rule": "INF-011",
+          "title": "Falling Damage",
+          "slug": "inf-011"
+        },
+        {
+          "rule": "INF-012",
+          "title": "Wounded Movement",
+          "slug": "inf-012"
+        }
+      ]
+    },
+    {
+      "slug": "inf-001",
+      "parent": "infantry",
+      "title": "INF-001 — Infantry Unit",
+      "kind": "rule",
+      "rule": "INF-001",
+      "doc": "17-infantry.md",
+      "source_line": 30,
+      "body_html": "<p>An infantry model is a minifigure occupying one Unit Base (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-003\" class=\"rule-reference\">CORE-003</a>).</p>\n<p>Every infantry model is built on one base of <code>4 × 3</code> studs, one plate thick — the horizontal reading of the Unit Base (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>). Its 4-stud edge is the front, which is the facing every unit has (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-002\" class=\"rule-reference\">CORE-002</a>).</p>\n<p>That orientation is what every direction below is measured relative to — the general rule is <code>07-movement.md</code> (<a href=\"/movement/move-001\" class=\"rule-reference\">MOVE-001</a>).</p>\n<p>A minifigure has two hands, and may only use equipment it can physically carry in them. Which equipment needs one hand and which needs two is stated where that equipment is defined — weapons by <code>10-weapons.md</code> (<a href=\"/weapons/wpn-010\" class=\"rule-reference\">WPN-010</a>), shields by <code>05-construction-components.md</code> (<a href=\"/construction-components/cmp-014\" class=\"rule-reference\">CMP-014</a>).</p>\n"
+    },
+    {
+      "slug": "inf-002",
+      "parent": "infantry",
+      "title": "INF-002 — Forward Movement",
+      "kind": "rule",
+      "rule": "INF-002",
+      "doc": "17-infantry.md",
+      "source_line": 42,
+      "body_html": "<p>Standard infantry movement:</p>\n<p><strong>Up to 4 UB forward.</strong></p>\n<p>A unit may move 1, 2, 3 or 4 UB, or stay put.</p>\n<p>Forward movement reads the Unit Base's 3-stud depth (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>), so 4 UB is 12 studs.</p>\n<p>Each movement action costs <strong>1 Action Point</strong> (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-006\" class=\"rule-reference\">CORE-006</a>) and moves the unit in a single direction. Changing direction requires a separate movement action (<code>07-movement.md</code>, <a href=\"/movement/move-007\" class=\"rule-reference\">MOVE-007</a>).</p>\n<p>Distance is measured from the face of the base that leads in the direction of travel — the front face moving forward, the rear face moving backward (<a href=\"/infantry/inf-004\" class=\"rule-reference\">INF-004</a>), the corresponding side face moving sideways (<a href=\"/infantry/inf-003\" class=\"rule-reference\">INF-003</a>). This is the general measurement rule (<code>07-movement.md</code>, <a href=\"/movement/move-003\" class=\"rule-reference\">MOVE-003</a>) read against an infantry base.</p>\n<p>Each movement action is measured independently: spending two Action Points on movement allows two separate moves of up to 4 UB each, not one move of 8 UB.</p>\n<p>A Wounded model's limit is lower — see <a href=\"/infantry/inf-012\" class=\"rule-reference\">INF-012</a>.</p>\n"
+    },
+    {
+      "slug": "inf-003",
+      "parent": "infantry",
+      "title": "INF-003 — Side Movement",
+      "kind": "rule",
+      "rule": "INF-003",
+      "doc": "17-infantry.md",
+      "source_line": 62,
+      "body_html": "<p>Infantry may move sideways, left or right.</p>\n<p><strong>Up to 3 UB sideways.</strong></p>\n<p>A unit may move 1, 2 or 3 UB sideways, or stay put.</p>\n<p>Side movement reads the Unit Base's 4-stud width (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>), so 3 UB is 12 studs.</p>\n<p>Side movement is a movement action and costs <strong>1 Action Point</strong>, the same as forward movement (<a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>).</p>\n<p>Infantry reaches an off-axis position by combining a forward or backward move with a side move, each its own movement action (<code>07-movement.md</code>, <a href=\"/movement/move-007\" class=\"rule-reference\">MOVE-007</a>).</p>\n<p>A Wounded model's limit is lower — see <a href=\"/infantry/inf-012\" class=\"rule-reference\">INF-012</a>.</p>\n"
+    },
+    {
+      "slug": "inf-004",
+      "parent": "infantry",
+      "title": "INF-004 — Backward Movement",
+      "kind": "rule",
+      "rule": "INF-004",
+      "doc": "17-infantry.md",
+      "source_line": 80,
+      "body_html": "<p>Infantry may move backwards.</p>\n<p><strong>Up to 4 UB backward.</strong></p>\n<p>Backward movement reads the same 3-stud axis and the same limit as forward movement, and costs <strong>1 Action Point</strong> (<a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>).</p>\n<p>The unit keeps its facing. No rotation is required.</p>\n<p>A Wounded model's limit is lower — see <a href=\"/infantry/inf-012\" class=\"rule-reference\">INF-012</a>.</p>\n"
+    },
+    {
+      "slug": "inf-005",
+      "parent": "infantry",
+      "title": "INF-005 — Rotation",
+      "kind": "rule",
+      "rule": "INF-005",
+      "doc": "17-infantry.md",
+      "source_line": 94,
+      "body_html": "<p>Infantry may rotate to any facing.</p>\n<p>Rotation does not require measuring.</p>\n<p>Rotating costs:</p>\n<p><strong>1 Action Point</strong></p>\n<p>The new facing becomes immediately active.</p>\n"
+    },
+    {
+      "slug": "inf-006",
+      "parent": "infantry",
+      "title": "INF-006 — One Brick Obstacles",
+      "kind": "rule",
+      "rule": "INF-006",
+      "doc": "17-infantry.md",
+      "source_line": 112,
+      "body_html": "<p>Height: <strong>up to 3 plate layers</strong>.</p>\n<p>Obstacle height is measured in plate layers, the same unit <code>16-damage-system.md</code> (<a href=\"/damage-system/dmg-003\" class=\"rule-reference\">DMG-003</a>) uses: a plate counts as 1 and a standard brick as 3.</p>\n<p>Infantry may cross freely. No additional movement cost.</p>\n"
+    },
+    {
+      "slug": "inf-007",
+      "parent": "infantry",
+      "title": "INF-007 — Two Brick Obstacles",
+      "kind": "rule",
+      "rule": "INF-007",
+      "doc": "17-infantry.md",
+      "source_line": 122,
+      "body_html": "<p>Height: <strong>4 to 6 plate layers</strong>.</p>\n<p>Infantry may climb. Climbing costs <strong>1 additional Action Point</strong> for each such obstacle the move crosses, on top of the movement action itself — so a move over one such obstacle costs <strong>2 AP</strong>.</p>\n<p>The climb is part of that movement action and does not increase the movement limit: the full move still counts against the limit its own direction sets — <strong>4 UB</strong> forward or backward (<a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>, <a href=\"/infantry/inf-004\" class=\"rule-reference\">INF-004</a>), <strong>3 UB</strong> sideways (<a href=\"/infantry/inf-003\" class=\"rule-reference\">INF-003</a>) — or the Wounded model's shorter limit (<a href=\"/infantry/inf-012\" class=\"rule-reference\">INF-012</a>).</p>\n"
+    },
+    {
+      "slug": "inf-008",
+      "parent": "infantry",
+      "title": "INF-008 — Three Brick Obstacles",
+      "kind": "rule",
+      "rule": "INF-008",
+      "doc": "17-infantry.md",
+      "source_line": 132,
+      "body_html": "<p>Height: <strong>7 or more plate layers</strong>.</p>\n<p>Cannot be climbed directly.</p>\n<p>A legal access point is required.</p>\n<p>Examples:</p>\n<ul>\n<li>Slopes</li>\n<li>Stairs</li>\n<li>Ramps</li>\n</ul>\n<p>Without one of these, the obstacle is impassable.</p>\n"
+    },
+    {
+      "slug": "inf-009",
+      "parent": "infantry",
+      "title": "INF-009 — Slopes and Stairs",
+      "kind": "rule",
+      "rule": "INF-009",
+      "doc": "17-infantry.md",
+      "source_line": 150,
+      "body_html": "<p>Infantry may move normally over connected slopes (<code>07-movement.md</code>, <a href=\"/movement/move-012\" class=\"rule-reference\">MOVE-012</a>) at no additional Action Point cost.</p>\n<p>A stepped surface (<code>07-movement.md</code>, <a href=\"/movement/move-013\" class=\"rule-reference\">MOVE-013</a>) is climbed one step at a time. Each step is treated as an obstacle:</p>\n<ul>\n<li>3 plate layers or fewer: no additional AP (<a href=\"/infantry/inf-006\" class=\"rule-reference\">INF-006</a>).</li>\n<li>4 to 6 plate layers: +1 AP (<a href=\"/infantry/inf-007\" class=\"rule-reference\">INF-007</a>).</li>\n<li>7 or more plate layers: cannot be climbed (<a href=\"/infantry/inf-008\" class=\"rule-reference\">INF-008</a>), which stops the climb at that step.</li>\n</ul>\n<p>Distance traveled up a slope or a stepped surface counts against the normal movement limit (<a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>).</p>\n"
+    },
+    {
+      "slug": "inf-011",
+      "parent": "infantry",
+      "title": "INF-011 — Falling Damage",
+      "kind": "rule",
+      "rule": "INF-011",
+      "doc": "17-infantry.md",
+      "source_line": 164,
+      "body_html": "<p>Falling and placement are resolved according to <code>07-movement.md</code> (<a href=\"/movement/move-015\" class=\"rule-reference\">MOVE-015</a>).</p>\n<p>For infantry, falling damage is based on height fallen, measured in plate layers (<code>INF-006</code>).</p>\n<p>The first brick (3 plate layers) causes no damage. For every complete brick beyond the first, roll 1D6 as a Damage Roll (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-014\" class=\"rule-reference\">DMG-014</a>).</p>\n<p>Each Damage Roll is resolved independently:</p>\n<table>\n<thead>\n<tr>\n<th>D6 Result</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1–3</td>\n<td>Damage — advance the faller's Component State one step.</td>\n</tr>\n<tr>\n<td>4–6</td>\n<td>No Damage — no effect.</td>\n</tr>\n</tbody>\n</table>\n<p>Falling damage does not use an Impact, so no Geometry Check is made and Resistance does not apply.</p>\n<p>Vehicle falling is resolved separately under <code>08-vehicles.md</code> (<a href=\"/vehicles/veh-026\" class=\"rule-reference\">VEH-026</a>).</p>\n"
+    },
+    {
+      "slug": "inf-012",
+      "parent": "infantry",
+      "title": "INF-012 — Wounded Movement",
+      "kind": "rule",
+      "rule": "INF-012",
+      "doc": "17-infantry.md",
+      "source_line": 194,
+      "body_html": "<p>A Wounded infantry model (<code>16-damage-system.md</code>, <a href=\"/damage-system/dmg-002\" class=\"rule-reference\">DMG-002</a>) moves <strong>at most 2 UB</strong> in whichever direction it travels.</p>\n<p>Each direction reads its own axis of the Unit Base (<code>02-core-rules.md</code>, <a href=\"/core-rules/core-001\" class=\"rule-reference\">CORE-001</a>), so 2 UB is <strong>6 studs forward or backward</strong> (<a href=\"/infantry/inf-002\" class=\"rule-reference\">INF-002</a>, <a href=\"/infantry/inf-004\" class=\"rule-reference\">INF-004</a>) and <strong>8 studs sideways</strong> (<a href=\"/infantry/inf-003\" class=\"rule-reference\">INF-003</a>) — distances those rules already allow, with the longer ones removed.</p>\n<p>Nothing else about the move changes. It still costs <strong>1 Action Point</strong>, it still travels in a single direction (<code>07-movement.md</code>, <a href=\"/movement/move-007\" class=\"rule-reference\">MOVE-007</a>), and rotation (<a href=\"/infantry/inf-005\" class=\"rule-reference\">INF-005</a>), slopes and stairs (<a href=\"/infantry/inf-009\" class=\"rule-reference\">INF-009</a>) and falling (<code>07-movement.md</code>, <a href=\"/movement/move-015\" class=\"rule-reference\">MOVE-015</a>; <a href=\"/infantry/inf-011\" class=\"rule-reference\">INF-011</a>) are untouched. Climbing a two-brick obstacle still costs the 1 additional Action Point <a href=\"/infantry/inf-007\" class=\"rule-reference\">INF-007</a> charges — what changes there is the length of the move the climb belongs to, not the climb.</p>\n<p>The limit is counted in whole Unit Bases rather than taken as half the normal distance, because half of a 3 UB side move is not a whole Unit Base.</p>\n"
+    }
+  ],
+  "media": [
+    {
+      "filename": "core-001-unit-base-volume.png",
+      "source": "assets/images/core-001-unit-base-volume.png",
+      "alt": "CORE-001 — unit base volume",
+      "attach_to": "core-001",
+      "content_hash": "sha256:d0d8901dffb53a86d5901971d109561669b71bbed23de00fe158a6a4c701a35c"
+    },
+    {
+      "filename": "cmp-018-clear-opening.png",
+      "source": "assets/images/cmp-018-clear-opening.png",
+      "alt": "CMP-018 — clear opening",
+      "attach_to": "cmp-018",
+      "content_hash": "sha256:b6a2701f57034a7c7f50fdbeeb163767f5f0fc626f58952890ac8f884bb53b86"
+    }
+  ]
+}
