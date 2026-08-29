@@ -19,12 +19,14 @@ SHALL read that bundle and nothing else — not the ruleset, not the specificati
 
 ### Requirement: Publication is two-phase, and nothing reaches the public in one step
 
-`push` SHALL create or update every page with status `private`. `promote` SHALL change page
-status to `publish` and SHALL change nothing else.
+`push` SHALL write status `private` on every page it creates or changes. It SHALL leave the
+status of a page it finds unchanged exactly as it is, so that pushing does not take an
+already-published site out of public view between `push` and `promote`. `promote` SHALL
+change page status to `publish` and SHALL change nothing else.
 
-#### Scenario: Pushing stages the publication
+#### Scenario: Pushing stages a new publication
 
-- **WHEN** `push` runs against a site
+- **WHEN** `push` runs against a site that does not yet hold the pages
 - **THEN** every page exists at its final URL with status `private`, and an anonymous
   request for one returns 404
 
@@ -33,6 +35,17 @@ status to `publish` and SHALL change nothing else.
 - **WHEN** `promote` runs after `push`
 - **THEN** every page has status `publish`, an anonymous request returns 200, and no page
   title or content was modified by the promotion
+
+#### Scenario: Pushing an unchanged bundle over a published site
+
+- **WHEN** `push` runs against a site whose pages are already published and match the bundle
+- **THEN** no page changes status, and the site stays publicly readable throughout
+
+#### Scenario: Pushing a changed page over a published site
+
+- **WHEN** a page's content differs from what the site holds
+- **THEN** that page is written as `private`, so the change is reviewed before it is public,
+  while every unchanged page stays as it was
 
 ### Requirement: Pages are identified by slug and parent, never by stored state
 

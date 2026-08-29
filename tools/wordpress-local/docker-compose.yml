@@ -49,9 +49,16 @@ services:
       # Pinning the URLs rather than letting the installer infer them keeps the site's idea
       # of itself identical across recreates, which is what makes published slugs
       # reproducible.
+      # WP_ENVIRONMENT_TYPE is not decoration. WordPress refuses to accept an application
+      # password over plain HTTP — `wp_is_application_passwords_available()` requires either
+      # SSL or an environment type of `local` — so without this every authenticated request
+      # here comes back 401 with a message about capabilities that sends you looking in the
+      # wrong place entirely. It is core WordPress, not a plugin or a patch, and it says
+      # exactly what is true: this site is a local throwaway.
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_HOME', 'http://localhost:${WP_PORT:-8080}');
         define('WP_SITEURL', 'http://localhost:${WP_PORT:-8080}');
+        define('WP_ENVIRONMENT_TYPE', 'local');
     volumes:
       - wp_data:/var/www/html
 

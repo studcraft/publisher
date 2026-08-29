@@ -13,6 +13,50 @@ ruleset AST  ──extract──▶  document.json  ──render──▶  publi
 | `data/<product>/document.json` | `extract` | yes | only for a one-off; `extract` overwrites it |
 | `publish/<product>/v<version>/…` | `render` | yes | never |
 
+## Products
+
+Two, and they share every stage but the last:
+
+- **`quicksheet_3x3`** — the printed quick sheet. `render --format pdf` writes a PDF.
+- **`rules_web`** — the ruleset as web pages. `render` writes one JSON bundle holding every
+  page, which a fourth stage publishes to WordPress.
+
+```bash
+python -m publisher.quicksheet build     # the sheet
+python -m publisher.rules_web build      # the web edition
+```
+
+## The fourth stage: WordPress
+
+```
+… ──render──▶ publish/rules_web/v<version>/rules_web_en.wp.json ──push──▶ WordPress
+                                                                ──promote──▶ public
+```
+
+`push` reads the bundle and **nothing else** — not the ruleset, not the spec. The bytes
+reviewed in a pull request are the bytes the site receives. It writes every page `private`:
+the real URL, the real hierarchy, visible to editors only. `promote` sends one thing per
+page, a status, so making a publication public cannot introduce a change nobody reviewed.
+
+```bash
+python -m publisher.wp push       # stage as `private`
+python -m publisher.wp promote    # make public
+```
+
+Both read `WP_BASE_URL`, `WP_USER` and `WP_APP_PASSWORD` from the environment; the local
+harness in [`tools/wordpress-local/`](../tools/wordpress-local/README.md) writes all three
+into a git-ignored `.env`. Test against that, never against a live site.
+
+**Nothing is installed on WordPress.** Pages, the REST API, application passwords and the
+`/%postname%/` permalink structure are all core. A change that needs a plugin is a finding
+about the design, not a missing step.
+
+**WordPress is the last generated stage, so the rule below extends to it unchanged.** An
+editor who fixes a typo in wp-admin loses it at the next `push`, silently — `push` overwrites
+title and content and makes no attempt to detect a human edit, because detecting one would
+invite treating WordPress as a source. Editors review while it is `private` and report; the
+fix goes in `spec.toml` or upstream in the ruleset.
+
 ## The ruleset is pinned
 
 The pipeline reads a clone of the StudCraft ruleset in git-ignored `source/studcraft/`, at
@@ -34,9 +78,10 @@ sheet the new rules changed.
 
 - **Never edit a generated file to fix a problem in its source.** A wrong line on the sheet
   is fixed in `spec.toml`, not in `document.json` and not in the PDF.
-- **Regenerate and commit in the same change.** `python -m publisher.quicksheet build`, then
-  commit `data/` and `publish/` together with the spec edit. CI fails on
-  `git diff --exit-code` against either.
+- **Regenerate and commit in the same change.** `python -m publisher.quicksheet build` and
+  `python -m publisher.rules_web build`, then commit `data/` and `publish/` together with the
+  spec edit. CI fails on `git diff --exit-code` against either. A ruleset bump touches both
+  products, so build both.
 
 Reference documentation, not restated here:
 
