@@ -1,0 +1,191 @@
+# The content of the one-page 3v3 quick-play sheet.
+#
+# Every line names the rule it condenses. The build resolves each `rule` against the pinned
+# ruleset and fails if the ID is gone, so this file cannot quietly drift from the rules.
+#
+# Lines marked `authored = true` are this sheet's scenario definition, which the ruleset
+# deliberately leaves open (FLOW-013). They print in italic and without a rule ID, and the
+# page footer says what italic means.
+#
+# Do not write a line here without reading the rule it cites. Condensing rules by hand
+# invents plausible wrong words.
+
+language = "en"
+title = "StudCraft — 3v3 Quick Sheet"
+
+[[section]]
+id = "scenario"
+heading = "The Scenario"
+intro = "The ruleset defines how models behave; the scenario defines the game. This is ours."
+
+[[section.line]]
+authored = true
+text = "Three minifigures per warband. Two or more players."
+
+[[section.line]]
+authored = true
+text = "The game ends when only one warband still has a model on the battlefield."
+
+[[section.line]]
+authored = true
+text = "That warband wins. No turn limit, no draw."
+
+[[section.line]]
+rule = "FLOW-013"
+text = "A scenario may restrict or extend the rules, never contradict them."
+
+[[section.line]]
+rule = "FLOW-001"
+text = "Before Turn 1: agree battlefield size, agree the Deployment Volume (W x D x H in UB), build forces, deploy, determine Priority."
+
+[[section.line]]
+rule = "FLOW-010"
+text = "End condition says when the game stops; victory condition says who wins."
+
+[[section]]
+id = "turn"
+heading = "The Turn"
+
+[[section.line]]
+rule = "FLOW-003"
+text = "Priority: every player rolls 1D6. Highest to lowest is the Activation Order; first place holds Priority. Reroll ties among the tied players only."
+
+[[section.line]]
+rule = "FLOW-003"
+text = "The Priority holder chooses once: activate now keeping their place, or cede Priority and drop to last while everyone else moves up."
+
+[[section.line]]
+rule = "FLOW-002"
+text = "Activate one unit at a time down the order. Skip players with none left. Continue until every unit has activated."
+
+[[section.line]]
+rule = "FLOW-004"
+text = "A unit activates exactly once per Turn. Its activation ends when the AP are spent or the player stops."
+
+[[section.line]]
+rule = "CORE-006"
+text = "Every unit gets exactly 3 Action Points per activation. No unit ever gets more."
+
+[[section.line]]
+rule = "FLOW-007"
+text = "Spend AP in any legal order. Actions combine freely: Move / Move / Attack is legal, so is Rotate / Move / Attack."
+
+[[section.line]]
+rule = "FLOW-009"
+text = "End of Turn: resolve temporary effects, then scenario effects, then roll Priority again."
+
+[[section]]
+id = "movement"
+heading = "Movement"
+
+[[section.line]]
+rule = "INF-002"
+text = "Forward: up to 4 UB (12 studs). 1 AP."
+
+[[section.line]]
+rule = "INF-004"
+text = "Backward: up to 4 UB (12 studs). 1 AP. Facing does not change."
+
+[[section.line]]
+rule = "INF-003"
+text = "Sideways: up to 3 UB (12 studs). 1 AP."
+
+[[section.line]]
+rule = "INF-005"
+text = "Rotate to any facing: 1 AP. No measuring."
+
+[[section.line]]
+rule = "MOVE-007"
+text = "No diagonal movement. Reach an off-axis square by combining legs; each leg is its own action and its own 1 AP."
+
+[[section.line]]
+rule = "INF-002"
+text = "Each move is measured on its own: 2 AP of movement is two moves of up to 4 UB, not one of 8 UB."
+
+[[section.line]]
+rule = "MOVE-003"
+text = "Measure along the direction of travel, from the face of the base that leads."
+
+[[section.line]]
+rule = "INF-012"
+text = "Wounded: at most 2 UB in any direction — 6 studs forward or back, 8 studs sideways. Everything else about the move is unchanged."
+
+[[section.line]]
+rule = "INF-006"
+text = "Obstacle up to 3 plate layers (1 brick): cross freely, no extra cost."
+
+[[section.line]]
+rule = "INF-007"
+text = "Obstacle 4 to 6 layers: climb for 1 extra AP per obstacle crossed. The climb does not extend the move's distance limit."
+
+[[section.line]]
+rule = "INF-008"
+text = "Obstacle 7+ layers: impassable without a slope, stair or ramp."
+
+[[section]]
+id = "shooting"
+heading = "Shooting"
+
+[[section.line]]
+rule = "CBT-001"
+text = "1 AP per weapon system attacking, however many dice it makes. Declare weapon, declare target, check Line of Sight, check range, roll, count Impacts, defender resolves them."
+
+[[section.line]]
+rule = "CORE-009"
+text = "Line of Sight is physical: if you can see it, you can shoot it."
+
+[[section.line]]
+rule = "CBT-002"
+text = "Any legally targetable part being visible from the attacker's viewpoint is enough."
+
+[[section.line]]
+rule = "WPN-005"
+text = "Range = weapon length x 6. A 4-stud weapon reaches 24 studs; a 6-stud weapon, 36."
+
+[[section.line]]
+rule = "WPN-002"
+text = "A functional muzzle is a visibly round opening on the weapon front. Square pieces are not muzzles."
+
+[[section.line]]
+rule = "WPN-006"
+text = "Attack Dice = functional muzzles, one D6 each. Muzzle size changes strength, never the number of dice."
+
+[[section.line]]
+rule = "CBT-005"
+text = "Attack Roll, per die: 4-6 scores one Impact, 1-3 nothing. A die can never score more than one."
+
+[[section.line]]
+rule = "CBT-015"
+text = "Wounded attacker or Wounded weapon: for each Attack Die roll 2D6 and keep the LOWER, then read it as above. Same number of dice. Wounded states never stack."
+
+[[section]]
+id = "damage"
+heading = "Damage"
+
+[[section.line]]
+rule = "DMG-008"
+text = "Resolve each Impact on its own: pick the component hit, Geometry Check, Damage Roll, state change."
+
+[[section.line]]
+rule = "WPN-021"
+text = "Impact Strength = muzzle size x 3. A 1x1 muzzle is 3, a 2x2 is 6, an NxN is 3N."
+
+[[section.line]]
+rule = "DMG-003"
+text = "Resistance is not a statistic: it is the thinnest material the Impact must cross, in plate layers. Plate = 1, brick = 3. Empty space counts for nothing; walls are never added together."
+
+[[section.line]]
+rule = "DMG-013"
+text = "Geometry Check: Strength below Resistance, the Impact stops and no die is rolled. Strength equal or above, continue."
+
+[[section.line]]
+rule = "DMG-014"
+text = "Damage Roll, by the defender, one D6: 1-3 damages and advances the state one step, 4-6 does nothing. Note this reads opposite to the Attack Roll."
+
+[[section.line]]
+rule = "DMG-002"
+text = "States: Operational, then Wounded, then Dead. Infantry shows it physically: upright, seated, removed. No tokens."
+
+[[section.line]]
+rule = "DMG-002"
+text = "Wounded changes only the capability it provides — infantry moves shorter (INF-012), a weapon rolls the Wounded attack (CBT-015). Resistance, Strength and AP costs are untouched."
