@@ -22,7 +22,7 @@ from pathlib import Path
 
 from publisher.quicksheet import publish
 from publisher.rules_web import markup
-from publisher.rules_web.model import DOCUMENT, Document, Page
+from publisher.rules_web.model import RULE, Document, Page
 
 BUNDLE_SCHEMA = 1
 EXTENSION = "wp.json"
@@ -83,6 +83,7 @@ def _page(page: Page, document: Document) -> dict:
         "parent": page.parent,
         "title": page.title,
         "kind": page.kind,
+        "menu_order": page.menu_order,
         "rule": page.rule,
         "doc": page.doc,
         "source_line": page.source_line,
@@ -95,7 +96,7 @@ def _page(page: Page, document: Document) -> dict:
 
 def _content(page: Page, document: Document) -> str:
     """Return the whole HTML of one page: its own content, then the provenance footer."""
-    parts = [_index(page) if page.kind == DOCUMENT else page.body_html, _footer(page, document)]
+    parts = [page.body_html if page.kind == RULE else _index(page), _footer(page, document)]
     return "\n".join(part for part in parts if part)
 
 
@@ -109,14 +110,22 @@ def _index(page: Page) -> str:
     parts = []
     if page.intro:
         parts.append(_intro(page))
-    rows = "\n".join(
-        f'  <li><a href="{escaping.escape(entry.slug)}">'
-        f"<strong>{escaping.escape(entry.rule)}</strong> — {escaping.escape(entry.title)}"
-        "</a></li>"
-        for entry in page.entries
-    )
+    rows = "\n".join(f"  <li>{_entry(entry)}</li>" for entry in page.entries)
     parts.append(f'<ul class="rule-index">\n{rows}\n</ul>')
     return "\n".join(parts)
+
+
+def _entry(entry) -> str:
+    """Return one index row.
+
+    A rule leads with its ID, because that is what people cite to each other and what they
+    scan the page for. A whole ruleset document has no ID and leads with its name.
+    """
+    link = f'<a href="{escaping.escape(entry.slug)}">'
+    title = escaping.escape(entry.title)
+    if entry.rule:
+        return f"{link}<strong>{escaping.escape(entry.rule)}</strong> — {title}</a>"
+    return f"{link}{title}</a>"
 
 
 def _intro(page: Page) -> str:

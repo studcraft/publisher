@@ -27,6 +27,7 @@ class FakeWordPress:
     def __init__(self, *, authorized: bool = True) -> None:
         self.pages: dict[int, dict] = {}
         self.media: dict[int, dict] = {}
+        self.navigations: dict[int, dict] = {}
         self.requests: list[tuple[str, str]] = []
         self.headers_seen: list[Mapping[str, str]] = []
         self._next_id = 1
@@ -56,6 +57,10 @@ class FakeWordPress:
             return self._pages(method, query, body)
         if path.startswith("/pages/"):
             return self._page(int(path.rsplit("/", 1)[1]), body)
+        if path == "/navigation":
+            return self._navigations(method, query, body)
+        if path.startswith("/navigation/"):
+            return self._navigation(int(path.rsplit("/", 1)[1]), body)
         if path == "/media":
             return self._media(method, query, headers, body)
         if path.startswith("/media/"):
@@ -81,6 +86,7 @@ class FakeWordPress:
             "slug": str(payload.get("slug", "")).lower(),
             "parent": payload.get("parent", 0) or 0,
             "status": payload.get("status", "draft"),
+            "menu_order": payload.get("menu_order", 0),
             "title": _both(payload.get("title", "")),
             "content": _both(payload.get("content", "")),
         }
@@ -92,13 +98,42 @@ class FakeWordPress:
         if page is None:
             return _json(404, {"code": "rest_post_invalid_id", "message": "Invalid page."})
         payload = json.loads((body or b"{}").decode("utf-8"))
-        for field in ("status", "parent"):
+        for field in ("status", "parent", "menu_order"):
             if field in payload:
                 page[field] = payload[field]
         for field in ("title", "content"):
             if field in payload:
                 page[field] = _both(payload[field])
         return _json(200, page)
+
+    # -- navigation ------------------------------------------------------------------------
+
+    def _navigations(self, method: str, query: dict, body: bytes | None) -> Response:
+        if method == "GET":
+            found = list(self.navigations.values())
+            if "slug" in query:
+                found = [item for item in found if item["slug"] == query["slug"]]
+            return _json(200, found)
+
+        payload = json.loads((body or b"{}").decode("utf-8"))
+        item = {
+            "id": self._take_id(),
+            "slug": payload.get("slug", ""),
+            "title": _both(payload.get("title", "")),
+            "content": _both(payload.get("content", "")),
+        }
+        self.navigations[item["id"]] = item
+        return _json(201, item)
+
+    def _navigation(self, navigation_id: int, body: bytes | None) -> Response:
+        item = self.navigations.get(navigation_id)
+        if item is None:
+            return _json(404, {"code": "rest_post_invalid_id", "message": "Invalid menu."})
+        payload = json.loads((body or b"{}").decode("utf-8"))
+        for field in ("title", "content"):
+            if field in payload:
+                item[field] = _both(payload[field])
+        return _json(200, item)
 
     # -- media ----------------------------------------------------------------------------
 
@@ -162,6 +197,7 @@ class FakeWordPress:
             "slug": slug,
             "parent": parent,
             "status": status,
+            "menu_order": 0,
             "title": _both(slug),
             "content": _both(""),
         }

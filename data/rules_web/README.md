@@ -1,10 +1,12 @@
 # `rules_web` — the ruleset as web pages
 
-Every rule gets a URL, under the document that holds it:
+Every rule gets a URL, under the document that holds it, under one page for the whole
+ruleset:
 
 ```
-/core-rules              an index of the rules in 02-core-rules.md
-/core-rules/core-001     CORE-001, its body, its images, its citations linked
+/rules                          an index of the systems
+/rules/core-rules               an index of the rules in 02-core-rules.md
+/rules/core-rules/core-001      CORE-001, its body, its images, its citations linked
 ```
 
 ## What `spec.toml` says, and what it does not
@@ -17,6 +19,10 @@ read from the pinned ruleset, and a second copy here would drift from it.
 title = "StudCraft Rules"
 language = "en"
 base_path = ""
+
+[root]
+slug = "rules"
+title = "Rules"
 
 [[document]]
 file = "02-core-rules.md"
@@ -31,6 +37,9 @@ intro = "The universal rules every StudCraft scenario uses."
 | `language` | no | `en` | Part of the published filename, so two languages never collide. |
 | `base_path` | no | empty | The segment every page sits under. Empty for English. |
 | `name` | no | `rules_web` | The product name, and the publish directory. |
+| `[root].slug` | no | `rules` | The segment every document sits under. |
+| `[root].title` | no | `Rules` | The root page's title, and the menu entry's label. |
+| `[root].intro` | no | empty | Markdown shown above the list of systems. |
 | `[[document]].file` | **yes** | — | The ruleset document, by filename as the ruleset writes it. |
 | `[[document]].slug` | no | derived | The URL segment. Derived by stripping the numeric prefix and `.md`. |
 | `[[document]].title` | no | derived | The document page's title. Derived from the filename. |
@@ -62,6 +71,7 @@ and `/vehicles/veh-003` would move with it. The explicit slug is where that prom
 ```bash
 python -m publisher.rules_web build     # ruleset -> document.json -> the bundle
 python -m publisher.wp push             # the bundle -> the site, as `private`
+python -m publisher.wp menu             # the bundle -> the site's navigation menu
 python -m publisher.wp promote          # `private` -> `publish`
 ```
 
@@ -84,3 +94,29 @@ WordPress stores an upload under a directory named for the month it arrived: a U
 render time would make the same ruleset render to different bytes in a different month, and
 the determinism gate would be pinning a value that legitimately drifts. `push` substitutes
 the real URL once it knows where the file landed.
+
+## The order documents are listed in
+
+The specification's order is the ruleset's own numbering, which is its reading order, and it
+is written onto every page as WordPress's `menu_order`. This is not decoration: left at zero,
+WordPress falls back to sorting by title, and the site presents the ruleset alphabetically —
+Combat first, Core Rules third.
+
+## The menu
+
+`python -m publisher.wp menu` writes a `wp_navigation` post holding one entry, **Rules**, with
+the thirteen systems under it in reading order. A block theme's navigation block falls back
+to the most recent such post when it has no reference of its own, so this is enough and the
+theme's templates are never touched.
+
+It stops one level down on purpose. Without it, a block theme renders a **Page List**, which
+walks the whole hierarchy: measured on a stock Twenty Twenty-Five, 194 menu entries in
+alphabetical order. The rules are reached from the page that indexes them.
+
+## Changing a published URL
+
+Renaming the root, a document slug, or `base_path` moves every page under it. `push` creates
+the pages at their new addresses and **cannot see the old ones** — they are no longer beneath
+anything it manages, so they stay published at URLs nothing links to any more. Before the
+first public promotion this costs nothing; after it, plan the move, and unpublish the old
+tree by hand.

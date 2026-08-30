@@ -81,8 +81,8 @@ def test_the_page_carries_a_placeholder_rather_than_a_url(tmp_path: Path) -> Non
 
     document = _build(tmp_path, index, clone)
 
-    assert "{{media:core-001-unit-base.png}}" in document.pages[1].body_html
-    assert "assets/images" not in document.pages[1].body_html
+    assert "{{media:core-001-unit-base.png}}" in document.pages[2].body_html
+    assert "assets/images" not in document.pages[2].body_html
 
 
 def test_an_image_embedded_twice_is_collected_once(tmp_path: Path) -> None:

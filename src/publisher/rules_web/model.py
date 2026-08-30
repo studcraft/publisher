@@ -35,8 +35,10 @@ SCHEMA_VERSION = 1
 # stage substitutes the real URL once it knows where the file landed.
 MEDIA_PLACEHOLDER = "{{media:%s}}"
 
+ROOT = "root"
 DOCUMENT = "document"
 RULE = "rule"
+KINDS = (ROOT, DOCUMENT, RULE)
 
 
 class WebDocumentError(Exception):
@@ -61,11 +63,15 @@ class Media:
 
 @dataclass(frozen=True)
 class Entry:
-    """One line of a document page's index: a rule, and where to find it."""
+    """One line of an index page: something to read, and where to find it.
 
-    rule: str
+    ``rule`` is the rule ID when the entry is a rule, and ``None`` when it is a whole ruleset
+    document — the root page indexes documents, which have no ID of their own.
+    """
+
     title: str
     slug: str
+    rule: str | None = None
 
 
 @dataclass(frozen=True)
@@ -84,6 +90,9 @@ class Page:
     title: str
     kind: str
     parent: str | None = None
+    # What WordPress orders a menu by. Left at zero, it falls back to sorting by title, and
+    # the ruleset's reading order — the whole point of its numbering — is lost.
+    menu_order: int = 0
     intro: str = ""
     body_html: str = ""
     entries: tuple[Entry, ...] = ()
@@ -191,6 +200,7 @@ def _page_dict(page: Page) -> dict[str, Any]:
         "parent": page.parent,
         "title": page.title,
         "kind": page.kind,
+        "menu_order": page.menu_order,
         "rule": page.rule,
         "doc": page.doc,
         "source_line": page.source_line,
@@ -214,25 +224,28 @@ def _read_page(raw: Any, index: int) -> Page:
         if not raw.get(required):
             raise WebDocumentError(f"pages[{index}] is missing {required!r}.")
     kind = raw["kind"]
-    if kind not in (DOCUMENT, RULE):
+    if kind not in KINDS:
         raise WebDocumentError(
-            f"pages[{index}] has kind {kind!r}; expected {DOCUMENT!r} or {RULE!r}."
+            f"pages[{index}] has kind {kind!r}; expected one of {', '.join(KINDS)}."
         )
 
     entries = []
     for position, entry in enumerate(raw.get("entries") or ()):
         if not isinstance(entry, dict):
             raise WebDocumentError(f"pages[{index}] entry {position} is not an object.")
-        for required in ("rule", "title", "slug"):
+        # `rule` is absent on the root page's entries, which index whole ruleset documents
+        # rather than rules. A title and somewhere to go are what every entry needs.
+        for required in ("title", "slug"):
             if not entry.get(required):
                 raise WebDocumentError(f"pages[{index}] entry {position} is missing {required!r}.")
-        entries.append(Entry(rule=entry["rule"], title=entry["title"], slug=entry["slug"]))
+        entries.append(Entry(title=entry["title"], slug=entry["slug"], rule=entry.get("rule")))
 
     page = Page(
         slug=raw["slug"],
         title=raw["title"],
         kind=kind,
         parent=raw.get("parent"),
+        menu_order=raw.get("menu_order", 0),
         intro=raw.get("intro", ""),
         body_html=raw.get("body_html", ""),
         entries=tuple(entries),

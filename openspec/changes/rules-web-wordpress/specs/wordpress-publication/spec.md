@@ -153,3 +153,69 @@ promote behaviour can be tested against a substitute transport with no network a
 - **WHEN** the test suite runs with no network available
 - **THEN** creating, updating, orphaning, media upload and the credential refusal are all
   exercised
+
+### Requirement: The published hierarchy hangs from one root page
+
+Every ruleset document SHALL be published as a page under one root page, and every rule as a
+page under its document. `push` SHALL write a page only after the page it sits under exists,
+whatever order the bundle lists them in.
+
+#### Scenario: The hierarchy is created
+
+- **WHEN** `push` runs against a site that holds none of the pages
+- **THEN** the root exists, each document page is a child of it, and each rule page is a
+  child of its document
+
+#### Scenario: The bundle names a parent it does not contain
+
+- **WHEN** a page sits under a slug the bundle has no page for
+- **THEN** `push` fails, naming the missing parent, and publishes nothing
+
+### Requirement: Published pages carry the ruleset's reading order
+
+Each page SHALL be published with the ordering value that puts documents in the order the
+specification lists them and rules in the order the ruleset gives them. A page whose order
+has changed SHALL be updated.
+
+#### Scenario: Order reaches the site
+
+- **WHEN** `push` writes the pages
+- **THEN** each page's `menu_order` is its position in reading order, not zero
+
+#### Scenario: Only the order changed
+
+- **WHEN** a page's content is unchanged but its position is not
+- **THEN** `push` updates that page and reports it as updated
+
+### Requirement: A removed subtree is unpublished with its descendants
+
+When a bundle no longer contains a page that had children, `push` SHALL unpublish that page
+and every page beneath it, none of which the bundle still names.
+
+#### Scenario: A whole ruleset document stops being published
+
+- **WHEN** the bundle no longer contains a document page or any of its rules
+- **THEN** the document page and all its rule pages are set to `private` and reported
+
+### Requirement: The site's navigation is written from the bundle
+
+A command SHALL write a navigation menu holding one entry for the root page with the ruleset
+documents beneath it, in reading order. It SHALL address entries by URL rather than by page
+ID, SHALL update the menu it wrote before rather than adding a second one, and SHALL NOT
+write any theme template or template part.
+
+#### Scenario: The menu is written
+
+- **WHEN** the menu command runs
+- **THEN** a navigation exists holding the root entry and one entry per document, in reading
+  order, and no rule appears in it
+
+#### Scenario: The menu is written again
+
+- **WHEN** the command runs a second time
+- **THEN** the same navigation is updated, and the site holds exactly one
+
+#### Scenario: A translated edition
+
+- **WHEN** the bundle declares a base path
+- **THEN** every menu entry's URL is inside that path

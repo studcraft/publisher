@@ -2,6 +2,7 @@
 
     push      bundle  ->  every page on the site, as `private`
     promote   the staged pages  ->  `publish`
+    menu      bundle  ->  the site's navigation: Rules, and the documents under it
 
 Two commands rather than one, because the gap between them is the review. Nothing here reads
 the ruleset or the specification: the bundle is the only input, so what a pull request
@@ -30,6 +31,8 @@ from publisher.rules_web.document import read as read_document
 from publisher.rules_web.model import WebDocumentError
 from publisher.sync import DEST
 from publisher.wp.client import Credentials, WordPress, WordPressError
+from publisher.wp.menu import MenuError
+from publisher.wp.menu import write as write_menu
 from publisher.wp.promote import PromoteError, promote
 from publisher.wp.push import DEFAULT_ORPHAN_LIMIT, PushError, push
 
@@ -37,7 +40,7 @@ SITE_ENV = "WP_BASE_URL"
 USER_ENV = "WP_USER"
 PASSWORD_ENV = "WP_APP_PASSWORD"
 
-_FAILURES = (WordPressError, PushError, PromoteError, WebDocumentError, OSError)
+_FAILURES = (WordPressError, PushError, PromoteError, MenuError, WebDocumentError, OSError)
 
 
 class ConfigurationError(Exception):
@@ -91,6 +94,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     _add_common_args(promote_parser)
 
+    menu_parser = subparsers.add_parser(
+        "menu",
+        help="Write the site navigation: one entry per ruleset document, in reading order.",
+    )
+    _add_common_args(menu_parser)
+
     args = parser.parse_args(argv)
 
     try:
@@ -119,6 +128,9 @@ def _run(args: argparse.Namespace) -> int:
     if args.command == "push":
         report = push(bundle, site, clone_root=args.clone, orphan_limit=args.orphan_limit)
         print(f"Staged {path} on {site_label()}")
+    elif args.command == "menu":
+        report = write_menu(bundle, site)
+        print(f"Wrote the navigation on {site_label()}")
     else:
         report = promote(bundle, site)
         print(f"Promoted {path} on {site_label()}")

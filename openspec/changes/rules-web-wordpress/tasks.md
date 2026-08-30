@@ -92,3 +92,16 @@
 - [x] 11.3 Record in `system/testing.md` that the Docker end-to-end run is deliberately not a required check
 - [x] 11.4 Run `ruff check .` and `ruff format --check .`
 - [x] 11.5 Delete the scratch file `delete-me-wordpress.md`
+
+## 12. One root, reading order, and a menu
+
+- [x] 12.1 Add a `[root]` table to `spec.toml` and publish every document under one root page
+- [x] 12.2 Set `menu_order` from the specification's document order and the ruleset's rule order
+- [x] 12.3 Send `menu_order` on create and update, and treat a change to it as a change to publish
+- [x] 12.4 Order `push` and `promote` by depth so an arbitrarily deep hierarchy still works
+- [x] 12.5 Make the orphan scan descend, so a removed document takes its rules with it
+- [x] 12.6 Add `python -m publisher.wp menu`, writing a `wp_navigation` post and no template
+- [x] 12.7 Address menu entries by URL, never by page ID, so one bundle suits two sites
+- [x] 12.8 Test the menu, the ordering, and the descending orphan scan
+- [x] 12.9 Verify against the local site: the header shows Rules and 13 systems in reading order
+- [x] 12.10 Document the root table, the menu command, and what changing a published URL costs

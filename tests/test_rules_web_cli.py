@@ -52,8 +52,8 @@ def test_extract_writes_the_document(tmp_path: Path, capsys) -> None:
         assert cli.main(["extract", "--data", str(data)]) == 0
 
     payload = json.loads((data / "document.json").read_text(encoding="utf-8"))
-    assert [page["slug"] for page in payload["pages"]] == ["core-rules", "core-001"]
-    assert "2 pages" in capsys.readouterr().out
+    assert [page["slug"] for page in payload["pages"]] == ["rules", "core-rules", "core-001"]
+    assert "3 pages" in capsys.readouterr().out
 
 
 def test_build_extracts_and_renders(tmp_path: Path) -> None:

@@ -167,7 +167,7 @@ def test_reading_a_document_that_is_not_json_fails(tmp_path: Path) -> None:
         ({"schema": 1, "pages": [{"slug": "x", "kind": "rule"}]}, "missing 'title'"),
         (
             {"schema": 1, "pages": [{"slug": "x", "title": "X", "kind": "chapter"}]},
-            "expected 'document' or 'rule'",
+            "expected one of root, document, rule",
         ),
         (
             {"schema": 1, "pages": [{"slug": "x", "title": "X", "kind": "rule"}]},

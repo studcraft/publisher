@@ -29,9 +29,16 @@ def _document() -> Document:
         title="StudCraft Rules",
         pages=(
             Page(
+                slug="rules",
+                title="Rules",
+                kind="root",
+                entries=(Entry(title="Core Rules", slug="core-rules"),),
+            ),
+            Page(
                 slug="core-rules",
                 title="Core Rules",
                 kind="document",
+                parent="rules",
                 entries=(Entry(rule="CORE-001", title="Unit Base", slug="core-001"),),
             ),
             Page(
@@ -75,9 +82,9 @@ def test_push_stages_the_bundle(tmp_path: Path, capsys) -> None:
 
     assert _run(["push", "--data", str(data), "--out", str(out)], fake) == 0
 
-    assert sorted(fake.slugs()) == ["core-001", "core-rules"]
+    assert sorted(fake.slugs()) == ["core-001", "core-rules", "rules"]
     assert {page["status"] for page in fake.pages.values()} == {"private"}
-    assert "2 created" in capsys.readouterr().out
+    assert "3 created" in capsys.readouterr().out
 
 
 def test_promote_publishes_what_push_staged(tmp_path: Path, capsys) -> None:
@@ -89,7 +96,7 @@ def test_promote_publishes_what_push_staged(tmp_path: Path, capsys) -> None:
     assert _run(["promote", "--data", str(data), "--out", str(out)], fake) == 0
 
     assert {page["status"] for page in fake.pages.values()} == {"publish"}
-    assert "2 pages promoted" in capsys.readouterr().out
+    assert "3 pages promoted" in capsys.readouterr().out
 
 
 def test_missing_credentials_are_named(tmp_path: Path, capsys) -> None:
@@ -133,3 +140,14 @@ def test_a_command_is_required() -> None:
     """`python -m publisher.wp` on its own publishes nothing, and says so."""
     with pytest.raises(SystemExit):
         cli.main([])
+
+
+def test_menu_writes_the_navigation(tmp_path: Path, capsys) -> None:
+    """The header menu is written from the bundle, not maintained by hand."""
+    data, out = _published(tmp_path)
+    fake = FakeWordPress()
+
+    assert _run(["menu", "--data", str(data), "--out", str(out)], fake) == 0
+
+    assert len(fake.navigations) == 1
+    assert "1 entries" in capsys.readouterr().out

@@ -14,6 +14,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from publisher.wp.client import PUBLISH, WordPress
+from publisher.wp.push import ordered
 
 
 class PromoteError(Exception):
@@ -40,19 +41,18 @@ def promote(bundle: dict, site: WordPress) -> Report:
     for.
     """
     report = Report()
-    parents: dict[str, int] = {}
+    found: dict[str, int] = {}
 
-    for page in _ordered(bundle):
+    for page in ordered(bundle):
         parent_slug = page.get("parent")
-        parent_id = parents.get(parent_slug) if parent_slug else None
+        parent_id = found.get(parent_slug) if parent_slug else None
         existing = site.find_page(page["slug"], parent_id)
         if existing is None:
             raise PromoteError(
                 f"The page {page['slug']!r} is not on the site, so there is nothing to "
                 "promote. Run `python -m publisher.wp push` first."
             )
-        if page.get("kind") == "document":
-            parents[page["slug"]] = existing["id"]
+        found[page["slug"]] = existing["id"]
 
         if existing.get("status") == PUBLISH:
             report.already.append(page["slug"])
@@ -62,15 +62,3 @@ def promote(bundle: dict, site: WordPress) -> Report:
         report.promoted.append(page["slug"])
 
     return report
-
-
-def _ordered(bundle: dict) -> list[dict]:
-    """Return the bundle's pages with every document page first.
-
-    A rule page is looked up under its parent, so the parent's ID has to be known first —
-    the same ordering constraint the push stage has, for the same reason.
-    """
-    pages = bundle.get("pages") or []
-    documents = [page for page in pages if page.get("kind") == "document"]
-    rules = [page for page in pages if page.get("kind") != "document"]
-    return documents + rules

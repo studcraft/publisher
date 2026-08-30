@@ -99,10 +99,23 @@ class WordPress:
         return found
 
     def create_page(
-        self, *, slug: str, title: str, content: str, parent: int | None, status: str
+        self,
+        *,
+        slug: str,
+        title: str,
+        content: str,
+        parent: int | None,
+        status: str,
+        menu_order: int = 0,
     ) -> dict:
         """Create a page and return it."""
-        payload = {"slug": slug, "title": title, "content": content, "status": status}
+        payload = {
+            "slug": slug,
+            "title": title,
+            "content": content,
+            "status": status,
+            "menu_order": menu_order,
+        }
         if parent is not None:
             payload["parent"] = parent
         return self._write(f"{API}/pages", payload, f"creating the page {slug!r}")
@@ -110,6 +123,29 @@ class WordPress:
     def update_page(self, page_id: int, **fields: Any) -> dict:
         """Update ``page_id`` with ``fields`` and return the page."""
         return self._write(f"{API}/pages/{page_id}", fields, f"updating page {page_id}")
+
+    # -- navigation ----------------------------------------------------------------------
+
+    def find_navigation(self, slug: str) -> dict | None:
+        """Return the navigation menu with ``slug``, or ``None`` when it is absent."""
+        found = self._get(f"{API}/navigation", {"slug": slug, "status": "any", "context": "edit"})
+        if not isinstance(found, list):
+            raise WordPressError(f"Looking up the menu {slug!r} returned {type(found).__name__}.")
+        for item in found:
+            if item.get("slug") == slug:
+                return item
+        return None
+
+    def create_navigation(self, *, slug: str, title: str, content: str) -> dict:
+        """Create a navigation menu and return it."""
+        payload = {"slug": slug, "title": title, "content": content, "status": PUBLISH}
+        return self._write(f"{API}/navigation", payload, f"creating the menu {slug!r}")
+
+    def update_navigation(self, navigation_id: int, **fields: Any) -> dict:
+        """Update ``navigation_id`` with ``fields`` and return the menu."""
+        return self._write(
+            f"{API}/navigation/{navigation_id}", fields, f"updating menu {navigation_id}"
+        )
 
     # -- media ---------------------------------------------------------------------------
 

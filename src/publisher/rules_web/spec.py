@@ -27,8 +27,24 @@ class SpecError(Exception):
 # An unknown key is an error rather than a shrug: a misspelled `slug` that is silently
 # ignored looks exactly like slug overrides not working, and that is far more expensive to
 # debug than a failed build.
-_TOP_KEYS = frozenset({"title", "language", "base_path", "name", "document"})
+_TOP_KEYS = frozenset({"title", "language", "base_path", "name", "root", "document"})
+_ROOT_KEYS = frozenset({"slug", "title", "intro"})
 _DOCUMENT_KEYS = frozenset({"file", "slug", "title", "intro"})
+
+DEFAULT_ROOT_SLUG = "rules"
+
+
+@dataclass(frozen=True)
+class RootSpec:
+    """The single page every published document hangs from.
+
+    It exists so the site has one thing called "Rules" rather than thirteen top-level
+    entries in reading order that a visitor has to recognise as a set.
+    """
+
+    slug: str
+    title: str
+    intro: str = ""
 
 
 @dataclass(frozen=True)
@@ -49,6 +65,7 @@ class Spec:
     language: str
     base_path: str
     name: str
+    root: RootSpec
     documents: tuple[DocumentSpec, ...]
 
 
@@ -83,12 +100,32 @@ def from_dict(raw: dict, where: str) -> Spec:
         seen[spec.slug] = spec.file
         documents.append(spec)
 
+    root = _root(raw.get("root") or {}, f"{where} root")
+    if root.slug in seen:
+        raise SpecError(
+            f"{where} gives the root page the slug {root.slug!r}, which the document "
+            f"{seen[root.slug]!r} already uses. They would publish to the same URL."
+        )
+
     return Spec(
+        root=root,
         title=raw.get("title", ""),
         language=raw.get("language") or "en",
         base_path=raw.get("base_path", "").strip("/"),
         name=raw.get("name") or "rules_web",
         documents=tuple(documents),
+    )
+
+
+def _root(entry: object, where: str) -> RootSpec:
+    """Return the root page entry, defaulting everything that is not given."""
+    if not isinstance(entry, dict):
+        raise SpecError(f"{where} is not a table.")
+    _reject_unknown(entry, _ROOT_KEYS, where)
+    return RootSpec(
+        slug=entry.get("slug") or DEFAULT_ROOT_SLUG,
+        title=entry.get("title") or "Rules",
+        intro=entry.get("intro", ""),
     )
 
 

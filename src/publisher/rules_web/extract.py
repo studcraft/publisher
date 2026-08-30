@@ -17,7 +17,7 @@ from pathlib import Path
 from publisher.quicksheet.index import Rule
 from publisher.quicksheet.model import Source
 from publisher.rules_web import markup
-from publisher.rules_web.model import DOCUMENT, RULE, Document, Entry, Media, Page
+from publisher.rules_web.model import DOCUMENT, ROOT, RULE, Document, Entry, Media, Page
 from publisher.rules_web.slugs import rule_slug
 from publisher.rules_web.spec import Spec
 
@@ -35,22 +35,38 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
     _check_documents(spec, by_document)
 
     published = {
-        rule_id: _page_path(spec.base_path, entry.slug, rule_slug(rule_id))
+        rule_id: _page_path(spec.base_path, spec.root.slug, entry.slug, rule_slug(rule_id))
         for entry in spec.documents
         for rule_id in by_document.get(entry.file, ())
     }
     unpublished = frozenset(set(index) - set(published))
 
     collector = _Media(clone_root)
-    pages: list[Page] = []
+    pages: list[Page] = [
+        Page(
+            slug=spec.root.slug,
+            title=spec.root.title,
+            kind=ROOT,
+            intro=spec.root.intro,
+            entries=tuple(
+                Entry(title=entry.title or _document_title(entry.file), slug=entry.slug)
+                for entry in spec.documents
+            ),
+        )
+    ]
 
-    for entry in spec.documents:
+    for position, entry in enumerate(spec.documents, start=1):
         rule_ids = by_document[entry.file]
         pages.append(
             Page(
                 slug=entry.slug,
                 title=entry.title or _document_title(entry.file),
                 kind=DOCUMENT,
+                parent=spec.root.slug,
+                # The specification lists documents in reading order, which is the ruleset's
+                # own numbering. WordPress orders a menu by this field and falls back to the
+                # title, so leaving it at zero publishes the ruleset alphabetically.
+                menu_order=position,
                 intro=entry.intro,
                 entries=tuple(
                     Entry(
@@ -63,7 +79,7 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
                 doc=entry.file,
             )
         )
-        for rule_id in rule_ids:
+        for order, rule_id in enumerate(rule_ids, start=1):
             rule = index[rule_id]
             pages.append(
                 Page(
@@ -71,6 +87,7 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
                     title=f"{rule_id} — {rule.title}",
                     kind=RULE,
                     parent=entry.slug,
+                    menu_order=order,
                     body_html=markup.render(
                         body(rule),
                         links=published,
@@ -198,9 +215,9 @@ def _document_title(file: str) -> str:
     return " ".join(word.capitalize() for word in words)
 
 
-def _page_path(base_path: str, document: str, rule: str) -> str:
+def _page_path(base_path: str, root: str, document: str, rule: str) -> str:
     """Return the site path of a rule page, resolved through the edition's base path."""
-    return "/" + "/".join(part for part in (base_path, document, rule) if part)
+    return "/" + "/".join(part for part in (base_path, root, document, rule) if part)
 
 
 def _hash(payload: bytes) -> str:

@@ -40,8 +40,14 @@ page, a status, so making a publication public cannot introduce a change nobody 
 
 ```bash
 python -m publisher.wp push       # stage as `private`
+python -m publisher.wp menu       # write the site's navigation menu
 python -m publisher.wp promote    # make public
 ```
+
+`menu` is the one command that writes something other than the pages: a `wp_navigation` post
+holding **Rules** and the ruleset's systems in reading order. Without it a block theme
+renders a Page List of all 194 pages, alphabetically. It writes no template and no theme
+file — those stay the site owner's.
 
 Both read `WP_BASE_URL`, `WP_USER` and `WP_APP_PASSWORD` from the environment; the local
 harness in [`tools/wordpress-local/`](../tools/wordpress-local/README.md) writes all three

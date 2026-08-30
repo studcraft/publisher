@@ -65,37 +65,44 @@ def push(
     report = Report()
     urls, attachments = _media(bundle, site, clone_root, report)
 
-    parents: dict[str, int] = {}
     written: dict[str, int] = {}
-    for page in _ordered(bundle):
+    for page in ordered(bundle):
         parent_slug = page.get("parent")
-        if parent_slug is not None and parent_slug not in parents:
-            raise PushError(
-                f"The page {page['slug']!r} sits under {parent_slug!r}, which the bundle does "
-                "not contain. The bundle is inconsistent; re-render it."
-            )
-        parent_id = parents.get(parent_slug) if parent_slug else None
-        page_id = _page(page, site, parent_id, urls, report)
-        written[page["slug"]] = page_id
-        if page.get("kind") == "document":
-            parents[page["slug"]] = page_id
+        parent_id = written.get(parent_slug) if parent_slug else None
+        written[page["slug"]] = _page(page, site, parent_id, urls, report)
 
     _attach(bundle, site, attachments, written)
-    _orphans(bundle, site, parents, orphan_limit, report)
+    _orphans(bundle, site, written, orphan_limit, report)
     return report
 
 
-def _ordered(bundle: dict) -> list[dict]:
-    """Return the bundle's pages with every document page before any rule page.
+def ordered(bundle: dict) -> list[dict]:
+    """Return the bundle's pages shallowest first, so a parent always exists before its child.
 
     A child page needs its parent's ID, and the ID only exists once the parent is written.
-    Ordering here rather than trusting the bundle's order means a re-ordered bundle cannot
-    produce a page parented to nothing.
+    Sorting by depth rather than trusting the bundle's order means a re-ordered bundle cannot
+    produce a page parented to nothing, and it keeps working as the hierarchy grows a level.
     """
     pages = bundle.get("pages") or []
-    documents = [page for page in pages if page.get("kind") == "document"]
-    rules = [page for page in pages if page.get("kind") != "document"]
-    return documents + rules
+    parents = {page["slug"]: page.get("parent") for page in pages}
+
+    def depth(slug: str) -> int:
+        steps = 0
+        seen = {slug}
+        while parents.get(slug):
+            slug = parents[slug]
+            if slug not in parents:
+                raise PushError(
+                    f"A page sits under {slug!r}, which the bundle does not contain. "
+                    "The bundle is inconsistent; re-render it."
+                )
+            if slug in seen:
+                raise PushError(f"The pages {sorted(seen)} are parented in a cycle.")
+            seen.add(slug)
+            steps += 1
+        return steps
+
+    return sorted(pages, key=lambda page: (depth(page["slug"]), pages.index(page)))
 
 
 def _media(
@@ -145,6 +152,7 @@ def _page(
     content = resolve(page["html"], urls, page["slug"])
     existing = site.find_page(page["slug"], parent_id)
 
+    order = page.get("menu_order", 0)
     if existing is None:
         created = site.create_page(
             slug=page["slug"],
@@ -152,20 +160,27 @@ def _page(
             content=content,
             parent=parent_id,
             status=PRIVATE,
+            menu_order=order,
         )
         report.created.append(page["slug"])
         return created["id"]
 
-    if _matches(existing, page["title"], content):
+    if _matches(existing, page["title"], content, order):
         report.unchanged.append(page["slug"])
         return existing["id"]
 
-    site.update_page(existing["id"], title=page["title"], content=content, status=PRIVATE)
+    site.update_page(
+        existing["id"],
+        title=page["title"],
+        content=content,
+        status=PRIVATE,
+        menu_order=order,
+    )
     report.updated.append(page["slug"])
     return existing["id"]
 
 
-def _matches(existing: dict, title: str, content: str) -> bool:
+def _matches(existing: dict, title: str, content: str, menu_order: int) -> bool:
     """Return whether the site already holds exactly this page.
 
     The comparison is against ``raw``, the content as stored, not against ``rendered``: the
@@ -177,6 +192,8 @@ def _matches(existing: dict, title: str, content: str) -> bool:
     if not isinstance(stored, dict) or not isinstance(stored_title, dict):
         return False
     if "raw" not in stored or "raw" not in stored_title:
+        return False
+    if existing.get("menu_order", 0) != menu_order:
         return False
     return stored["raw"] == content and stored_title["raw"] == title
 
@@ -201,22 +218,41 @@ def resolve(html: str, urls: dict[str, str], where: str) -> str:
 def _orphans(
     bundle: dict,
     site: WordPress,
-    parents: dict[str, int],
+    written: dict[str, int],
     orphan_limit: int,
     report: Report,
 ) -> None:
-    """Unpublish pages under a managed document that the bundle no longer contains.
+    """Unpublish pages under a managed page that the bundle no longer contains.
 
-    Only pages beneath a document this bundle publishes are considered. Anything else on the
+    Only pages beneath something this bundle publishes are considered. Anything else on the
     site belongs to whoever put it there.
+
+    The search descends: when a whole ruleset document stops being published, its page is an
+    orphan and so is every rule page under it, and those are not reachable from anything the
+    bundle still names. Scanning only the pages that are still parents would leave them
+    published for ever.
     """
     published = {page["slug"] for page in bundle.get("pages") or []}
+    # A rule page never has children, so asking after them is a request per rule for an
+    # answer that is always empty.
+    containers = [
+        written[page["slug"]]
+        for page in bundle.get("pages") or []
+        if page.get("kind") != "rule" and page["slug"] in written
+    ]
+
     found: list[tuple[int, str]] = []
-    for slug, parent_id in parents.items():
-        del slug
-        for child in site.children(parent_id):
-            if child.get("slug") not in published:
-                found.append((child["id"], child.get("slug", str(child["id"]))))
+    seen: set[int] = set()
+    queue = list(containers)
+    while queue:
+        for child in site.children(queue.pop()):
+            if child["id"] in seen:
+                continue
+            seen.add(child["id"])
+            if child.get("slug") in published:
+                continue
+            found.append((child["id"], child.get("slug", str(child["id"]))))
+            queue.append(child["id"])
 
     if len(found) > orphan_limit:
         raise PushError(

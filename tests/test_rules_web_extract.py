@@ -69,24 +69,43 @@ def _build(tmp_path: Path, index=None, text: str = SPEC):
     )
 
 
-def test_every_document_gets_an_index_page_and_every_rule_a_child(tmp_path: Path) -> None:
-    """The published shape: a document page per file, a rule page under it per rule."""
+def test_the_whole_edition_hangs_from_one_root_page(tmp_path: Path) -> None:
+    """The published shape: one root, a page per document under it, a page per rule under that."""
     document = _build(tmp_path)
 
     kinds = [(page.slug, page.kind, page.parent) for page in document.pages]
     assert kinds == [
-        ("core-rules", "document", None),
+        ("rules", "root", None),
+        ("core-rules", "document", "rules"),
         ("core-001", "rule", "core-rules"),
         ("core-002", "rule", "core-rules"),
-        ("game-flow", "document", None),
+        ("game-flow", "document", "rules"),
         ("flow-001", "rule", "game-flow"),
     ]
+
+
+def test_the_root_page_indexes_the_documents_in_reading_order(tmp_path: Path) -> None:
+    """The specification's order is the ruleset's numbering, which is how it is meant to be read."""
+    root = _build(tmp_path).pages[0]
+
+    assert [entry.slug for entry in root.entries] == ["core-rules", "game-flow"]
+    assert [entry.title for entry in root.entries] == ["Core Rules", "Game Flow"]
+    assert root.entries[0].rule is None
+
+
+def test_menu_order_follows_reading_order_rather_than_the_alphabet(tmp_path: Path) -> None:
+    """WordPress sorts a menu by this field and falls back to the title when it is zero."""
+    pages = {page.slug: page.menu_order for page in _build(tmp_path).pages}
+
+    assert pages["core-rules"] == 1
+    assert pages["game-flow"] == 2
+    assert (pages["core-001"], pages["core-002"]) == (1, 2)
 
 
 def test_a_document_page_indexes_its_rules_in_ruleset_order(tmp_path: Path) -> None:
     """A reader who does not know a rule's number starts at the document page."""
     document = _build(tmp_path)
-    index_page = document.pages[0]
+    index_page = document.pages[1]
 
     assert [entry.rule for entry in index_page.entries] == ["CORE-001", "CORE-002"]
     assert index_page.entries[0].title == "Unit Base (UB)"
@@ -96,7 +115,7 @@ def test_a_document_page_indexes_its_rules_in_ruleset_order(tmp_path: Path) -> N
 def test_a_rule_page_carries_the_body_and_its_provenance(tmp_path: Path) -> None:
     """A published page can be checked against the rule it claims to state."""
     document = _build(tmp_path)
-    page = document.pages[1]
+    page = document.pages[2]
 
     assert page.title == "CORE-001 — Unit Base (UB)"
     assert page.rule == "CORE-001"
@@ -108,15 +127,15 @@ def test_a_rule_page_carries_the_body_and_its_provenance(tmp_path: Path) -> None
 def test_a_citation_is_linked_through_the_base_path(tmp_path: Path) -> None:
     """A future translated tree must link inside itself, not back into the English one."""
     document = _build(tmp_path, text='base_path = "es"\n' + SPEC)
-    body = document.pages[1].body_html
+    body = document.pages[2].body_html
 
-    assert 'href="/es/game-flow/flow-001"' in body
+    assert 'href="/es/rules/game-flow/flow-001"' in body
 
 
 def test_the_separator_between_rules_is_not_part_of_a_rule(tmp_path: Path) -> None:
     """A `break` block is punctuation in the source document, not content on the page."""
     document = _build(tmp_path)
-    assert "<hr" not in document.pages[1].body_html
+    assert "<hr" not in document.pages[2].body_html
 
 
 def test_publishing_a_document_the_ruleset_has_no_rules_for_fails(tmp_path: Path) -> None:
@@ -138,7 +157,7 @@ def test_citing_a_rule_in_an_unpublished_document_fails(tmp_path: Path) -> None:
 def test_a_document_title_falls_back_to_the_filename(tmp_path: Path) -> None:
     """A specification that cares says so; one that does not still gets something readable."""
     document = _build(tmp_path)
-    assert document.pages[3].title == "Game Flow"
+    assert document.pages[4].title == "Game Flow"
 
 
 def test_the_body_of_a_rule_reconstructs_its_markdown() -> None:

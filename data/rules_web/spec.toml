@@ -17,6 +17,14 @@ language = "en"
 # is resolved through it rather than hardcoded to the site root.
 base_path = ""
 
+# Every document hangs from one page, so the site has a single thing called "Rules" rather
+# than thirteen top-level entries a visitor has to recognise as a set. It is also what the
+# navigation menu hangs from.
+[root]
+slug = "rules"
+title = "Rules"
+intro = "The StudCraft ruleset, one page per rule. Each system below indexes its own rules; a rule can be cited and linked by its ID."
+
 [[document]]
 file = "02-core-rules.md"
 slug = "core-rules"

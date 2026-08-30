@@ -17,7 +17,7 @@ PIXEL = b"\x89PNG\r\n\x1a\nbytes"
 
 
 def _bundle(**overrides) -> dict:
-    """Return a bundle of one document page and two rule pages."""
+    """Return a bundle in the shape a real one has: a root, a document, two rules."""
     bundle = {
         "schema": 1,
         "name": "rules_web",
@@ -27,10 +27,23 @@ def _bundle(**overrides) -> dict:
         "source": {"repo": "r", "ruleset_version": "0.2.0 Draft", "commit": "abc"},
         "pages": [
             {
-                "slug": "core-rules",
+                "slug": "rules",
                 "parent": None,
+                "title": "Rules",
+                "kind": "root",
+                "menu_order": 0,
+                "rule": None,
+                "doc": None,
+                "source_line": None,
+                "content_hash": "sha256:r",
+                "html": '<ul><li><a href="core-rules">Core Rules</a></li></ul>',
+            },
+            {
+                "slug": "core-rules",
+                "parent": "rules",
                 "title": "Core Rules",
                 "kind": "document",
+                "menu_order": 1,
                 "rule": None,
                 "doc": "02-core-rules.md",
                 "source_line": None,
@@ -93,14 +106,16 @@ def _push(tmp_path: Path, fake: FakeWordPress, bundle: dict | None = None, **kwa
 
 
 def test_a_first_push_creates_the_whole_hierarchy(tmp_path: Path) -> None:
-    """Document pages first, rule pages under them."""
+    """Three levels: the root, a page per document under it, a page per rule under that."""
     fake = FakeWordPress()
     report = _push(tmp_path, fake)
 
-    assert sorted(report.created) == ["core-001", "core-002", "core-rules"]
-    parent = fake.page_by_slug("core-rules")
-    assert fake.page_by_slug("core-001")["parent"] == parent["id"]
-    assert parent["parent"] == 0
+    assert sorted(report.created) == ["core-001", "core-002", "core-rules", "rules"]
+    root = fake.page_by_slug("rules")
+    document = fake.page_by_slug("core-rules")
+    assert root["parent"] == 0
+    assert document["parent"] == root["id"]
+    assert fake.page_by_slug("core-001")["parent"] == document["id"]
 
 
 def test_everything_is_staged_private(tmp_path: Path) -> None:
@@ -118,8 +133,8 @@ def test_a_second_push_of_the_same_bundle_changes_nothing(tmp_path: Path) -> Non
 
     assert report.created == []
     assert report.updated == []
-    assert sorted(report.unchanged) == ["core-001", "core-002", "core-rules"]
-    assert len(fake.pages) == 3
+    assert sorted(report.unchanged) == ["core-001", "core-002", "core-rules", "rules"]
+    assert len(fake.pages) == 4
 
 
 def test_a_changed_page_is_updated_in_place(tmp_path: Path) -> None:
@@ -129,7 +144,7 @@ def test_a_changed_page_is_updated_in_place(tmp_path: Path) -> None:
     identifier = fake.page_by_slug("core-002")["id"]
 
     changed = _bundle()
-    changed["pages"][2]["html"] = "<p>Rewritten.</p>"
+    changed["pages"][3]["html"] = "<p>Rewritten.</p>"
     report = _push(tmp_path, fake, changed)
 
     assert report.updated == ["core-002"]
@@ -168,7 +183,7 @@ def test_a_changed_page_goes_back_to_private(tmp_path: Path) -> None:
     promotion.promote(_bundle(), WordPress(LOCAL, fake))
 
     changed = _bundle()
-    changed["pages"][2]["html"] = "<p>Rewritten.</p>"
+    changed["pages"][3]["html"] = "<p>Rewritten.</p>"
     _push(tmp_path, fake, changed)
 
     assert fake.page_by_slug("core-002")["status"] == "private"
@@ -242,12 +257,12 @@ def test_a_page_no_longer_in_the_bundle_is_unpublished_not_deleted(tmp_path: Pat
     smaller = _bundle()
     smaller["pages"] = [page for page in smaller["pages"] if page["slug"] != "core-002"]
     smaller["media"] = []
-    smaller["pages"][1]["html"] = "<p>A volume.</p>"
+    smaller["pages"][2]["html"] = "<p>A volume.</p>"
     report = _push(tmp_path, fake, smaller)
 
     assert report.orphaned == ["core-002"]
     assert fake.page_by_slug("core-002")["status"] == "private"
-    assert len(fake.pages) == 3
+    assert len(fake.pages) == 4
 
 
 def test_losing_more_pages_than_the_limit_fails_without_touching_anything(
@@ -279,7 +294,7 @@ def test_pages_outside_the_published_tree_are_left_alone(tmp_path: Path) -> None
 def test_a_bundle_whose_child_has_no_parent_is_refused(tmp_path: Path) -> None:
     """A page parented to nothing would land at the site root, at the wrong URL."""
     bundle = _bundle()
-    bundle["pages"] = [bundle["pages"][1]]
+    bundle["pages"] = [bundle["pages"][2]]
     bundle["media"] = []
     bundle["pages"][0]["html"] = "<p>A volume.</p>"
 
@@ -292,7 +307,7 @@ def test_the_summary_reports_what_happened(tmp_path: Path) -> None:
     """The run's own account, which is what a reviewer reads."""
     fake = FakeWordPress()
     summary = _push(tmp_path, fake).summary()
-    assert "3 created" in summary
+    assert "4 created" in summary
     assert "1 uploaded" in summary
 
 
@@ -307,7 +322,7 @@ def test_promote_publishes_every_page_and_changes_nothing_else(tmp_path: Path) -
 
     report = promotion.promote(_bundle(), WordPress(LOCAL, fake))
 
-    assert sorted(report.promoted) == ["core-001", "core-002", "core-rules"]
+    assert sorted(report.promoted) == ["core-001", "core-002", "core-rules", "rules"]
     assert {page["status"] for page in fake.pages.values()} == {"publish"}
     assert {page["id"]: page["content"]["raw"] for page in fake.pages.values()} == before
 
@@ -321,8 +336,8 @@ def test_promoting_twice_reports_the_second_run_as_a_no_op(tmp_path: Path) -> No
     report = promotion.promote(_bundle(), WordPress(LOCAL, fake))
 
     assert report.promoted == []
-    assert len(report.already) == 3
-    assert "3 already public" in report.summary()
+    assert len(report.already) == 4
+    assert "4 already public" in report.summary()
 
 
 def test_promoting_something_that_was_never_pushed_fails() -> None:
@@ -341,3 +356,43 @@ def test_promote_leaves_pages_the_bundle_does_not_name(tmp_path: Path) -> None:
     promotion.promote(_bundle(), WordPress(LOCAL, fake))
 
     assert fake.page_by_slug("drafts-of-mine")["status"] == "draft"
+
+
+def test_menu_order_reaches_the_site(tmp_path: Path) -> None:
+    """WordPress sorts a menu by it and falls back to the title, so it has to be sent."""
+    bundle = _bundle()
+    bundle["pages"][2]["menu_order"] = 1
+    bundle["pages"][3]["menu_order"] = 2
+    fake = FakeWordPress()
+
+    _push(tmp_path, fake, bundle)
+
+    assert fake.page_by_slug("core-001")["menu_order"] == 1
+    assert fake.page_by_slug("core-002")["menu_order"] == 2
+
+
+def test_a_reordered_page_is_updated(tmp_path: Path) -> None:
+    """Reading order is part of what is published, so changing it is a change to push."""
+    fake = FakeWordPress()
+    _push(tmp_path, fake)
+
+    reordered = _bundle()
+    reordered["pages"][3]["menu_order"] = 7
+    report = _push(tmp_path, fake, reordered)
+
+    assert report.updated == ["core-002"]
+    assert fake.page_by_slug("core-002")["menu_order"] == 7
+
+
+def test_a_removed_document_takes_its_rules_with_it(tmp_path: Path) -> None:
+    """The rules under it are orphans too, and nothing the bundle names still points at them."""
+    fake = FakeWordPress()
+    _push(tmp_path, fake)
+
+    root_only = _bundle()
+    root_only["pages"] = root_only["pages"][:1]
+    root_only["media"] = []
+    report = _push(tmp_path, fake, root_only)
+
+    assert sorted(report.orphaned) == ["core-001", "core-002", "core-rules"]
+    assert fake.page_by_slug("core-001")["status"] == "private"
