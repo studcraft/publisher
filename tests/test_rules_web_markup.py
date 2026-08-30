@@ -115,3 +115,52 @@ def test_rendering_is_deterministic() -> None:
     """The committed bundle is diffed in review, so the same input must give the same bytes."""
     text = "A paragraph citing CORE-001.\n\n* a list\n"
     assert _render(text) == _render(text)
+
+
+# -- references to whole ruleset documents --------------------------------------------------
+
+DOCUMENTS = {
+    "05-construction-components.md": "/rules/construction-components",
+    "11-combat.md": "/rules/combat",
+}
+
+
+def test_a_filename_in_a_code_span_becomes_a_link_around_the_code_span() -> None:
+    """On the web a filename is a worse address than the page it names."""
+    html = _render("Parts follow `05-construction-components.md`.", documents=DOCUMENTS)
+
+    assert (
+        '<a href="/rules/construction-components" class="document-reference">'
+        "<code>05-construction-components.md</code></a>" in html
+    )
+
+
+def test_a_filename_written_as_prose_is_linked_too() -> None:
+    """The ruleset does it in a few places, and how it was typed is not the reader's problem."""
+    html = _render("Follows:\n\n- 11-combat.md\n", documents=DOCUMENTS)
+
+    assert '<li><a href="/rules/combat" class="document-reference">11-combat.md</a></li>' in html
+
+
+def test_a_document_this_edition_does_not_publish_is_left_as_it_was() -> None:
+    """Unlike a rule ID: a glossary or a foreword is not published, and that is a choice."""
+    html = _render("See `14-glossary.md` and 01-foundations.md.", documents=DOCUMENTS)
+
+    assert "<code>14-glossary.md</code>" in html
+    assert "01-foundations.md" in html
+    assert "document-reference" not in html
+
+
+def test_a_code_span_that_is_not_a_filename_is_untouched() -> None:
+    """Most code spans in the ruleset are measurements, and none of them are references."""
+    html = _render("Read horizontally, it is `4 × 3` studs.", documents=DOCUMENTS)
+
+    assert "<code>4 × 3</code>" in html
+    assert "<a" not in html
+
+
+def test_a_filename_inside_an_existing_link_is_left_alone() -> None:
+    """Nested anchors are invalid, and the author already chose where that link goes."""
+    html = _render("[11-combat.md](https://example.test/)", documents=DOCUMENTS)
+
+    assert html.count("<a ") == 1

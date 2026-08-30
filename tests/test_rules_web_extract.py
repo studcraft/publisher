@@ -174,3 +174,17 @@ def test_the_body_of_a_rule_reconstructs_its_markdown() -> None:
         ),
     )
     assert extract.body(rule) == "Intro.\n\n* one\n* two"
+
+
+def test_a_document_reference_is_linked_to_that_document_s_page(tmp_path: Path) -> None:
+    """The map comes from the specification, which is the only place slugs are decided."""
+    index = _index()
+    index["CORE-001"] = _rule(
+        "CORE-001",
+        "02-core-rules.md",
+        "Unit Base (UB)",
+        "Terrain is governed by `03-game-flow.md`.",
+    )
+    document = _build(tmp_path, index)
+
+    assert '<a href="/rules/game-flow" class="document-reference">' in document.pages[2].body_html

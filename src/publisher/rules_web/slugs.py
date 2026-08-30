@@ -21,6 +21,13 @@ _DOCUMENT_NAME = re.compile(r"^(?:\d+[-_])?(?P<stem>.+?)(?:\.md)?$")
 # A rule ID as the ruleset writes it: CORE-001, FLOW-013, DMG-016.
 RULE_ID = re.compile(r"\b([A-Z]{2,5})-(\d{3})\b")
 
+# A ruleset document as the ruleset names it: 05-construction-components.md. It is cited both
+# inside a code span and, in a few places, as bare prose, so both forms are matched.
+DOCUMENT_NAME = re.compile(r"\b\d{2}-[a-z0-9-]+\.md\b")
+
+# Either kind of reference, in one pass over a run of text, so a paragraph is walked once.
+REFERENCE = re.compile(f"(?P<rule>{RULE_ID.pattern})|(?P<doc>{DOCUMENT_NAME.pattern})")
+
 
 class SlugError(Exception):
     """Raised when a name cannot be turned into a slug."""

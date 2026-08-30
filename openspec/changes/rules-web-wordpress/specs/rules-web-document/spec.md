@@ -168,3 +168,31 @@ An unrecognised placement SHALL fail the build.
 
 - **WHEN** the specification names a placement that does not exist
 - **THEN** the build fails, listing the placements that do
+
+### Requirement: A reference to a whole ruleset document becomes a link
+
+A ruleset document's filename SHALL be rewritten to a link to that document's page, whether
+the ruleset writes it inside a code span or as bare prose. A code span SHALL be linked only
+when its entire content is such a filename. A filename this edition does not publish SHALL be
+left exactly as written rather than failing the build, because it names a document that is
+deliberately not published rather than a broken citation.
+
+#### Scenario: A filename in a code span
+
+- **WHEN** a rule body cites `05-construction-components.md` inside a code span
+- **THEN** the code span is wrapped in a link to that document's page
+
+#### Scenario: A filename written as prose
+
+- **WHEN** a rule body lists `11-combat.md` without a code span
+- **THEN** it is linked in the same way
+
+#### Scenario: A document this edition does not publish
+
+- **WHEN** a rule body cites a filename with no published page
+- **THEN** it is left as written, and the build does not fail
+
+#### Scenario: A code span that is not a reference
+
+- **WHEN** a rule body contains a code span such as `4 × 3`
+- **THEN** it is left untouched

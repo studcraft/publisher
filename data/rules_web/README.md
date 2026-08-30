@@ -56,6 +56,25 @@ anyway is what keeps a **published** URL from moving: if upstream renumbers `08-
 the derived slug does not change — but the day it becomes `08-war-machines.md`, it would,
 and `/vehicles/veh-003` would move with it. The explicit slug is where that promise is made.
 
+## References become links
+
+Two kinds, both taken from what the ruleset already writes:
+
+| The ruleset writes | It becomes |
+|---|---|
+| `CORE-001`, `FLOW-013` in prose | a link to that rule's page |
+| `` `05-construction-components.md` `` in a code span | a link to that document's page, around the code span |
+| `11-combat.md` as bare prose | the same link — the ruleset does this in a few places |
+
+A rule ID that does not resolve **fails the build**: every document with rules in it is
+published, so an unresolvable ID is a broken citation. A filename that does not resolve is
+left exactly as written, because it usually names a document this edition does not publish —
+a glossary, a foreword — which is a choice rather than an error.
+
+A code span is linked only when its whole content is a filename this edition publishes. That
+exactness is what keeps it away from the many code spans that are measurements rather than
+references: `4 × 3`, `W × D UB`.
+
 ## What fails the build
 
 - **A citation to a rule that does not exist.** The ruleset writes `(03-game-flow.md,

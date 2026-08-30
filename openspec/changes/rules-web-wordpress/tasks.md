@@ -146,3 +146,12 @@
 - [x] 16.3 Fail the build on a placement that does not exist, listing the ones that do
 - [x] 16.4 Test each placement, and that `top` and `bottom` really differ in order
 - [x] 16.5 Set the edition to `both`, rebuild, publish, and verify two on a live page
+
+## 17. Document references
+
+- [x] 17.1 Link a document filename written inside a code span, around the code span
+- [x] 17.2 Link one written as bare prose, which the ruleset does in a few places
+- [x] 17.3 Leave an unpublished document's filename as written, without failing the build
+- [x] 17.4 Link a code span only when its whole content is a filename, never a measurement
+- [x] 17.5 Test both forms, the unpublished case, and a code span that is not a reference
+- [x] 17.6 Verify live that all four references on CORE-005 link and resolve

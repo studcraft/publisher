@@ -40,6 +40,12 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
         for rule_id in by_document.get(entry.file, ())
     }
     unpublished = frozenset(set(index) - set(published))
+    # The ruleset names its own documents constantly, both in code spans and as prose. On the
+    # web a filename is a worse address than the page it names.
+    documents = {
+        entry.file: _page_path(spec.base_path, spec.root.slug, entry.slug)
+        for entry in spec.documents
+    }
 
     collector = _Media(clone_root)
     pages: list[Page] = [
@@ -95,6 +101,7 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
                         where=f"{rule_id} ({rule.doc})",
                         skip=rule_id,
                         unpublished=unpublished,
+                        documents=documents,
                     ),
                     rule=rule_id,
                     doc=rule.doc,
@@ -216,9 +223,9 @@ def _document_title(file: str) -> str:
     return " ".join(word.capitalize() for word in words)
 
 
-def _page_path(base_path: str, root: str, document: str, rule: str) -> str:
-    """Return the site path of a rule page, resolved through the edition's base path."""
-    return "/" + "/".join(part for part in (base_path, root, document, rule) if part)
+def _page_path(base_path: str, *parts: str) -> str:
+    """Return the site path of a page, resolved through the edition's base path."""
+    return "/" + "/".join(part for part in (base_path, *parts) if part)
 
 
 def _hash(payload: bytes) -> str:
