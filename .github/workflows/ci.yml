@@ -23,7 +23,9 @@ jobs:
       # required — see system/testing.md.
       - run: pytest --cov
 
-  quicksheet:
+  # Named for what it gates rather than for one product: it now covers the quick sheet and
+  # the web edition, and both are generated files whose staleness is the thing being caught.
+  generated-files:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,9 +70,35 @@ jobs:
         run: |
           published=$(find publish -name '*.pdf' | head -1)
           cmp "$published" "second/${published#publish/}"
+
+      # The web edition, through the same three gates. It is a separate product, not a
+      # second format of the sheet: its document holds whole rule bodies rather than the
+      # sheet's condensed lines.
+      - run: python -m publisher.rules_web extract
+      - name: The committed web document matches the ruleset it claims to come from
+        run: |
+          if ! git diff --exit-code -- data/rules_web/document.json; then
+            echo "::error::data/rules_web/document.json is stale. Run 'python -m publisher.rules_web extract' and commit the result."
+            exit 1
+          fi
+      - run: python -m publisher.rules_web render
+      - name: The committed bundle matches the document it comes from
+        run: |
+          if ! git diff --exit-code -- publish/rules_web/; then
+            echo "::error::publish/rules_web/ is stale. Run 'python -m publisher.rules_web render' and commit the result."
+            exit 1
+          fi
+      # The bundle is what the publication stage sends to WordPress, so a determinism
+      # regression here would show up as a diff on pages nobody edited.
+      - run: python -m publisher.rules_web render --out second/
+      - name: Rendering the bundle twice gives identical bytes
+        run: |
+          bundle=$(find publish/rules_web -name '*.wp.json' | head -1)
+          cmp "$bundle" "second/${bundle#publish/}"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: quicksheet
+          name: generated-files
           path: publish/
 
   openspec-branch-gate:

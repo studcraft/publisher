@@ -57,14 +57,24 @@ locally is how it stops being enforced.
 
 ## What is not enforced yet
 
-**The `quicksheet` job is not a required check.** It holds the staleness gates and the
-determinism comparison, so today a pull request with a stale `document.json` can merge with
-the job red. A check that exists is not a check that blocks: that is branch protection, set
-by hand, and nothing in this repository can do it.
+**The `generated-files` job is not a required check.** It holds the staleness gates and the
+determinism comparisons, for the quick sheet and the web edition both, so today a pull
+request with a stale `document.json` or a stale bundle can merge with the job red. A check
+that exists is not a check that blocks: that is branch protection, set by hand, and nothing
+in this repository can do it.
 
 ```bash
 gh api repos/studcraft/publisher/branches/main/protection --jq '.required_status_checks.contexts'
 ```
+
+**The WordPress end-to-end run is not a check at all, and deliberately so.** Publishing to
+the local WordPress in [`tools/wordpress-local/`](../tools/wordpress-local/README.md) needs
+Docker and a database, which `lint-and-test` does not have and should not grow. What it
+proves — that WordPress lowercases a slug, that a `private` page returns 404 to a stranger,
+that an upload lands where the bundle's placeholder expects — is proved once against real
+WordPress and then pinned in unit tests against a substitute transport. That is what the
+injectable transport in `publisher.wp` is for: everything except WordPress's own behaviour
+is covered by the required job.
 
 ## Adding a check later
 

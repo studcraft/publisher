@@ -1,11 +1,12 @@
 # publisher
 
-Turns the [StudCraft](https://github.com/studcraft/studcraft) ruleset into printable
-documents — starting with a one-page quick-play sheet — without letting them drift from the
-rules they claim to state.
+Turns the [StudCraft](https://github.com/studcraft/studcraft) ruleset into published
+documents — a printable quick-play sheet, and the rules themselves as a website — without
+letting either drift from the rules they claim to state.
 
 ```
-ruleset AST  ──extract──▶  document.json  ──render──▶  publish/…/<name>_<lang>.pdf
+ruleset AST  ──extract──▶  document.json  ──render──▶  publish/…/<name>_<lang>.<ext>
+                                                             └──push──▶ WordPress
 ```
 
 ## What it produces today
@@ -13,6 +14,12 @@ ruleset AST  ──extract──▶  document.json  ──render──▶  publi
 **[`publish/quicksheet_3x3/v0.2.0draft/quicksheet_3x3_en.pdf`](publish/quicksheet_3x3/v0.2.0draft/quicksheet_3x3_en.pdf)**
 — one side of A4, two columns, enough to play the 3-minifigure-per-warband mode with the
 ruleset closed. 37 entries citing 32 rules.
+
+**`publish/rules_web/v0.2.0draft/rules_web_en.wp.json`** — the whole ruleset as 194 web
+pages: an index per document, a page per rule, every cross-reference between them turned
+into a link. `python -m publisher.wp push` publishes it to WordPress, first as pages only
+editors can see. Nothing is installed on the site; a local WordPress for testing it lives in
+[`tools/wordpress-local/`](tools/wordpress-local/README.md).
 
 ## The idea
 
@@ -37,10 +44,11 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt -e .
 
 python -m publisher.sync --pinned          # fetch the ruleset at its pinned commit
-python -m publisher.quicksheet build       # extract, then render
+python -m publisher.quicksheet build       # the printed sheet: extract, then render
+python -m publisher.rules_web build        # the web edition: extract, then render
 ```
 
-The result lands in `publish/`. Building twice gives byte-identical files.
+The results land in `publish/`. Building twice gives byte-identical files.
 
 ## The three stages
 

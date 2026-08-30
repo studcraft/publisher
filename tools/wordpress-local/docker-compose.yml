@@ -1,0 +1,86 @@
+# A throwaway WordPress for testing publication locally.
+#
+# Nothing here is production infrastructure. It exists so the publisher can be pointed at a
+# real WordPress — real REST API, real permalinks, real page hierarchy — without touching a
+# live site. Stock core only: no plugin is installed, because the whole publishing design
+# depends on nothing being installed. See README.md.
+#
+#   docker compose up -d && ./bootstrap.sh
+#
+# No `version:` key: Compose v2 ignores it and warns that it is obsolete.
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: wordpress_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password_seguro
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_password
+    volumes:
+      - db_data:/var/lib/mysql
+    # bootstrap.sh installs WordPress the moment the containers are up. Without a
+    # readiness gate that install races the database and fails on a cold volume.
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Override with WP_PORT=… in the shell or in compose.env when 8080 is taken.
+      # WordPress stores its own URL in the database, so the port has to be settable in
+      # one place that both the container and bootstrap.sh read.
+      - "${WP_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_password
+      # Pinning the URLs rather than letting the installer infer them keeps the site's idea
+      # of itself identical across recreates, which is what makes published slugs
+      # reproducible.
+      # WP_ENVIRONMENT_TYPE is not decoration. WordPress refuses to accept an application
+      # password over plain HTTP — `wp_is_application_passwords_available()` requires either
+      # SSL or an environment type of `local` — so without this every authenticated request
+      # here comes back 401 with a message about capabilities that sends you looking in the
+      # wrong place entirely. It is core WordPress, not a plugin or a patch, and it says
+      # exactly what is true: this site is a local throwaway.
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://localhost:${WP_PORT:-8080}');
+        define('WP_SITEURL', 'http://localhost:${WP_PORT:-8080}');
+        define('WP_ENVIRONMENT_TYPE', 'local');
+    volumes:
+      - wp_data:/var/www/html
+
+  # One-shot WP-CLI, used by bootstrap.sh. Not started by `docker compose up`;
+  # `docker compose run` activates the profile of the service it is given.
+  cli:
+    image: wordpress:cli
+    profiles: ["cli"]
+    depends_on:
+      db:
+        condition: service_healthy
+    # The web container's files are owned by www-data (33); running the CLI as anyone else
+    # leaves root-owned files behind that Apache then cannot write.
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_password
+    volumes:
+      - wp_data:/var/www/html
+
+volumes:
+  db_data:
+  wp_data:
