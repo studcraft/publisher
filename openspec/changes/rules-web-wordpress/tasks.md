@@ -117,3 +117,14 @@
 - [x] 13.7 Record in the workflow why neither job may be made a required check
 - [x] 13.8 Test the check, the pacing and the retries with no network
 - [x] 13.9 Document the remote failure modes and their fixes
+
+## 14. Review: ownership, recovery, and what gets documented
+
+- [x] 14.1 Fix `find_page`: a top-level lookup means the top level, not any parent
+- [x] 14.2 Test that a page elsewhere sharing a managed slug is never adopted or overwritten
+- [x] 14.3 Verify it against the real local site with a page at `/handbook/rules`
+- [x] 14.4 Report orphans from `check`, so a push's effect is known before the push
+- [x] 14.5 Report same-slug pages outside the subtree as safe rather than as a risk
+- [x] 14.6 Test that a `push` interrupted partway converges when it is run again
+- [x] 14.7 Document the ownership boundary, the orphan table, recovery, and the URL policy
+- [x] 14.8 Say plainly that the default pace is a guess, never measured against a host

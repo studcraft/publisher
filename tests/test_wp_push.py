@@ -8,7 +8,8 @@ import pytest
 
 from publisher.wp import promote as promotion
 from publisher.wp import push as staging
-from publisher.wp.client import Credentials, WordPress
+from publisher.wp.client import Credentials, WordPress, WordPressError
+from publisher.wp.transport import Response
 from tests.fake_wordpress import FakeWordPress
 
 LOCAL = Credentials(site="http://localhost:8080", user="admin", password="pw")
@@ -396,3 +397,71 @@ def test_a_removed_document_takes_its_rules_with_it(tmp_path: Path) -> None:
 
     assert sorted(report.orphaned) == ["core-001", "core-002", "core-rules"]
     assert fake.page_by_slug("core-001")["status"] == "private"
+
+
+# -- ownership ----------------------------------------------------------------------------
+
+
+def test_a_page_somebody_else_made_elsewhere_is_never_adopted(tmp_path: Path) -> None:
+    """Ownership is the whole path, not the last segment of it.
+
+    A page at `/handbook/rules` shares the root's slug and nothing else. Adopting it would
+    overwrite somebody's work because two unrelated things were given the same name.
+    """
+    fake = FakeWordPress()
+    section = fake.add_page("handbook")
+    stray = fake.add_page("rules", parent=section["id"], status="publish")
+
+    _push(tmp_path, fake)
+
+    assert fake.pages[stray["id"]]["content"]["raw"] == ""
+    assert fake.pages[stray["id"]]["status"] == "publish"
+    assert fake.pages[stray["id"]]["parent"] == section["id"]
+
+
+def test_a_top_level_page_sharing_a_document_slug_is_never_adopted(tmp_path: Path) -> None:
+    """`/movement` is not `/rules/movement`, however alike they read."""
+    fake = FakeWordPress()
+    stray = fake.add_page("core-rules", status="publish")
+
+    _push(tmp_path, fake)
+
+    assert fake.pages[stray["id"]]["content"]["raw"] == ""
+    assert fake.page_by_slug("rules")["id"] != stray["id"]
+
+
+def test_a_push_that_failed_partway_converges_when_it_is_run_again(tmp_path: Path) -> None:
+    """Recovery is a rerun. Nothing has to be undone first, and nothing is written twice."""
+
+    class FailsAfter:
+        """Passes requests through until the nth write, then answers 500 for ever."""
+
+        def __init__(self, writes: int) -> None:
+            self._left = writes
+            self.site = FakeWordPress()
+
+        def request(self, method, url, *, headers, body=None):
+            if method == "POST":
+                if self._left <= 0:
+                    return Response(status=500, body=b'{"message": "gateway went away"}')
+                self._left -= 1
+            return self.site.request(method, url, headers=headers, body=body)
+
+    transport = FailsAfter(writes=3)
+    with pytest.raises(WordPressError):
+        staging.push(_bundle(), WordPress(LOCAL, transport), clone_root=_clone(tmp_path))
+
+    partial = len(transport.site.pages)
+    assert 0 < partial < 4
+
+    report = staging.push(
+        _bundle(), WordPress(LOCAL, transport.site), clone_root=tmp_path / "clone"
+    )
+
+    assert len(transport.site.pages) == 4
+    assert sorted(report.created + report.unchanged + report.updated) == [
+        "core-001",
+        "core-002",
+        "core-rules",
+        "rules",
+    ]

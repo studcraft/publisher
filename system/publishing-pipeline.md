@@ -93,11 +93,63 @@ What goes wrong on someone else's WordPress, and what each one actually is:
 else fails once, because a rejected slug or a missing capability fails identically however
 many times it is sent.
 
-**WordPress is the last generated stage, so the rule below extends to it unchanged.** An
-editor who fixes a typo in wp-admin loses it at the next `push`, silently — `push` overwrites
-title and content and makes no attempt to detect a human edit, because detecting one would
-invite treating WordPress as a source. Editors review while it is `private` and report; the
-fix goes in `spec.toml` or upstream in the ruleset.
+**The default pace is a conservative guess, not a validated figure.** It has never been run
+against a hosted WordPress: 0.3 seconds was chosen to be slow enough to be unremarkable, not
+because any host was measured. Treat it as a starting point — some hosts need more, most
+would tolerate less, and the right value is whatever that site stops objecting to.
+
+### What the publisher owns, and what it never touches
+
+```
+StudCraft repository  →  deterministic bundle  →  WordPress
+   source of truth         reviewed artefact      deployment target
+```
+
+The publisher owns **exactly one subtree**: the root page the specification names, and
+everything under it. A page belongs to it when its slug *and* its parent both agree — never
+the slug alone. A slug is unique among siblings in WordPress, not across a site, so a page
+somebody made at `/movement` is untouched by a publication whose own page is
+`/rules/movement`. Everything outside that subtree, and the theme, the templates and the
+site's other pages, belong to whoever put them there.
+
+**Publisher-managed pages are generated artefacts. Change them in the StudCraft source and
+publish through the pipeline.** An editor who fixes a typo in wp-admin loses it at the next
+`push`, silently — `push` overwrites title and content and makes no attempt to detect a human
+edit, because detecting one would invite treating WordPress as a source. Editors review while
+it is `private` and report; the fix goes in `spec.toml` or upstream in the ruleset.
+
+### When a rule or a document goes away
+
+Deterministic, and it never deletes:
+
+| What happened | What `push` does |
+|---|---|
+| A rule leaves the ruleset | Its page is set to `private`, and named in the run summary |
+| A whole document leaves | Its page **and every rule page under it** are set to `private` |
+| More pages than the limit disappear at once | `push` fails and changes nothing — that scale of loss is a broken extraction, not a ruleset that shrank |
+| A page outside the published subtree | Never examined, never touched |
+
+`python -m publisher.wp check` lists the orphans before a push creates them, so the answer to
+"what would this change?" comes before the change.
+
+### Recovering from a publication that stopped halfway
+
+Run it again. `push` is idempotent: it locates each page by slug and parent, compares the
+stored title and content against the bundle, and writes only what differs. A run interrupted
+by a network failure leaves some pages written and the rest absent; the next run creates what
+is missing, reports the rest as unchanged, and the site converges on the bundle. Nothing has
+to be undone first, and nothing is written twice.
+
+### URL structure is a public interface
+
+Renaming the root, a document slug, or `base_path` moves every page under it. `push` creates
+the pages at their new addresses and **cannot see the old ones** — they are no longer beneath
+anything it manages, so they stay published at URLs nothing links to any more.
+
+**Once a URL structure has been publicly promoted, changing it is a migration, not an
+edit.** There is no `migrate` command today; until there is, a structural change means
+planning the move and unpublishing the old tree by hand. Before the first public promotion it
+costs nothing.
 
 ## The ruleset is pinned
 

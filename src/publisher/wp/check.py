@@ -5,10 +5,14 @@ cannot upload media, or that a firewall refuses POSTs to `/wp-json`, leaves the 
 published and the person running it guessing. Every question this asks is answerable by
 reading, so it is asked first and answered without changing anything.
 
-It also reports the one thing no error message would ever say out loud: which of the pages
-this bundle wants to publish **already exist on the site, under something else**. `push`
-adopts a page by slug, so a page somebody else made at `/movement` is a page `push` will
-overwrite. That is worth seeing before it happens rather than after.
+It also reports what publishing would touch, which no error message would ever say out loud:
+which pages this bundle already owns and would update in place, which pages inside the
+published tree it no longer contains, and which pages elsewhere on the site merely share a
+slug with it.
+
+That last group is reported to be explicit that it is **not** at risk. A page is this
+publication's only when its slug *and* its parent agree, so a page somebody made at
+`/movement` is untouched by a publication whose own page is `/rules/movement`.
 """
 
 from __future__ import annotations
@@ -44,6 +48,7 @@ class Report:
     findings: list[Finding] = field(default_factory=list)
     adopted: list[str] = field(default_factory=list)
     foreign: list[str] = field(default_factory=list)
+    orphaned: list[str] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
@@ -58,11 +63,17 @@ class Report:
                 f"note  {len(self.adopted)} pages of this bundle are already on the site and "
                 "will be updated in place"
             )
+        if self.orphaned:
+            lines.append(
+                f"note  {len(self.orphaned)} pages inside the published tree are not in this "
+                "bundle. Pushing sets them to `private`; it never deletes a page: "
+                + ", ".join(sorted(self.orphaned))
+            )
         if self.foreign:
             lines.append(
-                f"WARN  {len(self.foreign)} pages already exist at a slug this bundle "
-                "publishes, in a different place on the site. Pushing adopts a page by slug, "
-                "so these would be overwritten: " + ", ".join(sorted(self.foreign))
+                f"note  {len(self.foreign)} pages elsewhere on the site share a slug with "
+                "this bundle. A page is only this publication's when its slug and its parent "
+                "both agree, so these are left alone: " + ", ".join(sorted(self.foreign))
             )
         return "\n".join(lines)
 
@@ -129,7 +140,12 @@ def _capabilities(user: dict, report: Report) -> None:
 
 
 def _collisions(bundle: dict, site: WordPress, report: Report) -> None:
-    """Report pages already on the site at a slug this bundle publishes."""
+    """Report what publishing would touch: adoptions, collisions, and orphans.
+
+    The publisher owns exactly one subtree — the root page named by the specification and
+    everything under it. That boundary is what this reads against, so the answer to "what
+    would a push change?" is given before a push changes it.
+    """
     try:
         existing = list(site.list_pages())
     except WordPressError as exc:
@@ -148,7 +164,33 @@ def _collisions(bundle: dict, site: WordPress, report: Report) -> None:
             continue
         parent = by_id.get(page.get("parent") or 0)
         here = parent.get("slug") if parent else None
+        # A page is this publication's only when its whole position agrees, not its name.
+        # `/handbook/rules` shares the root's slug and nothing else, and adopting it would
+        # overwrite somebody's work because two unrelated things were given one name.
         if here == wanted[slug]:
             report.adopted.append(slug)
         else:
             report.foreign.append(f"{slug} (at {page.get('link') or page['id']})")
+
+    _orphans(bundle, existing, report)
+
+
+def _orphans(bundle: dict, existing: list[dict], report: Report) -> None:
+    """Report pages inside the published tree that this bundle no longer contains."""
+    pages = bundle.get("pages") or []
+    roots = [page["slug"] for page in pages if not page.get("parent")]
+    if not roots:
+        return
+    published = {page["slug"] for page in pages}
+
+    children: dict[int, list[dict]] = {}
+    for page in existing:
+        children.setdefault(page.get("parent") or 0, []).append(page)
+
+    on_site = [page for page in existing if page.get("slug") in roots and not page.get("parent")]
+    queue = [page["id"] for page in on_site]
+    while queue:
+        for child in children.get(queue.pop(), []):
+            queue.append(child["id"])
+            if child.get("slug") not in published:
+                report.orphaned.append(child.get("slug") or str(child["id"]))

@@ -99,8 +99,8 @@ def test_pages_this_bundle_already_owns_are_reported_as_adoptions() -> None:
     assert report.foreign == []
 
 
-def test_a_page_somebody_else_made_at_the_same_slug_is_a_warning() -> None:
-    """`push` adopts by slug, so this page would be overwritten without anyone deciding to."""
+def test_a_page_elsewhere_sharing_a_slug_is_reported_as_safe() -> None:
+    """Identity is slug and parent together, so this page is not this publication's."""
     fake = FakeWordPress()
     fake.add_page("movement")
 
@@ -109,7 +109,32 @@ def test_a_page_somebody_else_made_at_the_same_slug_is_a_warning() -> None:
     assert report.ok
     assert report.adopted == []
     assert any("movement" in item for item in report.foreign)
-    assert "would be overwritten" in report.summary()
+    assert "left alone" in report.summary()
+
+
+def test_a_page_inside_the_published_tree_that_the_bundle_dropped_is_an_orphan() -> None:
+    """The reader should know a push would unpublish it, before the push does."""
+    fake = FakeWordPress()
+    root = fake.add_page("rules")
+    document = fake.add_page("movement", parent=root["id"])
+    fake.add_page("move-404", parent=document["id"])
+
+    report = _check(fake)
+
+    assert report.orphaned == ["move-404"]
+    assert "never deletes a page" in report.summary()
+
+
+def test_nothing_outside_the_published_tree_is_ever_called_an_orphan() -> None:
+    """The publisher owns one subtree; the rest of the site is not its business."""
+    fake = FakeWordPress()
+    fake.add_page("rules")
+    elsewhere = fake.add_page("handbook")
+    fake.add_page("appendix", parent=elsewhere["id"])
+
+    report = _check(fake)
+
+    assert report.orphaned == []
 
 
 def test_pages_unrelated_to_the_bundle_are_not_mentioned() -> None:

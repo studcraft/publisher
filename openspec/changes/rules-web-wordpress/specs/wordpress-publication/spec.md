@@ -49,9 +49,25 @@ change page status to `publish` and SHALL change nothing else.
 
 ### Requirement: Pages are identified by slug and parent, never by stored state
 
-`push` SHALL locate an existing page by its slug and parent on every run, and SHALL NOT read
-or write any record of post IDs, in the repository or on the site. A page that is absent
-SHALL be created; a page that is present SHALL be updated in place, keeping its URL.
+`push` SHALL locate an existing page by its slug **and** its parent on every run, and SHALL
+NOT read or write any record of post IDs, in the repository or on the site. A page that is
+absent SHALL be created; a page that is present SHALL be updated in place, keeping its URL.
+
+A slug is unique among siblings in WordPress, not across a site. `push` SHALL therefore never
+adopt a page whose slug matches but whose parent does not, including a top-level page: the
+publisher owns exactly the subtree rooted at the page the specification names, and nothing
+outside it.
+
+#### Scenario: A page elsewhere on the site shares a slug
+
+- **WHEN** the site holds a page with a managed slug under a different parent
+- **THEN** `push` leaves it entirely alone — its title, content, status and parent unchanged
+  — and creates its own page in the managed subtree
+
+#### Scenario: A top-level lookup means the top level
+
+- **WHEN** the root page is looked up
+- **THEN** only a page at the top level can match, never a page of that slug nested elsewhere
 
 #### Scenario: A first push creates pages
 
@@ -281,3 +297,37 @@ what causes a refusal on a hosted site.
 
 - **WHEN** a pace is configured
 - **THEN** every request after the first waits that long before it is sent
+
+### Requirement: A publication that stopped halfway converges when it is run again
+
+`push` SHALL be idempotent. After a run that failed partway, running it again SHALL create
+the pages that are missing, leave the pages that already match, and bring the site to the
+state the bundle describes, without anything having to be undone first.
+
+#### Scenario: A run is interrupted
+
+- **WHEN** `push` fails partway through writing, and is then run again
+- **THEN** every page in the bundle exists, none is duplicated, and the site matches the
+  bundle
+
+### Requirement: The check reports what a push would change, before it changes it
+
+The check SHALL report which pages the bundle already owns, which pages inside the published
+subtree the bundle no longer contains, and which pages elsewhere on the site merely share a
+slug. It SHALL NOT describe the last group as at risk, because they are not.
+
+#### Scenario: The bundle dropped a page that is still on the site
+
+- **WHEN** a page inside the published subtree is not in the bundle
+- **THEN** the check names it as an orphan, and says a push would set it to `private` rather
+  than delete it
+
+#### Scenario: Something unrelated shares a slug
+
+- **WHEN** a page outside the published subtree has a managed slug
+- **THEN** the check names it and says it is left alone
+
+#### Scenario: Something unrelated is outside the subtree entirely
+
+- **WHEN** a page outside the published subtree has no managed slug
+- **THEN** the check does not mention it at all

@@ -142,23 +142,34 @@ class WordPress:
     # -- pages ---------------------------------------------------------------------------
 
     def find_page(self, slug: str, parent: int | None = None) -> dict | None:
-        """Return the page with ``slug`` under ``parent``, or ``None`` when it is absent.
+        """Return the page with ``slug`` directly under ``parent``, or ``None`` when absent.
 
         Looking a page up rather than remembering its ID is what lets the same bundle publish
         to two sites whose IDs have nothing in common.
+
+        ``parent`` is ``None`` for a page at the top level, and that means **the top level**
+        rather than anywhere. A slug is not unique across a WordPress site — it is unique
+        among siblings — so a lookup that ignored the parent would match a page somebody else
+        made in an unrelated corner of the site, and the caller would then overwrite it.
+        Identity here is the pair, never the slug alone.
         """
         # `context=edit` is what makes the response carry `content.raw`, the text as stored.
         # Without it only `content.rendered` comes back, which has been through WordPress's
         # own filters and can never equal what was sent — so every page would look changed on
         # every run, and "unchanged" would be a state the publisher could never report.
-        query = {"slug": slug, "status": "any", "per_page": "100", "context": "edit"}
-        if parent is not None:
-            query["parent"] = str(parent)
+        wanted = parent or 0
+        query = {
+            "slug": slug,
+            "status": "any",
+            "per_page": "100",
+            "context": "edit",
+            "parent": str(wanted),
+        }
         found = self._get(f"{API}/pages", query)
         if not isinstance(found, list):
             raise WordPressError(f"Looking up the page {slug!r} returned {type(found).__name__}.")
         for page in found:
-            if page.get("slug") == slug and (parent is None or page.get("parent") == parent):
+            if page.get("slug") == slug and (page.get("parent") or 0) == wanted:
                 return page
         return None
 

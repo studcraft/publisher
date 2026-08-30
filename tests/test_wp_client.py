@@ -206,3 +206,27 @@ def test_an_attachment_is_given_its_alt_text_and_its_page() -> None:
 
     assert fake.media[1]["alt_text"] == "unit base"
     assert fake.media[1]["post"] == 42
+
+
+def test_a_lookup_is_the_slug_and_the_parent_never_the_slug_alone() -> None:
+    """A slug is unique among siblings, not across a site.
+
+    A lookup that ignored the parent would match a page somebody else made in an unrelated
+    corner of the site, and the caller would then overwrite it.
+    """
+    fake = FakeWordPress()
+    section = fake.add_page("handbook")
+    fake.add_page("rules", parent=section["id"])
+
+    assert _site(fake).find_page("rules") is None
+
+
+def test_a_top_level_lookup_means_the_top_level() -> None:
+    """`parent=None` is a place, not a wildcard."""
+    fake = FakeWordPress()
+    fake.add_page("rules")
+
+    found = _site(fake).find_page("rules")
+
+    assert found is not None
+    assert found["parent"] == 0
