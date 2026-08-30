@@ -219,3 +219,65 @@ write any theme template or template part.
 
 - **WHEN** the bundle declares a base path
 - **THEN** every menu entry's URL is inside that path
+
+### Requirement: A site is checked before it is written to
+
+A read-only command SHALL establish, without changing anything, that the REST API answers,
+that the application password authenticates and as which user, that the user holds the
+capabilities publishing needs, and which pages already on the site sit at a slug the bundle
+publishes. It SHALL exit non-zero when any of that would prevent publishing, so an automated
+run stops rather than half publishing.
+
+#### Scenario: A healthy site
+
+- **WHEN** the check runs against a site that can be published to
+- **THEN** it reports each answer, exits zero, and has written nothing
+
+#### Scenario: The REST API is closed
+
+- **WHEN** `/wp-json` cannot be read
+- **THEN** the check reports that alone and stops, rather than reporting every later
+  question as failed too
+
+#### Scenario: The user cannot publish
+
+- **WHEN** the authenticated user lacks a capability publishing needs
+- **THEN** the check names the capability and exits non-zero
+
+#### Scenario: Only the menu is out of reach
+
+- **WHEN** the user may publish pages but not edit theme options
+- **THEN** the check passes, and says the navigation command needs an administrator
+
+#### Scenario: A page already exists at a slug the bundle publishes
+
+- **WHEN** the site holds a page with that slug somewhere else in its hierarchy
+- **THEN** the check warns that pushing would adopt and overwrite it, and names its URL
+
+### Requirement: Writes are paced and transient failures retried
+
+The client SHALL support a minimum interval between requests, and SHALL retry a request the
+site answered with a transient status, waiting longer each time and honouring `Retry-After`
+when the site sends one. It SHALL NOT retry a status that means refusal, and SHALL explain
+what causes a refusal on a hosted site.
+
+#### Scenario: The site asks for less
+
+- **WHEN** a request is answered 429
+- **THEN** it is tried again after a wait, and the wait doubles on each further attempt
+
+#### Scenario: The site says when to come back
+
+- **WHEN** a transient response carries `Retry-After`
+- **THEN** that is waited instead of the calculated backoff
+
+#### Scenario: A refusal
+
+- **WHEN** a request is answered 403
+- **THEN** it is not retried, and the error explains that a firewall, a rate limit or a
+  missing capability causes this
+
+#### Scenario: Publishing gently
+
+- **WHEN** a pace is configured
+- **THEN** every request after the first waits that long before it is sent

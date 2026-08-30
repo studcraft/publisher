@@ -1,5 +1,6 @@
 """Command-line entry point for publishing a rendered bundle to WordPress.
 
+    check     nothing is written; can this site be published to at all?
     push      bundle  ->  every page on the site, as `private`
     promote   the staged pages  ->  `publish`
     menu      bundle  ->  the site's navigation: Rules, and the documents under it
@@ -30,7 +31,8 @@ from publisher.rules_web.cli import DEFAULT_DATA, document_path
 from publisher.rules_web.document import read as read_document
 from publisher.rules_web.model import WebDocumentError
 from publisher.sync import DEST
-from publisher.wp.client import Credentials, WordPress, WordPressError
+from publisher.wp.check import check
+from publisher.wp.client import Credentials, Pacing, WordPress, WordPressError
 from publisher.wp.menu import MenuError
 from publisher.wp.menu import write as write_menu
 from publisher.wp.promote import PromoteError, promote
@@ -77,6 +79,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    check_parser = subparsers.add_parser(
+        "check",
+        help="Read-only preflight: is this site reachable, authenticated and writable?",
+    )
+    _add_common_args(check_parser)
+
     push_parser = subparsers.add_parser(
         "push", help="Stage every page of the bundle on the site, as `private`."
     )
@@ -117,13 +125,37 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--out", type=Path, default=rendering.publish.ROOT, help="Publication root."
     )
+    # Publishing the whole ruleset is a few hundred authenticated writes. Against a hosted
+    # WordPress that burst is what a firewall reads as an attack, so the pace is a knob
+    # rather than a constant, and slowing down is the first thing to try after a 403.
+    parser.add_argument(
+        "--pace",
+        type=float,
+        default=0.0,
+        help="Seconds to wait between requests. Raise it when a site rate-limits.",
+    )
+    parser.add_argument(
+        "--attempts",
+        type=int,
+        default=4,
+        help="How many times to try a request the site answered with 429, 502, 503 or 504.",
+    )
 
 
 def _run(args: argparse.Namespace) -> int:
     """Run the parsed command and report what it did."""
-    site = WordPress(credentials(dict(os.environ)))
+    site = WordPress(
+        credentials(dict(os.environ)),
+        pacing=Pacing(interval=args.pace, attempts=args.attempts),
+    )
     path = bundle_path(args.data, args.out)
     bundle = json.loads(path.read_text(encoding="utf-8"))
+
+    if args.command == "check":
+        report = check(bundle, site)
+        print(f"Checked {site_label()} against {path}")
+        print(report.summary())
+        return 0 if report.ok else 1
 
     if args.command == "push":
         report = push(bundle, site, clone_root=args.clone, orphan_limit=args.orphan_limit)

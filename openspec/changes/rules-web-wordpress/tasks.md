@@ -105,3 +105,15 @@
 - [x] 12.8 Test the menu, the ordering, and the descending orphan scan
 - [x] 12.9 Verify against the local site: the header shows Rules and 13 systems in reading order
 - [x] 12.10 Document the root table, the menu command, and what changing a published URL costs
+
+## 13. Publishing to a site that is not local
+
+- [x] 13.1 Add `python -m publisher.wp check`: reachable, authenticated, capable, and what it would overwrite
+- [x] 13.2 List the site's pages in pages of a hundred, so the check is two requests rather than two hundred
+- [x] 13.3 Add `--pace` and `--attempts`, with a doubling backoff that honours `Retry-After`
+- [x] 13.4 Retry only transient statuses; never retry a refusal
+- [x] 13.5 Explain 401, 403 and 429 in the error itself, since on a hosted site the cause is infrastructure
+- [x] 13.6 Add `.github/workflows/publish.yml`: stage on a tag, promote behind a reviewed environment
+- [x] 13.7 Record in the workflow why neither job may be made a required check
+- [x] 13.8 Test the check, the pacing and the retries with no network
+- [x] 13.9 Document the remote failure modes and their fixes

@@ -22,6 +22,8 @@ import base64
 import ipaddress
 import json
 import mimetypes
+import time
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -36,6 +38,32 @@ PUBLISH = "publish"
 
 _LOOPBACK_NAMES = frozenset({"localhost", "localhost.localdomain"})
 
+# Statuses worth trying again. A 429 is the site asking for less; the 5xx pair is a gateway
+# or a worker that was momentarily unavailable. Everything else — a rejected slug, a missing
+# capability, a firewall's refusal — will fail identically however many times it is sent.
+TRANSIENT = frozenset({429, 502, 503, 504})
+
+# What a status means when the request was authenticated and well-formed. These are the
+# failures that are hard to place on someone else's WordPress, where the cause is usually
+# infrastructure rather than the request.
+_GUIDANCE = {
+    401: (
+        "The site did not accept the application password. Either application passwords are "
+        "disabled there, or the server is dropping the Authorization header before PHP sees "
+        "it — the usual cause under CGI/FastCGI, fixed host-side with `CGIPassAuth On` or "
+        '`SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1`.'
+    ),
+    403: (
+        "The site refused the request outright. On a hosted WordPress this is usually a "
+        "firewall or security plugin blocking writes to /wp-json, a rate limit reached by "
+        "publishing too fast, or a user without the capability the write needs."
+    ),
+    429: (
+        "The site is rate-limiting. Publish more slowly with a larger --pace, or from an "
+        "address the host does not throttle."
+    ),
+}
+
 
 class WordPressError(Exception):
     """Raised when the site rejects a request or answers with something unusable."""
@@ -43,6 +71,20 @@ class WordPressError(Exception):
 
 class InsecureSite(WordPressError):
     """Raised when sending credentials to the configured site would expose them."""
+
+
+@dataclass(frozen=True)
+class Pacing:
+    """How hard the publisher is allowed to push a site.
+
+    Publishing the whole ruleset is a few hundred authenticated writes. Locally they go out
+    as fast as the loop runs, which is fine; against a hosted WordPress that burst is exactly
+    the shape a firewall reads as an attack, and the publication stops halfway with a 403.
+    """
+
+    interval: float = 0.0
+    attempts: int = 4
+    backoff: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -62,10 +104,40 @@ class Credentials:
 class WordPress:
     """A WordPress site, addressed through its REST API."""
 
-    def __init__(self, credentials: Credentials, transport: Transport | None = None) -> None:
+    def __init__(
+        self,
+        credentials: Credentials,
+        transport: Transport | None = None,
+        pacing: Pacing = Pacing(),
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
         _require_safe(credentials.site)
         self._credentials = credentials
         self._transport = transport if transport is not None else UrllibTransport()
+        self._pacing = pacing
+        self._sleep = sleep
+        self._sent = 0
+
+    # -- the site itself -------------------------------------------------------------------
+
+    def reachable(self) -> dict:
+        """Return the REST API's own description, failing when it cannot be read.
+
+        The first thing to establish about someone else's WordPress: that /wp-json answers at
+        all. A firewall that blocks the REST API blocks it here, before any credential is
+        involved, which separates "the API is closed" from "the password is wrong".
+        """
+        found = self._get("/wp-json", {})
+        if not isinstance(found, dict):
+            raise WordPressError(f"The REST API returned {type(found).__name__}, not an object.")
+        return found
+
+    def me(self) -> dict:
+        """Return the authenticated user, with the capabilities the site grants them."""
+        found = self._get(f"{API}/users/me", {"context": "edit"})
+        if not isinstance(found, dict):
+            raise WordPressError(f"Reading the current user returned {type(found).__name__}.")
+        return found
 
     # -- pages ---------------------------------------------------------------------------
 
@@ -97,6 +169,34 @@ class WordPress:
         if not isinstance(found, list):
             raise WordPressError(f"Listing children of {parent} returned {type(found).__name__}.")
         return found
+
+    def list_pages(self, per_page: int = 100) -> Iterator[dict]:
+        """Yield every page on the site, whatever its status.
+
+        Read in pages of a hundred rather than one lookup per slug: checking a bundle of two
+        hundred against a site is two requests this way and two hundred the other, and the
+        difference is what keeps a preflight check from tripping the rate limit it exists to
+        warn about.
+        """
+        page = 1
+        while True:
+            found = self._get(
+                f"{API}/pages",
+                {
+                    "per_page": str(per_page),
+                    "page": str(page),
+                    "status": "any",
+                    "context": "edit",
+                    "orderby": "id",
+                    "order": "asc",
+                },
+            )
+            if not isinstance(found, list):
+                raise WordPressError(f"Listing pages returned {type(found).__name__}.")
+            yield from found
+            if len(found) < per_page:
+                return
+            page += 1
 
     def create_page(
         self,
@@ -220,7 +320,20 @@ class WordPress:
         url = f"{self._credentials.base}{path}"
         sent = {"Accept": "application/json", "Authorization": self._authorization()}
         sent.update(headers or {})
-        return self._transport.request(method, url, headers=sent, body=body)
+
+        for attempt in range(1, max(1, self._pacing.attempts) + 1):
+            self._pace()
+            response = self._transport.request(method, url, headers=sent, body=body)
+            if response.status not in TRANSIENT or attempt == self._pacing.attempts:
+                return response
+            self._sleep(_retry_after(response, self._pacing.backoff * 2 ** (attempt - 1)))
+        raise WordPressError(f"{method} {path} was never attempted.")  # pragma: no cover
+
+    def _pace(self) -> None:
+        """Wait between requests, when the caller asked to publish gently."""
+        if self._sent and self._pacing.interval:
+            self._sleep(self._pacing.interval)
+        self._sent += 1
 
     def _authorization(self) -> str:
         """Return the HTTP Basic header value for the application password."""
@@ -253,7 +366,19 @@ def _explain(response: Response) -> str:
             detail = str(payload.get("message") or payload.get("code") or "")
     except (UnicodeDecodeError, json.JSONDecodeError):
         detail = response.body[:200].decode("utf-8", "replace")
-    return f"HTTP {response.status}{f' — {detail}' if detail else ''}"
+
+    said = f" — {detail}" if detail else ""
+    guidance = _GUIDANCE.get(response.status)
+    return f"HTTP {response.status}{said}" + (f"\n{guidance}" if guidance else "")
+
+
+def _retry_after(response: Response, fallback: float) -> float:
+    """Return how long to wait before trying again, preferring what the site asked for."""
+    header = response.headers.get("retry-after", "")
+    try:
+        return max(0.0, float(header))
+    except ValueError:
+        return fallback
 
 
 def _require_safe(site: str) -> None:

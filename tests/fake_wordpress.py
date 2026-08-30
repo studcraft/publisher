@@ -24,7 +24,19 @@ from publisher.wp.transport import Response
 class FakeWordPress:
     """A WordPress site that lives in a dictionary."""
 
-    def __init__(self, *, authorized: bool = True) -> None:
+    def __init__(self, *, authorized: bool = True, capabilities: dict | None = None) -> None:
+        self.user = {
+            "id": 1,
+            "name": "admin",
+            "roles": ["administrator"],
+            "capabilities": {
+                "publish_pages": True,
+                "upload_files": True,
+                "edit_theme_options": True,
+            }
+            if capabilities is None
+            else capabilities,
+        }
         self.pages: dict[int, dict] = {}
         self.media: dict[int, dict] = {}
         self.navigations: dict[int, dict] = {}
@@ -50,7 +62,11 @@ class FakeWordPress:
             return _json(401, {"code": "rest_not_logged_in", "message": "You are not logged in."})
 
         parsed = urlparse(url)
+        if parsed.path == "/wp-json":
+            return _json(200, {"name": "A site", "namespaces": ["wp/v2"]})
         path = parsed.path.replace("/wp-json/wp/v2", "", 1)
+        if path == "/users/me":
+            return _json(200, self.user)
         query = {key: values[0] for key, values in parse_qs(parsed.query).items()}
 
         if path == "/pages":
@@ -72,6 +88,10 @@ class FakeWordPress:
     def _pages(self, method: str, query: dict, body: bytes | None) -> Response:
         if method == "GET":
             found = list(self.pages.values())
+            if "page" in query and int(query["page"]) > 1:
+                # One page of results is enough for every fixture here; a second request
+                # means the client is paginating, and there is nothing more to give it.
+                return _json(200, [])
             if "slug" in query:
                 found = [page for page in found if page["slug"] == query["slug"]]
             if "parent" in query:

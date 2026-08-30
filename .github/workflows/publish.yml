@@ -1,0 +1,108 @@
+# Publishing the ruleset to WordPress.
+#
+# Two jobs, and the gap between them is the review. `stage` runs on a tag and writes every
+# page as `private` — the real URL, the real hierarchy, visible to editors only. `promote`
+# runs only when a person asks for it, behind an environment with a required reviewer,
+# because making a publication public is outward-facing and awkward to take back.
+#
+# NEITHER JOB IS A REQUIRED STATUS CHECK, and neither may be made one. A required workflow
+# has to trigger on every pull request with no `paths:` filter at the `on:` level: GitHub
+# does not treat "filtered out" as passed or skipped, so a filtered required check stays
+# pending and blocks the merge for ever. These trigger on a tag and on a dispatch, which is
+# exactly the shape that must never be marked required. See system/testing.md.
+
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      promote:
+        description: "Also make the staged publication public"
+        type: boolean
+        default: false
+
+jobs:
+  stage:
+    name: Stage the publication as private
+    runs-on: ubuntu-latest
+    environment: wordpress
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: pip install -e .
+
+      # The clone is restored to the commit the lock file pins, never to a branch. A tag
+      # that publishes whatever upstream happens to be at today would put rules on the site
+      # that nobody reviewed.
+      - name: Restore the ruleset to the pinned commit
+        run: python -m publisher.sync --pinned
+
+      # Regenerate, then refuse to publish anything if that changed a tracked file. The
+      # bundle in the tag is what was reviewed; if it does not match the ruleset it claims
+      # to come from, the thing to publish does not exist yet.
+      - run: python -m publisher.rules_web build
+      - name: The tagged bundle matches the ruleset it claims to come from
+        run: |
+          if ! git diff --exit-code -- data/rules_web/ publish/rules_web/; then
+            echo "::error::This tag's committed bundle is stale. Run 'python -m publisher.rules_web build', commit, and tag again."
+            exit 1
+          fi
+
+      # Read-only. Establishes that the REST API answers, that the application password
+      # authenticates, that the user may publish and upload, and which pages already on the
+      # site would be adopted by slug. Finding any of that out at write ninety would leave
+      # the site half published.
+      - name: Preflight
+        env:
+          WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: python -m publisher.wp check
+
+      # --pace spaces the writes out. Publishing ~200 pages as fast as the loop runs is the
+      # burst a hosted WordPress reads as an attack, and the publication then stops halfway
+      # with a 403. Raise it if the site rate-limits; it costs a minute, not a rerun.
+      - name: Stage every page as private
+        env:
+          WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: python -m publisher.wp push --pace 0.3
+
+      - name: Write the site navigation
+        env:
+          WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: python -m publisher.wp menu
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle
+          path: publish/rules_web/
+
+  promote:
+    name: Make the staged publication public
+    needs: stage
+    # A tag stages and stops. Going public is a person pressing a button, and the
+    # environment below is where the approval is required — that is the whole point of
+    # splitting the two commands.
+    if: github.event_name == 'workflow_dispatch' && inputs.promote
+    runs-on: ubuntu-latest
+    environment: wordpress-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: pip install -e .
+      - name: Promote
+        env:
+          WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: python -m publisher.wp promote --pace 0.2

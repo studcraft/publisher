@@ -57,6 +57,42 @@ into a git-ignored `.env`. Test against that, never against a live site.
 `/%postname%/` permalink structure are all core. A change that needs a plugin is a finding
 about the design, not a missing step.
 
+## Publishing to a real site
+
+`.github/workflows/publish.yml` does it. A tag `v*` runs `stage`, which restores the pinned
+ruleset, rebuilds, refuses to continue if that changed a tracked file, runs the preflight,
+then stages and writes the menu. Going public is a separate `workflow_dispatch` behind the
+`wordpress-production` environment, which is where the required reviewer lives. Neither job
+is a required status check, and neither may be made one — see [Testing](testing.md).
+
+Three secrets, on both environments: `WP_BASE_URL`, `WP_USER`, `WP_APP_PASSWORD`.
+
+**Run the preflight before anything else**, including by hand the first time:
+
+```bash
+python -m publisher.wp check
+```
+
+It writes nothing. It establishes that `/wp-json` answers, that the application password
+authenticates and as whom, that the user may publish pages and upload files, and — the part
+no error message would ever say — **which pages already on the site sit at a slug this
+bundle publishes**. `push` adopts a page by its slug, so a page somebody made at `/movement`
+is a page `push` will overwrite. Better seen in a read-only run than afterwards.
+
+What goes wrong on someone else's WordPress, and what each one actually is:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| 401, password known good | The server drops the `Authorization` header before PHP sees it — usual under CGI/FastCGI | Host-side: `CGIPassAuth On`, or `SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1` |
+| 401 | Application passwords disabled, or the site is not HTTPS | WordPress requires SSL for them; the client refuses plain HTTP anyway, except on loopback |
+| 403 on `/wp-json` | A firewall or security plugin blocking REST writes | Allow the route, or the address publishing from |
+| 403 after a few dozen writes | **Rate limiting.** ~200 pages at loop speed is the burst a WAF reads as an attack | `--pace 0.3`, and raise it. The workflow already does |
+| 403 `rest_cannot_create` on the menu | `menu` writes a `wp_navigation`, which needs `edit_theme_options` | Publish as an administrator; an editor can do everything else |
+
+429, 502, 503 and 504 are retried with a doubling wait, honouring `Retry-After`. Everything
+else fails once, because a rejected slug or a missing capability fails identically however
+many times it is sent.
+
 **WordPress is the last generated stage, so the rule below extends to it unchanged.** An
 editor who fixes a typo in wp-admin loses it at the next `push`, silently — `push` overwrites
 title and content and makes no attempt to detect a human edit, because detecting one would

@@ -66,7 +66,7 @@ def _published(tmp_path: Path) -> tuple[Path, Path]:
 def _run(argv: list[str], fake: FakeWordPress, environment: dict | None = None) -> int:
     """Run the CLI with ``fake`` standing in for the site."""
     made = mock.Mock(
-        side_effect=lambda credentials: WordPress(credentials, fake),
+        side_effect=lambda credentials, **kwargs: WordPress(credentials, fake, **kwargs),
     )
     with mock.patch.dict(
         cli.os.environ, ENVIRONMENT if environment is None else environment, clear=True
@@ -151,3 +151,50 @@ def test_menu_writes_the_navigation(tmp_path: Path, capsys) -> None:
 
     assert len(fake.navigations) == 1
     assert "1 entries" in capsys.readouterr().out
+
+
+def test_check_reports_and_writes_nothing(tmp_path: Path, capsys) -> None:
+    """The preflight is reads only: a site it ran against is a site it did not change."""
+    data, out = _published(tmp_path)
+    fake = FakeWordPress()
+
+    assert _run(["check", "--data", str(data), "--out", str(out)], fake) == 0
+
+    assert fake.pages == {}
+    assert "the REST API answers" in capsys.readouterr().out
+
+
+def test_check_exits_nonzero_when_the_site_cannot_be_published_to(tmp_path: Path) -> None:
+    """An action has to be able to stop on this rather than push into a broken site."""
+    data, out = _published(tmp_path)
+    fake = FakeWordPress(capabilities={"publish_pages": False, "upload_files": True})
+
+    assert _run(["check", "--data", str(data), "--out", str(out)], fake) == 1
+
+
+def test_the_pace_and_attempts_reach_the_client(tmp_path: Path) -> None:
+    """They are the first thing to reach for after a 403, so they have to be settable."""
+    data, out = _published(tmp_path)
+    seen = {}
+
+    def record(credentials, pacing=None, **kwargs):
+        seen["pacing"] = pacing
+        return WordPress(credentials, FakeWordPress(), pacing=pacing, **kwargs)
+
+    with mock.patch.dict(cli.os.environ, ENVIRONMENT, clear=True):
+        with mock.patch.object(cli, "WordPress", record):
+            cli.main(
+                [
+                    "check",
+                    "--data",
+                    str(data),
+                    "--out",
+                    str(out),
+                    "--pace",
+                    "0.5",
+                    "--attempts",
+                    "7",
+                ]
+            )
+
+    assert (seen["pacing"].interval, seen["pacing"].attempts) == (0.5, 7)

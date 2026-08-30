@@ -70,10 +70,20 @@ and `/vehicles/veh-003` would move with it. The explicit slug is where that prom
 
 ```bash
 python -m publisher.rules_web build     # ruleset -> document.json -> the bundle
+python -m publisher.wp check            # read-only: can this site be published to?
 python -m publisher.wp push             # the bundle -> the site, as `private`
 python -m publisher.wp menu             # the bundle -> the site's navigation menu
 python -m publisher.wp promote          # `private` -> `publish`
 ```
+
+`check` writes nothing and answers the questions publishing depends on: whether the REST API
+answers, whether the application password authenticates and as whom, whether that user may
+publish and upload, and which pages already on the site sit at a slug this bundle publishes.
+Run it first against any site you have not published to before. What the failures mean is in
+[`system/publishing-pipeline.md`](../../system/publishing-pipeline.md).
+
+`--pace <seconds>` spaces the writes out. Locally it can be zero; against a hosted WordPress
+it is the difference between publishing and being cut off by a firewall halfway through.
 
 `push` reads the bundle and nothing else, and stages everything `private`: the real URL, the
 real hierarchy, editors only. `promote` sends one thing per page, a status. Both read
