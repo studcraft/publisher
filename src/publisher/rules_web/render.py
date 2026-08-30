@@ -49,7 +49,12 @@ def render(document: Document, root: Path = publish.ROOT) -> Path:
 
 def bundle(document: Document) -> dict:
     """Return the bundle ``document`` publishes as, with a fixed key order throughout."""
-    pages = [_page(page, document) for page in document.pages]
+    order = document.pages
+    addresses = paths(document)
+    pages = [
+        _page(page, document, _neighbours(order, position), addresses)
+        for position, page in enumerate(order)
+    ]
     return {
         "schema": BUNDLE_SCHEMA,
         "name": document.name,
@@ -75,9 +80,9 @@ def bundle(document: Document) -> dict:
     }
 
 
-def _page(page: Page, document: Document) -> dict:
+def _page(page: Page, document: Document, neighbours: tuple, addresses: dict) -> dict:
     """Return one page's payload, with its final HTML and the hash of what it publishes."""
-    content = _content(page, document)
+    content = _content(page, document, neighbours, addresses)
     return {
         "slug": page.slug,
         "parent": page.parent,
@@ -94,13 +99,73 @@ def _page(page: Page, document: Document) -> dict:
     }
 
 
-def _content(page: Page, document: Document) -> str:
-    """Return the whole HTML of one page: its own content, then the provenance footer."""
-    parts = [page.body_html if page.kind == RULE else _index(page), _footer(page, document)]
+def _content(page: Page, document: Document, neighbours: tuple, addresses: dict) -> str:
+    """Return the whole HTML of one page: its content, where to go next, then its provenance."""
+    parts = [
+        page.body_html if page.kind == RULE else _index(page, addresses),
+        _pagination(neighbours, addresses),
+        _footer(page, document),
+    ]
     return "\n".join(part for part in parts if part)
 
 
-def _index(page: Page) -> str:
+def paths(document: Document) -> dict[str, str]:
+    """Return every page's address, absolute from the site root, keyed by slug.
+
+    Resolved by walking the parent chain rather than from a page's own parent, because a rule
+    sits three levels down — root, document, rule — and a page only knows the one above it.
+    Building the whole table once is also what keeps this linear rather than a walk per link.
+    """
+    parents = {page.slug: page.parent for page in document.pages}
+    base = document.base_path.strip("/")
+
+    addresses: dict[str, str] = {}
+    for page in document.pages:
+        chain = [page.slug]
+        slug = page.parent
+        while slug:
+            chain.append(slug)
+            slug = parents.get(slug)
+        parts = [base] + list(reversed(chain))
+        addresses[page.slug] = "/" + "/".join(part for part in parts if part)
+    return addresses
+
+
+def _neighbours(pages: tuple[Page, ...], position: int) -> tuple:
+    """Return the pages before and after ``position`` in reading order.
+
+    The order is the one the document already carries: the root, then each ruleset document
+    followed by its own rules. So the page after the last rule of a system is the next system,
+    which is what someone reading the ruleset through rather than looking one rule up wants —
+    and it needs no second ordering to maintain, because it is the same order the index pages
+    and the menu are built from.
+    """
+    before = pages[position - 1] if position else None
+    after = pages[position + 1] if position + 1 < len(pages) else None
+    return before, after
+
+
+def _pagination(neighbours: tuple, addresses: dict) -> str:
+    """Return the links to the pages either side of this one, in reading order."""
+    before, after = neighbours
+    if before is None and after is None:
+        return ""
+    links = []
+    if before is not None:
+        links.append(_step(before, addresses, "prev", "\u2190 "))
+    if after is not None:
+        links.append(_step(after, addresses, "next", "", " \u2192"))
+    return '<nav class="rule-pagination">\n' + "\n".join(links) + "\n</nav>"
+
+
+def _step(page: Page, addresses: dict, rel: str, prefix: str = "", suffix: str = "") -> str:
+    """Return one pagination link."""
+    label = escaping.escape(page.title)
+    href = escaping.escape(addresses[page.slug])
+    return f'  <a class="{rel}" rel="{rel}" href="{href}">{prefix}{label}{suffix}</a>'
+
+
+def _index(page: Page, addresses: dict) -> str:
     """Return a document page's body: its introduction, then the rules it holds.
 
     The index links every rule in the document, in ruleset order, so the document page is
@@ -110,18 +175,21 @@ def _index(page: Page) -> str:
     parts = []
     if page.intro:
         parts.append(_intro(page))
-    rows = "\n".join(f"  <li>{_entry(entry)}</li>" for entry in page.entries)
+    rows = "\n".join(f"  <li>{_entry(addresses, entry)}</li>" for entry in page.entries)
     parts.append(f'<ul class="rule-index">\n{rows}\n</ul>')
     return "\n".join(parts)
 
 
-def _entry(entry) -> str:
+def _entry(addresses: dict, entry) -> str:
     """Return one index row.
 
     A rule leads with its ID, because that is what people cite to each other and what they
     scan the page for. A whole ruleset document has no ID and leads with its name.
+
+    The address is absolute, like every other link the edition writes: a relative one resolves
+    against the browser's current URL, which is right only while that URL ends in a slash.
     """
-    link = f'<a href="{escaping.escape(entry.slug)}">'
+    link = f'<a href="{escaping.escape(addresses[entry.slug])}">'
     title = escaping.escape(entry.title)
     if entry.rule:
         return f"{link}<strong>{escaping.escape(entry.rule)}</strong> — {title}</a>"

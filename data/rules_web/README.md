@@ -105,6 +105,26 @@ render time would make the same ruleset render to different bytes in a different
 the determinism gate would be pinning a value that legitimately drifts. `push` substitutes
 the real URL once it knows where the file landed.
 
+## Reading the ruleset through
+
+Every page carries a link to the page before and after it in reading order:
+
+```
+/rules                       →  Core Rules
+/rules/core-rules            ←  Rules            →  CORE-001
+/rules/core-rules/core-001   ←  Core Rules       →  CORE-002
+/rules/core-rules/core-016   ←  CORE-014         →  Game Flow
+/rules/infantry/inf-012      ←  INF-011
+```
+
+The sequence is the one the bundle already carries — the root, then each system followed by
+its own rules — so **the page after the last rule of a system is the next system**, and there
+is no second ordering to keep in step with the index pages and the menu.
+
+Every link the edition writes is absolute and resolved through `base_path`. A relative link
+resolves against the browser's current URL, which is right only while that URL ends in a
+slash, and WordPress will happily serve one that does not.
+
 ## The order documents are listed in
 
 The specification's order is the ruleset's own numbering, which is its reading order, and it

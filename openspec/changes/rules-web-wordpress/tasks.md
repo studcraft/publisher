@@ -128,3 +128,13 @@
 - [x] 14.6 Test that a `push` interrupted partway converges when it is run again
 - [x] 14.7 Document the ownership boundary, the orphan table, recovery, and the URL policy
 - [x] 14.8 Say plainly that the default pace is a guess, never measured against a host
+
+## 15. Reading the ruleset through
+
+- [x] 15.1 Link each page to the page before and after it, in the edition's reading order
+- [x] 15.2 Make the last rule of a system lead on to the next system rather than to nothing
+- [x] 15.3 Leave the first page without a previous link and the last without a next
+- [x] 15.4 Resolve every link through the whole parent chain, not one level of it
+- [x] 15.5 Make index links absolute too, so one rule covers every link the edition writes
+- [x] 15.6 Test the sequence, both ends of it, and that a renamed neighbour republishes
+- [x] 15.7 Verify live: the last Core Rules page leads to Game Flow, and both resolve

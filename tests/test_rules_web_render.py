@@ -63,7 +63,7 @@ def test_a_document_page_becomes_an_index_of_its_rules() -> None:
     """The index is built here, not at extraction: it is presentation."""
     page = render.bundle(_document())["pages"][0]
     assert '<ul class="rule-index">' in page["html"]
-    assert '<a href="core-001">' in page["html"]
+    assert '<a href="/core-rules/core-001">' in page["html"]
     assert "<strong>CORE-001</strong> — Unit Base (UB)" in page["html"]
     assert "<p>The universal rules.</p>" in page["html"]
 
@@ -233,3 +233,114 @@ def test_a_page_knows_its_own_path() -> None:
     document = _document()
     assert document.pages[0].path == "core-rules"
     assert document.pages[1].path == "core-rules/core-001"
+
+
+# -- reading-order pagination --------------------------------------------------------------
+
+
+def _paged() -> Document:
+    """Return a document of a root, two systems, and two rules in each."""
+    pages = [
+        Page(
+            slug="rules",
+            title="Rules",
+            kind="root",
+            entries=(
+                Entry(title="Core Rules", slug="core-rules"),
+                Entry(title="Game Flow", slug="game-flow"),
+            ),
+        ),
+        Page(slug="core-rules", title="Core Rules", kind="document", parent="rules"),
+        Page(
+            slug="core-001",
+            title="CORE-001 — Unit Base",
+            kind="rule",
+            parent="core-rules",
+            body_html="<p>a</p>",
+        ),
+        Page(
+            slug="core-002",
+            title="CORE-002 — Facing",
+            kind="rule",
+            parent="core-rules",
+            body_html="<p>b</p>",
+        ),
+        Page(slug="game-flow", title="Game Flow", kind="document", parent="rules"),
+        Page(
+            slug="flow-001",
+            title="FLOW-001 — Before Turn 1",
+            kind="rule",
+            parent="game-flow",
+            body_html="<p>c</p>",
+        ),
+    ]
+    return _document(pages=tuple(pages), media=())
+
+
+def _html(slug: str, document: Document | None = None) -> str:
+    """Return the rendered HTML of one page."""
+    built = _paged() if document is None else document
+    return next(page for page in render.bundle(built)["pages"] if page["slug"] == slug)["html"]
+
+
+def test_a_rule_links_to_the_rule_before_and_after_it() -> None:
+    """Reading the ruleset through should not mean going back to an index between rules."""
+    html = _html("core-001")
+
+    assert '<a class="prev" rel="prev" href="/rules/core-rules">' in html
+    assert '<a class="next" rel="next" href="/rules/core-rules/core-002">' in html
+    assert "CORE-002 — Facing" in html
+
+
+def test_the_last_rule_of_a_system_goes_on_to_the_next_system() -> None:
+    """Which is the whole reason the sequence is the reading order and not per document."""
+    html = _html("core-002")
+
+    assert '<a class="next" rel="next" href="/rules/game-flow">' in html
+    assert "Game Flow" in html
+
+
+def test_the_first_rule_of_a_system_goes_back_to_its_own_index() -> None:
+    """The page before the first rule is the system that holds it."""
+    assert '<a class="prev" rel="prev" href="/rules/core-rules">' in _html("core-001")
+
+
+def test_the_first_page_has_no_previous_and_the_last_no_next() -> None:
+    """A link to nowhere is worse than an absent one."""
+    first = _html("rules")
+    last = _html("flow-001")
+
+    assert 'class="prev"' not in first
+    assert 'class="next"' in first
+    assert 'class="next"' not in last
+    assert 'class="prev"' in last
+
+
+def test_pagination_resolves_through_the_base_path() -> None:
+    """A translated edition must page within itself, not into the English one."""
+    html = _html("core-001", _document(pages=_paged().pages, media=(), base_path="es"))
+
+    assert 'href="/es/rules/core-rules/core-002"' in html
+
+
+def test_a_page_whose_neighbour_was_renamed_is_republished() -> None:
+    """The link carries the neighbour's title, so the hash has to notice it changing."""
+    before = next(page for page in render.bundle(_paged())["pages"] if page["slug"] == "core-001")[
+        "content_hash"
+    ]
+
+    pages = list(_paged().pages)
+    pages[3] = Page(
+        slug="core-002",
+        title="CORE-002 — Renamed",
+        kind="rule",
+        parent="core-rules",
+        body_html="<p>b</p>",
+    )
+    after = next(
+        page
+        for page in render.bundle(_document(pages=tuple(pages), media=()))["pages"]
+        if page["slug"] == "core-001"
+    )["content_hash"]
+
+    assert before != after

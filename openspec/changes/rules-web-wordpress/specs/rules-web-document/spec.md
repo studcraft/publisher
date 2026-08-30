@@ -99,3 +99,46 @@ body, as a child of its document's page.
 - **WHEN** a document containing three rules is extracted
 - **THEN** one page is produced for the document, listing and linking all three, and three
   rule pages are produced as its children
+
+### Requirement: Every page links to the pages either side of it in reading order
+
+Each page SHALL carry a link to the page before it and the page after it, in the order the
+edition is read: the root, then each ruleset document followed by its own rules. The page
+after a document's last rule is therefore the next document. The first page SHALL have no
+previous link and the last SHALL have no next link.
+
+#### Scenario: Moving between rules
+
+- **WHEN** a rule page that is neither first nor last in its document is rendered
+- **THEN** it links back to the rule before it and on to the rule after it
+
+#### Scenario: Reaching the end of a system
+
+- **WHEN** the last rule of a ruleset document is rendered
+- **THEN** its next link is the next document's page, not nothing
+
+#### Scenario: The ends of the sequence
+
+- **WHEN** the first and last pages of the edition are rendered
+- **THEN** the first carries no previous link and the last carries no next link
+
+#### Scenario: A neighbour is renamed
+
+- **WHEN** a page's neighbour changes title
+- **THEN** that page's content hash changes, so a push republishes it
+
+### Requirement: Every link the edition writes is absolute
+
+A link between published pages SHALL be an absolute path from the site root, resolved through
+the edition's base path. A relative link resolves against the browser's current URL, which is
+correct only while that URL ends in a slash.
+
+#### Scenario: An index entry
+
+- **WHEN** a document page indexes a rule
+- **THEN** the link is the rule's whole path, not its slug alone
+
+#### Scenario: A translated edition
+
+- **WHEN** the edition declares a base path
+- **THEN** every link between its pages is inside that path
