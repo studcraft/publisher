@@ -12,6 +12,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from publisher.rules_web.model import DEFAULT_PLACEMENT, PLACEMENTS
 from publisher.rules_web.slugs import document_slug
 
 if sys.version_info >= (3, 11):
@@ -27,7 +28,7 @@ class SpecError(Exception):
 # An unknown key is an error rather than a shrug: a misspelled `slug` that is silently
 # ignored looks exactly like slug overrides not working, and that is far more expensive to
 # debug than a failed build.
-_TOP_KEYS = frozenset({"title", "language", "base_path", "name", "root", "document"})
+_TOP_KEYS = frozenset({"title", "language", "base_path", "name", "pagination", "root", "document"})
 _ROOT_KEYS = frozenset({"slug", "title", "intro"})
 _DOCUMENT_KEYS = frozenset({"file", "slug", "title", "intro"})
 
@@ -65,6 +66,7 @@ class Spec:
     language: str
     base_path: str
     name: str
+    pagination: str
     root: RootSpec
     documents: tuple[DocumentSpec, ...]
 
@@ -107,8 +109,15 @@ def from_dict(raw: dict, where: str) -> Spec:
             f"{seen[root.slug]!r} already uses. They would publish to the same URL."
         )
 
+    pagination = raw.get("pagination", DEFAULT_PLACEMENT)
+    if pagination not in PLACEMENTS:
+        raise SpecError(
+            f"{where} sets pagination = {pagination!r}. Known placements: {', '.join(PLACEMENTS)}."
+        )
+
     return Spec(
         root=root,
+        pagination=pagination,
         title=raw.get("title", ""),
         language=raw.get("language") or "en",
         base_path=raw.get("base_path", "").strip("/"),

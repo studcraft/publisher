@@ -107,6 +107,7 @@ def build(spec: Spec, index: dict[str, Rule], source: Source, clone_root: Path) 
         name=spec.name,
         language=spec.language,
         base_path=spec.base_path,
+        pagination=spec.pagination,
         pages=tuple(pages),
         media=collector.collected(),
         source=source,

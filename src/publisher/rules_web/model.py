@@ -40,6 +40,12 @@ DOCUMENT = "document"
 RULE = "rule"
 KINDS = (ROOT, DOCUMENT, RULE)
 
+# Where the links to the previous and next page sit on a page. `both` is the usual choice for
+# long reference documentation: a reader who arrived looking one rule up sees them without
+# scrolling, and a reader going through in order finds them where they stopped.
+PLACEMENTS = ("top", "bottom", "both", "none")
+DEFAULT_PLACEMENT = "bottom"
+
 
 class WebDocumentError(Exception):
     """Raised when a web document is missing, malformed, or of an unknown schema."""
@@ -120,6 +126,7 @@ class Document:
     name: str = "rules_web"
     language: str = "en"
     base_path: str = ""
+    pagination: str = DEFAULT_PLACEMENT
     pages: tuple[Page, ...] = ()
     media: tuple[Media, ...] = ()
     source: Source = field(default_factory=Source)
@@ -132,6 +139,7 @@ class Document:
             "name": self.name,
             "language": self.language,
             "base_path": self.base_path,
+            "pagination": self.pagination,
             "title": self.title,
             "source": {
                 "repo": self.source.repo,
@@ -176,6 +184,7 @@ class Document:
             name=payload.get("name") or "rules_web",
             language=payload.get("language") or "en",
             base_path=payload.get("base_path", ""),
+            pagination=_placement(payload.get("pagination", DEFAULT_PLACEMENT)),
             pages=tuple(_read_page(raw, index) for index, raw in enumerate(raw_pages)),
             media=tuple(
                 _read_media(raw, index) for index, raw in enumerate(payload.get("media") or ())
@@ -187,6 +196,13 @@ class Document:
             ),
             schema=schema,
         )
+
+
+def _placement(value: Any) -> str:
+    """Return ``value`` as a pagination placement, failing on anything else."""
+    if value not in PLACEMENTS:
+        raise WebDocumentError(f"pagination is {value!r}; expected one of {', '.join(PLACEMENTS)}.")
+    return value
 
 
 def _page_dict(page: Page) -> dict[str, Any]:

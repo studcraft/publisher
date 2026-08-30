@@ -142,3 +142,29 @@ correct only while that URL ends in a slash.
 
 - **WHEN** the edition declares a base path
 - **THEN** every link between its pages is inside that path
+
+### Requirement: Where the pagination sits is a setting, not an edit
+
+The specification SHALL choose where the previous/next links are placed on a page — before
+the content, after it, both, or nowhere — and the renderer SHALL honour it for every page.
+An unrecognised placement SHALL fail the build.
+
+#### Scenario: Placed at the top
+
+- **WHEN** the placement is `top`
+- **THEN** every page carries the links once, before its content
+
+#### Scenario: Placed at both ends
+
+- **WHEN** the placement is `both`
+- **THEN** every page carries the links twice, before and after its content
+
+#### Scenario: Turned off
+
+- **WHEN** the placement is `none`
+- **THEN** no page carries them
+
+#### Scenario: An unrecognised placement
+
+- **WHEN** the specification names a placement that does not exist
+- **THEN** the build fails, listing the placements that do

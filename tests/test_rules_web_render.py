@@ -344,3 +344,48 @@ def test_a_page_whose_neighbour_was_renamed_is_republished() -> None:
     )["content_hash"]
 
     assert before != after
+
+
+@pytest.mark.parametrize(
+    ("placement", "expected"),
+    [("bottom", 1), ("top", 1), ("both", 2), ("none", 0)],
+)
+def test_where_the_pagination_sits_is_configurable(placement: str, expected: int) -> None:
+    """Long reference documentation is read both ways round, so the choice is the author's."""
+    document = _document(pages=_paged().pages, media=(), pagination=placement)
+    html = next(page for page in render.bundle(document)["pages"] if page["slug"] == "core-001")[
+        "html"
+    ]
+
+    assert html.count('<nav class="rule-pagination">') == expected
+
+
+def test_top_puts_the_links_before_the_body_and_bottom_after() -> None:
+    """Which is the whole difference, and the reason both exists."""
+    pages, media = _paged().pages, ()
+    top = next(
+        page
+        for page in render.bundle(_document(pages=pages, media=media, pagination="top"))["pages"]
+        if page["slug"] == "core-001"
+    )["html"]
+    bottom = next(
+        page
+        for page in render.bundle(_document(pages=pages, media=media, pagination="bottom"))["pages"]
+        if page["slug"] == "core-001"
+    )["html"]
+
+    assert top.index("rule-pagination") < top.index("<p>a</p>")
+    assert bottom.index("rule-pagination") > bottom.index("<p>a</p>")
+
+
+def test_an_unknown_placement_is_refused() -> None:
+    """A misspelled placement that was ignored would look like the setting not working."""
+    with pytest.raises(WebDocumentError) as failure:
+        Document.from_dict(
+            {
+                "schema": 1,
+                "pagination": "sideways",
+                "pages": [{"slug": "x", "title": "X", "kind": "rule", "body_html": "<p>x</p>"}],
+            }
+        )
+    assert "top, bottom, both, none" in str(failure.value)

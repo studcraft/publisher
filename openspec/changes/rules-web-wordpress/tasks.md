@@ -138,3 +138,11 @@
 - [x] 15.5 Make index links absolute too, so one rule covers every link the edition writes
 - [x] 15.6 Test the sequence, both ends of it, and that a renamed neighbour republishes
 - [x] 15.7 Verify live: the last Core Rules page leads to Game Flow, and both resolve
+
+## 16. Where the pagination sits
+
+- [x] 16.1 Add `pagination` to `spec.toml`: `top`, `bottom`, `both` or `none`
+- [x] 16.2 Carry it through the document, so a hand-edited one re-renders the same way
+- [x] 16.3 Fail the build on a placement that does not exist, listing the ones that do
+- [x] 16.4 Test each placement, and that `top` and `bottom` really differ in order
+- [x] 16.5 Set the edition to `both`, rebuild, publish, and verify two on a live page

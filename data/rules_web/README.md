@@ -37,6 +37,7 @@ intro = "The universal rules every StudCraft scenario uses."
 | `language` | no | `en` | Part of the published filename, so two languages never collide. |
 | `base_path` | no | empty | The segment every page sits under. Empty for English. |
 | `name` | no | `rules_web` | The product name, and the publish directory. |
+| `pagination` | no | `bottom` | Where the previous/next links sit: `top`, `bottom`, `both`, `none`. |
 | `[root].slug` | no | `rules` | The segment every document sits under. |
 | `[root].title` | no | `Rules` | The root page's title, and the menu entry's label. |
 | `[root].intro` | no | empty | Markdown shown above the list of systems. |
@@ -120,6 +121,13 @@ Every page carries a link to the page before and after it in reading order:
 The sequence is the one the bundle already carries — the root, then each system followed by
 its own rules — so **the page after the last rule of a system is the next system**, and there
 is no second ordering to keep in step with the index pages and the menu.
+
+Where those links sit is `pagination` in `spec.toml` — `top`, `bottom`, `both` or `none`. It
+is a setting rather than an edit to the renderer so the choice lives in the source of truth
+and applies to every page at once; moving them by hand in WordPress would be undone by the
+next publication. Their appearance is the theme's: they are a `<nav class="rule-pagination">`
+carrying `rel="prev"` and `rel="next"`, so CSS can restyle them without touching the
+publisher.
 
 Every link the edition writes is absolute and resolved through `base_path`. A relative link
 resolves against the browser's current URL, which is right only while that URL ends in a

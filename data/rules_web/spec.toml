@@ -17,6 +17,11 @@ language = "en"
 # is resolved through it rather than hardcoded to the site root.
 base_path = ""
 
+# Where the links to the previous and next page sit: "top", "bottom", "both" or "none".
+# "both" suits long reference documentation — a reader who arrived looking one rule up sees
+# them without scrolling, and a reader going through in order finds them where they stopped.
+pagination = "both"
+
 # Every document hangs from one page, so the site has a single thing called "Rules" rather
 # than thirteen top-level entries a visitor has to recognise as a set. It is also what the
 # navigation menu hangs from.

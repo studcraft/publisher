@@ -3,6 +3,7 @@
   "name": "rules_web",
   "language": "en",
   "base_path": "",
+  "pagination": "both",
   "title": "StudCraft Rules",
   "source": {
     "repo": "https://github.com/studcraft/studcraft.git",

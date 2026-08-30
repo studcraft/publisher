@@ -89,3 +89,17 @@ def test_the_base_path_is_stripped_of_slashes(tmp_path: Path) -> None:
     """It is joined into paths, so a stray slash would double up in every URL."""
     loaded = _load(tmp_path, 'base_path = "/es/"\n[[document]]\nfile = "08-vehicles.md"\n')
     assert loaded.base_path == "es"
+
+
+def test_the_pagination_placement_defaults_to_the_bottom(tmp_path: Path) -> None:
+    """Where it was before it became a setting, so an existing spec renders as it did."""
+    loaded = _load(tmp_path, '[[document]]\nfile = "08-vehicles.md"\n')
+    assert loaded.pagination == "bottom"
+
+
+def test_an_unknown_pagination_placement_fails(tmp_path: Path) -> None:
+    """Named, with the list, rather than silently rendering as though it were absent."""
+    text = 'pagination = "sideways"\n[[document]]\nfile = "08-vehicles.md"\n'
+    with pytest.raises(spec.SpecError) as failure:
+        _load(tmp_path, text)
+    assert "top, bottom, both, none" in str(failure.value)

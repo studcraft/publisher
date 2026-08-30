@@ -101,9 +101,14 @@ def _page(page: Page, document: Document, neighbours: tuple, addresses: dict) ->
 
 def _content(page: Page, document: Document, neighbours: tuple, addresses: dict) -> str:
     """Return the whole HTML of one page: its content, where to go next, then its provenance."""
+    body = page.body_html if page.kind == RULE else _index(page, addresses)
+    steps = _pagination(neighbours, addresses)
+    where = document.pagination
+
     parts = [
-        page.body_html if page.kind == RULE else _index(page, addresses),
-        _pagination(neighbours, addresses),
+        steps if where in ("top", "both") else "",
+        body,
+        steps if where in ("bottom", "both") else "",
         _footer(page, document),
     ]
     return "\n".join(part for part in parts if part)
